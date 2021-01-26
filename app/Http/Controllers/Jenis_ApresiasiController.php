@@ -126,7 +126,7 @@ class Jenis_ApresiasiController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'required',
+            'name' => 'required|min:2|alpha',
         ];
 
         $messages = [
