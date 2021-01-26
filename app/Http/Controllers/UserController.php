@@ -7,6 +7,8 @@ use App\Traits\Authorizable;
 
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Kota;
+use App\Models\Operator_type;
 use Carbon\Carbon;
 
 use Auth;
@@ -33,19 +35,29 @@ class UserController extends Controller
         if (request()->ajax()) {
           DB::statement(DB::raw('set @rownum=0'));
           $users = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-          'id','uuid','name','email','last_login_at','last_login_ip'])->get();
-  
+          'id','uuid','name','email','last_login_at','last_login_ip', 'city_id', 'operator_id'])->get();
+
+          // dd($users);
           return DataTables::of($users)
           ->addColumn('role',function($user){
             foreach ($user->roles as $role) {
               return $role->name;
             }
           })
+          ->editColumn('city_id',function($row){
+            // dd($row);
+            return $row->city->city_name ?? null;
+          })
+          ->editColumn('operator_id',function($row){
+
+            return $row->operator->name ?? null;
+          })
           ->editColumn('last_login_at', function($user){
             if(!empty($user->last_login_at)){
               return Carbon::parse($user->last_login_at)->format('l\\, j F Y h:i:s A');
             }
           })
+          
           ->addColumn('action', function ($user) {
             if(auth()->user()->can('edit_users','delete_users')){
               return '<a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="'.route('users.edit',$user->uuid).'"><i class="fal fa-edit"></i></a>
@@ -70,7 +82,9 @@ class UserController extends Controller
     public function create()
     {
       $roles = Role::all()->pluck('name','name');
-      return view('users.create',compact('roles'));
+      $city_id = Kota::all()->pluck('city_name', 'uuid');
+      $operator_id = Operator_type::all()->pluck('name','uuid');
+      return view('users.create',compact('roles', 'city_id', 'operator_id'));
     }
 
     /**
@@ -81,14 +95,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-      // dd(request()->all());
-      // Validation
-      $this->validate($request,[
+      $rules = [
         'name' => 'required|min:2',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8',
         'role' => 'required',
-      ]);
+        'city_id' => 'required',
+        'operator_id' => 'required',
+    ];
+
+    $messages = [
+        '*.required' => 'Field tidak boleh kosong !',
+    ];
+
+    $this->validate($request, $rules, $messages);
 
       // retrieve password
       $password = trim($request->password);
@@ -97,6 +117,8 @@ class UserController extends Controller
       $user->name = $request->name;
       $user->email = $request->email;
       $user->password = Hash::make($password);
+      $user->city_id = $request->city_id;
+      $user->operator_id = $request->operator_id;
       $user->save();
       // assign role to user
       if($request->get('role')) {
@@ -128,8 +150,10 @@ class UserController extends Controller
     {
       $roles = Role::all()->pluck('name','name');
       $user = User::uuid($uuid);
+      $city_id = Kota::all()->pluck('city_name','uuid');
+      $operator_id = Operator_type::all()->pluck('name', 'uuid');
       // dd($user->roles[0]['name']);
-      return view('users.edit', compact('roles','user'));
+      return view('users.edit', compact('roles','user', 'city_id', 'operator_id'));
     }
 
     /**
@@ -142,14 +166,24 @@ class UserController extends Controller
     public function update(Request $request, $uuid)
     {
       // Validation
-      $this->validate($request,[
+      $rules = [
         'name' => 'required|min:2',
-        'email' => 'required|email|unique:users,email,'.$uuid.',uuid',
-      ]);
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:8',
+        'role' => 'required',
+        'city_id' => 'required',
+        'operator_id' => 'required',
+    ];
+
+    $messages = [
+        '*.required' => 'Field tidak boleh kosong !',
+    ];
       // Saving data
       $user = User::uuid($uuid);
       $user->name = $request->name;
       $user->email = $request->email;
+      $user->city_id = $request->city_id;
+      $user->operator_id = $request->operator_id;
       // Check password change
       if($request->get('password')) {
         $this->validate($request,[
