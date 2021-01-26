@@ -29,6 +29,14 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function() {
     Route::resource('users','UserController');
     Route::resource('permissions', 'PermissionController');
     Route::resource('roles', 'RoleController');
+    Route::resource('pelapor', 'PelaporController');
+    Route::resource('pelanggaran', 'PelanggaranController');
+    Route::resource('operator', 'OperatorController');
+    Route::resource('jenis_laporan', 'Jenis_LaporanController');
+    Route::resource('jenis_apresiasi', 'Jenis_ApresiasiController');
+    Route::resource('kota', 'KotaController');
+    Route::resource('province', 'ProvinceController');
+    Route::resource('laporan', 'LaporanController');
 
     // user Profile
     Route::get('profile', 'UserController@profile')->name('profile');

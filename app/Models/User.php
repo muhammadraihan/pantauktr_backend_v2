@@ -25,7 +25,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','avatar','last_login_at','last_login_ip',
+        'name', 'email', 'password','avatar', 'city_id', 'place_id', 'operator_id', 'last_login_at','last_login_ip',
     ];
 
     /**
@@ -100,5 +100,13 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function city(){
+        return $this->belongsTo(Kota::class, 'city_id', 'uuid');
+    }
+
+    public function operator(){
+        return $this->belongsTo(Operator_type::class, 'operator_id', 'uuid');
     }
 }

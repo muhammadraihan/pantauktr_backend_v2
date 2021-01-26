@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('title', 'User Management')
+@section('title', 'Jenis Apresiasi Management')
 
 @section('css')
 <link rel="stylesheet" media="screen, print" href="{{asset('css/datagrid/datatables/datatables.bundle.css')}}">
@@ -9,7 +9,7 @@
 @section('content')
 <div class="subheader">
     <h1 class="subheader-title">
-        <i class='subheader-icon fal fa-users'></i> Module: <span class='fw-300'>User</span>
+        <i class='subheader-icon fal fa-users'></i> Module: <span class='fw-300'>Jenis Apresiasi</span>
         <small>
             Module for manage user access.
         </small>
@@ -19,16 +19,14 @@
     <div class="col-xl-12">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-                <h2>
-                    Users <span class="fw-300"><i>List</i></span>
+            <h2>
+                    Jenis Apresiasi <span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
-                    @can('add_users')
-                    <a class="nav-link active" href="{{route('users.create')}}"><i class="fal fa-plus-circle">
+                    <a class="nav-link active" href="{{route('jenis_apresiasi.create')}}"><i class="fal fa-plus-circle">
                         </i>
                         <span class="nav-link-text">Add New</span>
                     </a>
-                    @endcan
                     <button class="btn btn-panel" data-action="panel-fullscreen" data-toggle="tooltip"
                         data-offset="0,10" data-original-title="Fullscreen"></button>
                 </div>
@@ -37,18 +35,14 @@
                 <div class="panel-content">
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Role</th>
-                                <th>City</th>
-                                <th>Operator</th>
-                                <th>Last Login</th>
-                                <th>Login From</th>
-                                <th>Action</th>
-                            </tr>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama</th>
+                <th>Created By</th>
+                <th>Edited By</th>
+                <th width="120px">Action</th>
+                </tr>
                         </thead>
                     </table>
                 </div>
@@ -90,13 +84,20 @@
 <script src="{{asset('js/datagrid/datatables/datatables.bundle.js')}}"></script>
 <script>
     $(document).ready(function(){
-        $('#datatable').DataTable({
+        $.ajaxSetup({
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          }
+    });
+     
+     
+       var table = $('#datatable').DataTable({
             "processing": true,
             "serverSide": true,
             "responsive": true,
             "order": [[ 0, "asc" ]],
             "ajax":{
-                url:'{{route('users.index')}}',
+                url:'{{route('jenis_apresiasi.index')}}',
                 type : "GET",
                 dataType: 'json',
                 error: function(data){
@@ -104,24 +105,21 @@
                     }
             },
             "columns": [
-                {data:'rownum',width:'*',searchable:false},
-                {data: 'name',width:'*'},
-                {data: 'email',width:'*'},
-                {data: 'role',width:'*'},
-                {data: 'city_id', width: '*'},
-                {data: 'operator_id', width: '*'},
-                {data: 'last_login_at',width:'*'},
-                {data: 'last_login_ip',width:'*'},
-                {data: 'action',width:'10%',searchable:false}    
-            ]
-        });
-        
-        // Delete Data
-        $('#datatable').on('click', '.delete-btn[data-url]', function (e) {
+            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+            {data: 'name', name: 'name'},
+            {data: 'created_by', name: 'created_by'},
+            {data: 'edited_by', name: 'edited_by'},
+            {data: 'action', name: 'action', orderable: false, searchable: false},
+        ]
+    });
+    // Delete Data
+    $('#datatable').on('click', '.delete-btn[data-url]', function (e) {
             e.preventDefault();
             var id = $(this).attr('data-id');
             var url = $(this).attr('data-url');
             var token = $(this).attr('data-token');
+            console.log(id,url,token);
+            
             $(".delete-form").attr("action",url);
             $('body').find('.delete-form').append('<input name="_token" type="hidden" value="'+ token +'">');
             $('body').find('.delete-form').append('<input name="_method" type="hidden" value="DELETE">');
