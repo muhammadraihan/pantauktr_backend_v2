@@ -96,7 +96,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
       $rules = [
-        'name' => 'required|min:2',
+        'name' => 'required|min:2|alpha',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8',
         'role' => 'required',
@@ -167,7 +167,7 @@ class UserController extends Controller
     {
       // Validation
       $rules = [
-        'name' => 'required|min:2',
+        'name' => 'required|min:2|alpha',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8',
         'role' => 'required',
