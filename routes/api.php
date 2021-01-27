@@ -21,3 +21,10 @@ Route::group(['prefix' => 'v1'], function() {
 Route::group(['prefix' => 'v1', 'middleware' => ['jwt']], function() {
     Route::get('logout', 'Api\AuthController@Logout');
 });
+
+Route::group(['prefix' => 'v2'], function(){
+    Route::get('jenisLaporan','Api\ReferensiController@getJenisLaporan');
+    Route::get('jenisPelanggaran','Api\ReferensiController@getJenisPelanggaran');
+    Route::get('jenisApresiasi','Api\ReferensiController@getJenisApresiasi');
+    Route::post('lapor','Api\LaporController@lapor');
+});
