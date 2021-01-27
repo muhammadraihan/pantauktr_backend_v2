@@ -25,8 +25,6 @@ class AddCityCodeOnKotasTable extends Migration
      */
     public function down()
     {
-        Schema::table('kotas', function (Blueprint $table){
-
-        });
+        Schema::dropIfExists('kotas');
     }
 }

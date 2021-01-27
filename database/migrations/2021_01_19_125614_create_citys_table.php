@@ -13,7 +13,7 @@ class CreateCitysTable extends Migration
      */
     public function up()
     {
-        Schema::create('citys', function (Blueprint $table) {
+        Schema::create('kotas', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
             $table->string('city_name')->nullable();
@@ -29,6 +29,6 @@ class CreateCitysTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('citys');
+        Schema::dropIfExists('kotas');
     }
 }
