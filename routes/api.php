@@ -17,6 +17,7 @@ Route::group(['prefix' => 'v2'], function() {
     Route::post('login', 'Api\AuthController@login');
     Route::get('login/{provider}', 'Api\AuthController@redirect');
     Route::post('login/{provider}/token','Api\AuthController@getToken');
+    Route::post('deploy', 'DeployController@DeployApps');
   });
 
 Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
