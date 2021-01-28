@@ -114,4 +114,30 @@ class LaporController extends Controller
         ],200);
 
     }
+
+    public function listLaporan()
+    {
+        // form response structure
+        $response = array(
+            'success' => true,
+            'data' => array(),
+        );
+        // get pelapor details based on auth token
+        $pelapor = Helper::pelapor();
+        // select laporan based on user auth
+        $list = Laporan::select('jenis_pelanggaran','keterangan','photo','nama_lokasi','created_at')
+        ->where('created_by',$pelapor->uuid)->get();
+        // form response
+        for ($i=0; $i < count($list) ; $i++) {
+            $tanggal = Carbon::parse($list[$i]->created_at)->format('l\\, j F Y H:i:s');
+            $response['data'][$i]= array();
+            $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->pelanggaran->nama_pelanggaran;
+            $response['data'][$i]['keterangan'] = $list[$i]->keterangan;
+            $response['data'][$i]['photo'] = url('/').'/lampiran'.'/'.$pelapor->uuid.'/'.$list[$i]->photo;
+            $response['data'][$i]['nama_lokasi'] = $list[$i]->nama_lokasi;
+            $response['data'][$i]['tanggal'] = $tanggal;
+        }
+        // return response
+        return response()->json($response,200);
+    }
 }
