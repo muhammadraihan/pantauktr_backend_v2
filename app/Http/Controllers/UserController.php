@@ -35,7 +35,7 @@ class UserController extends Controller
         if (request()->ajax()) {
           DB::statement(DB::raw('set @rownum=0'));
           $users = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-          'id','uuid','name','email','last_login_at','last_login_ip', 'city_id', 'operator_id'])->get();
+          'id','uuid','name','email','last_login_at','last_login_ip'])->get();
 
           // dd($users);
           return DataTables::of($users)
@@ -43,14 +43,6 @@ class UserController extends Controller
             foreach ($user->roles as $role) {
               return $role->name;
             }
-          })
-          ->editColumn('city_id',function($row){
-            // dd($row);
-            return $row->city->city_name ?? null;
-          })
-          ->editColumn('operator_id',function($row){
-
-            return $row->operator->name ?? null;
           })
           ->editColumn('last_login_at', function($user){
             if(!empty($user->last_login_at)){
@@ -82,9 +74,7 @@ class UserController extends Controller
     public function create()
     {
       $roles = Role::all()->pluck('name','name');
-      $city_id = Kota::all()->pluck('city_name', 'uuid');
-      $operator_id = Operator_type::all()->pluck('name','uuid');
-      return view('users.create',compact('roles', 'city_id', 'operator_id'));
+      return view('users.create',compact('roles'));
     }
 
     /**
@@ -96,12 +86,10 @@ class UserController extends Controller
     public function store(Request $request)
     {
       $rules = [
-        'name' => 'required|min:2|alpha',
+        'name' => 'required|min:2',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8',
         'role' => 'required',
-        'city_id' => 'required',
-        'operator_id' => 'required',
     ];
 
     $messages = [
@@ -117,8 +105,6 @@ class UserController extends Controller
       $user->name = $request->name;
       $user->email = $request->email;
       $user->password = Hash::make($password);
-      $user->city_id = $request->city_id;
-      $user->operator_id = $request->operator_id;
       $user->save();
       // assign role to user
       if($request->get('role')) {
@@ -150,10 +136,8 @@ class UserController extends Controller
     {
       $roles = Role::all()->pluck('name','name');
       $user = User::uuid($uuid);
-      $city_id = Kota::all()->pluck('city_name','uuid');
-      $operator_id = Operator_type::all()->pluck('name', 'uuid');
       // dd($user->roles[0]['name']);
-      return view('users.edit', compact('roles','user', 'city_id', 'operator_id'));
+      return view('users.edit', compact('roles','user'));
     }
 
     /**
@@ -167,12 +151,10 @@ class UserController extends Controller
     {
       // Validation
       $rules = [
-        'name' => 'required|min:2|alpha',
+        'name' => 'required|min:2',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8',
         'role' => 'required',
-        'city_id' => 'required',
-        'operator_id' => 'required',
     ];
 
     $messages = [
@@ -182,8 +164,6 @@ class UserController extends Controller
       $user = User::uuid($uuid);
       $user->name = $request->name;
       $user->email = $request->email;
-      $user->city_id = $request->city_id;
-      $user->operator_id = $request->operator_id;
       // Check password change
       if($request->get('password')) {
         $this->validate($request,[

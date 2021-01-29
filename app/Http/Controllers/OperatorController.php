@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Traits\Authorizable;
 
+use App\Models\User;
+use App\Models\Role;
+use App\Models\Kota;
 use App\Models\Operator_type;
+use Carbon\Carbon;
 
 use Auth;
 use DataTables;
@@ -17,32 +22,65 @@ use URL;
 
 class OperatorController extends Controller
 {
+    // auth trait for access control level
+    // use Authorizable;
+
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, User $uuid)
     {
-        $operator = Operator_type::all();
+        $users = Auth::user($uuid);
+        // dd($users);
         if (request()->ajax()) {
-            $data = Operator_type::latest()->get();
+          DB::statement(DB::raw('set @rownum=0'));
+          if ($request->user()->hasRole('operator')){
+          $userss = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+          'id','uuid','email','last_login_at','last_login_ip', 'city_id', 'operator_id'])->where('city_id',$users->city_id)->get();
+          }else{
+            $userss = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+            'id','uuid','email','last_login_at','last_login_ip', 'city_id', 'operator_id'])->get();
+          }
+          // dd($users);
+          return DataTables::of($userss)
+          ->addColumn('role',function($user){
+            foreach ($user->roles as $role) {
+              return $role->name;
+            }
+          })
+          ->editColumn('city_id',function($row){
+            // dd($row);
+            return $row->city->city_name ?? null;
+          })
+          ->editColumn('operator_id',function($row){
 
-            return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-                        return '
-                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="'.route('operator.edit',$row->uuid).'"><i class="fal fa-edit"></i></a>
-                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="'.URL::route('operator.destroy',$row->uuid).'" data-id="'.$row->uuid.'" data-token="'.csrf_token().'" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
-                 })
-            ->removeColumn('id')
-            ->removeColumn('uuid')
-            ->rawColumns(['action'])
-            ->make(true);
-        }
-
-        return view('operator.index');
+            return $row->operator->name ?? null;
+          })
+          ->editColumn('last_login_at', function($user){
+            if(!empty($user->last_login_at)){
+              return Carbon::parse($user->last_login_at)->format('l\\, j F Y h:i:s A');
+            }
+          })
+          
+          ->addColumn('action', function ($user) {
+            if(auth()->user()->can('edit_users','delete_users')){
+              return '<a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="'.route('operator.edit',$user->uuid).'"><i class="fal fa-edit"></i></a>
+              <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="'.URL::route('users.destroy',$user->uuid).'" data-id="'.$user->uuid.'" data-token="'.csrf_token().'" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
+            }
+            else{
+              return '<a href="#" class="badge badge-secondary">Not Authorize to Perform Action</a>';
+            }
+          })
+          ->removeColumn('id')
+          ->removeColumn('uuid')
+          ->make();
+          }
+        //   return Auth::user();
+          return view('operator.index', compact('users'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -51,7 +89,10 @@ class OperatorController extends Controller
      */
     public function create()
     {
-        return view('operator.create');
+      $roles = Role::all()->pluck('name','name');
+      $city_id = Kota::all()->pluck('city_name', 'uuid');
+      $operator_id = Operator_type::all()->pluck('name','uuid');
+      return view('operator.create',compact('city_id', 'operator_id', 'roles'));
     }
 
     /**
@@ -62,24 +103,38 @@ class OperatorController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
-            'name' => 'required|min:2|alpha',
-        ];
+      $rules = [
+        'name' => 'required|min:2',
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:8',
+        'role' => 'required',
+        'city_id' => 'required',
+        'operator_id' => 'required',
+    ];
 
-        $messages = [
-            '*.required' => 'Field tidak boleh kosong !',
-        ];
+    $messages = [
+        '*.required' => 'Field tidak boleh kosong !',
+    ];
 
-        $this->validate($request, $rules, $messages);
+    $this->validate($request, $rules, $messages);
 
-        $operator = new Operator_type();
-        $operator->name = $request->name;
+      // retrieve password
+      $password = trim($request->password);
+      // Save
+      $user = new User();
+      $user->name = $request->name;
+      $user->email = $request->email;
+      $user->password = Hash::make($password);
+      $user->city_id = $request->city_id;
+      $user->operator_id = $request->operator_id;
+      $user->save();
+      // assign role to user
+      if($request->get('role')) {
+        $user->assignRole($request->get('role'));
+      }
 
-        $operator->save();        
-
-        
-        toastr()->success('New Operator Added','Success');
-        return redirect()->route('operator.index');
+      toastr()->success('New Operator Added','Success');
+      return redirect()->route('operator.index');
     }
 
     /**
@@ -99,10 +154,14 @@ class OperatorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($uuid)
     {
-        $operator = Operator_type::uuid($id);
-        return view('operator.edit', compact('operator'));
+      $roles = Role::all()->pluck('name','name');
+      $user = User::uuid($uuid);
+      $city_id = Kota::all()->pluck('city_name','uuid');
+      $operator_id = Operator_type::all()->pluck('name', 'uuid');
+      // dd($user->roles[0]['name']);
+      return view('operator.edit', compact('roles','user', 'city_id', 'operator_id'));
     }
 
     /**
@@ -112,25 +171,42 @@ class OperatorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $uuid)
     {
-        $rules = [
-            'name' => 'required|min:2|alpha',
-        ];
+      // Validation
+      $rules = [
+        'email' => 'required|email|unique:users',
+        'password' => 'required|min:8',
+        'role' => 'required',
+        'city_id' => 'required',
+        'operator_id' => 'required',
+    ];
 
-        $messages = [
-            '*.required' => 'Field tidak boleh kosong !',
-        ];
+    $messages = [
+        '*.required' => 'Field tidak boleh kosong !',
+    ];
+      // Saving data
+      $user = User::uuid($uuid);
+      $user->email = $request->email;
+      $user->city_id = $request->city_id;
+      $user->operator_id = $request->operator_id;
+      // Check password change
+      if($request->get('password')) {
+        $this->validate($request,[
+          'password' => 'required|min:8'
+        ]);
+        // retrieve password
+        $password = trim($request->password);
+        $user->password = Hash::make($password);
+      }
+      $user->save();
+      // sync role to user if any roles changed
+      if($request->get('role')) {
+        $user->syncRoles([$request->get('role')]);
+      }
 
-        $this->validate($request, $rules, $messages);
-          // Saving data
-          $operator = Operator_type::uuid($id);
-          $operator->name = $request->name;
-    
-          $operator->save();
-    
-          toastr()->success('Operator Edited','Success');
-          return redirect()->route('operator.index');
+      toastr()->success('Operator Edited','Success');
+      return redirect()->route('operator.index');
     }
 
     /**
@@ -139,11 +215,116 @@ class OperatorController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($uuid)
     {
-        $operator = Operator_type::uuid($id);
-        $operator->delete();
-        toastr()->success('Operator Deleted','Success');
-        return redirect()->route('operator.index');
+      $user = User::uuid($uuid);
+      // remove assigned role
+      $user->syncRoles([]);
+      // delete user
+      $user->delete();
+
+      toastr()->success('Operator Deleted','Success');
+      return redirect()->route('operator.index');
+    }
+
+    /**
+     * Show user profile
+     *
+     * @param   $user user
+     * @return \Illuminate\Http\Response
+     */
+    public function profile(User $user)
+    {
+      $user = Auth::user();
+      return view('users.profile', compact('user'));
+    }
+
+    /**
+     * Update User Profile
+     *
+     * @param   Request  $request
+     * @param   $user    user
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function ProfileUpdate(Request $request, $user)
+    {
+      // validation
+      $rules =[
+        'name' => 'required|min:3'
+      ];
+      $messages = [
+        'name.required' => 'Name can not be empty',
+        'name.min' => 'Name must be at least 3 characters'
+      ];
+      $this->validate($request, $rules, $messages);
+      // check avatar request
+      $user = Auth::user();
+      if (!empty($request['avatar'])) {
+        $validation =[
+          'avatar'=>'mimes:jpeg,png,jpg|max:2048'
+        ];
+
+        $messages = [
+          'avatar.mimes' => 'File type must be jpeg,jpg or png',
+          'avatar.max' => 'File size max 2MB'
+        ];
+        $this->validate($request, $validation, $messages);
+
+        $folder = public_path().'/img'.'/avatar'.'/user'.'/';
+        if (!File::exists($folder)) {
+          File::makeDirectory($folder, 0775, true, true);
+        }
+        // request image files
+        $avatar = $request->file('avatar');
+        //upload image file
+        $filename = md5(uniqid(mt_rand(),true)).'.'.$avatar->getClientOriginalExtension();
+        $fitImage = Image::make($avatar);
+        $fitImage->save($folder.$filename);
+        $request['avatar'] = $filename;
+        $user->avatar = $filename;
+      }
+      $user->name = $request->name;
+      $user->save();
+      toastr()->success('Profile Updated','Success');
+      return redirect()->back();
+    }
+
+    public function ChangePassword(Request $request,$user)
+    {
+      $rules =[
+        'old-password' => 'required',
+        'new-password' => 'required|string|min:8',
+        'confirm-password' => 'required',
+      ];
+      $messages = [
+        '*.required' => 'This field can not be empty',
+        'new-password.min' => 'New Password must be at least 8 characters'
+      ];
+      $this->validate($request, $rules, $messages);
+
+      // check user current password if match
+      if (!Hash::check($request->get('old-password'), Auth::user()->password)){
+        toastr()->error('Old password incorrect !','Error',['positionClass' => 'toast-bottom-right']);
+        return redirect()->back();
+      }
+
+      // check if user using same fucking password for the new password
+      if(strcmp($request->get('old-password'), $request->get('confirm-password')) == 0){
+        toastr()->error('New password has been used, please provide new one !','Error',['positionClass' => 'toast-bottom-right']);
+        return redirect()->back();
+      }
+
+      // check if new password is match with confirmation password
+      if(strcmp($request->get('new-password'),$request->get('confirm-password')) !== 0){
+        toastr()->error('New password not the same with confirmation !','Error',['positionClass' => 'toast-bottom-right']);
+        return redirect()->back();
+      }
+      //Change password
+      $user = Auth::user();
+      $user->password = Hash::make($request->get('confirm-password'));
+      $user->save();
+      toastr()->success('Password changed','Success');
+      return redirect()->back();
     }
 }

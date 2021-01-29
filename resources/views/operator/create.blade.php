@@ -29,12 +29,57 @@
                     {!! Form::open(['route' => 'operator.store','method' => 'POST','class' =>
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-4 mb-3">
-                        {{ Form::label('name','Nama Operator',['class' => 'required form-label'])}}
-                        {{ Form::text('name',null,['placeholder' => 'Nama Operator','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required'])}}
+                        {{ Form::label('name','Full Name',['class' => 'required form-label'])}}
+                        {{ Form::text('name',null,['placeholder' => 'Full Name','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required'])}}
                         @if ($errors->has('name'))
                         <div class="invalid-feedback">{{ $errors->first('name') }}</div>
                         @endif
                     </div>
+                    <div class="form-group col-md-4 mb-3">
+                        {{ Form::label('email','Email Address',['class' => 'required form-label'])}}
+                        {{ Form::text('email',null,['placeholder' => 'Email Address','class' => 'form-control '.($errors->has('email') ? 'is-invalid':''),'required'])}}
+                        @if ($errors->has('email'))
+                        <div class="invalid-feedback">{{ $errors->first('email') }}</div>
+                        @endif
+                    </div>
+                    <div class="form-group col-md-4 mb-3">
+                        {{ Form::label('password','Password',['class' => 'required form-label'])}}
+                        <div id="password" class="input-group">
+                            {{ Form::text('password',null,['placeholder' => 'Password','class' => 'form-control '.($errors->has('password') ? 'is-invalid':''),'required'])}}
+                            <div class="input-group-append">
+                                <button id="getNewPass" type="button"
+                                    class="btn btn-primary waves-effect waves-themed getNewPass">Generate</button>
+                            </div>
+                            @if ($errors->has('password'))
+                            <div class="invalid-feedback">{{ $errors->first('password') }}</div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="form-group col-md-4 mb-3">
+                        {!! Form::label('role', 'Role', ['class' => 'required form-label']) !!}
+                        {!! Form::select('role', $roles, '', ['class' => 'select2 form-control'.($errors->has('role') ? 'is-invalid':''), 'required'
+                        => '', 'placeholder' => 'Select a role ...']) !!}
+                        @if ($errors->has('role'))
+                        <div class="help-block text-danger">{{ $errors->first('role') }}</div>
+                        @endif
+                    </div>
+                    <div class="form-group col-md-4 mb-3">
+                        {!! Form::label('city_id', 'City', ['class' => 'required form-label']) !!}
+                        {!! Form::select('city_id', $city_id, '', ['class' => 'select2 form-control'.($errors->has('city_id') ? 'is-invalid':''), 'required'
+                        => '', 'placeholder' => 'Select city ...']) !!}
+                        @if ($errors->has('city_id'))
+                        <div class="help-block text-danger">{{ $errors->first('city_id') }}</div>
+                        @endif
+                    </div>
+                    <div class="form-group col-md-4 mb-3">
+                        {!! Form::label('operator_id', 'Operator', ['class' => 'required form-label']) !!}
+                        {!! Form::select('operator_id', $operator_id, '', ['class' => 'select2 form-control'.($errors->has('operator_id') ? 'is-invalid':''), 'required'
+                        => '', 'placeholder' => 'Select Operator ...']) !!}
+                        @if ($errors->has('operator_id'))
+                        <div class="help-block text-danger">{{ $errors->first('operator_id') }}</div>
+                        @endif
+                    </div>
+                </div>
                 <div
                     class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
                     <button class="btn btn-primary ml-auto" type="submit">Submit</button>
