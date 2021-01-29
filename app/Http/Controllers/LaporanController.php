@@ -27,14 +27,19 @@ class LaporanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $uuid)
+    public function index(Request $request, User $uuid)
     {
         $users = Auth::user($uuid);
         // dd($users);
         if (request()->ajax()) {
           DB::statement(DB::raw('set @rownum=0'));
-          $data = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-          'id','uuid','jenis_pelanggaranan','keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'created_by'])->where('kota',$users->kota)->get();
+          if ($request->user()->hasRole('operator')){
+            $userss = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+            'id','uuid','jenis_pelanggaranan','keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'created_by'])->where('kota', 'like', $users->city_id);
+          }else{
+            $userss = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+            'id','uuid','jenis_pelanggaranan','keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'created_by'])->get();
+          }
 
 
             return Datatables::of($data)
