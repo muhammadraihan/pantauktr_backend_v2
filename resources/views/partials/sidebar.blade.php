@@ -90,6 +90,20 @@
                 </ul>
             </li>
             @endhasanyrole
+            <li class="">
+                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                    <i class="fal fa-cog"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">Operator</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{route('operator.index')}}" title="Operator Management"
+                            data-filter-tags="operators managements">
+                            <span class="nav-link-text" data-i18n="nav.operators_managements">Operator</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             @hasanyrole('superadmin')
             <li class="">
                 <a href="#" title="Theme Settings" data-filter-tags="theme settings">
@@ -98,9 +112,9 @@
                 </a>
                 <ul>
                     <li>
-                        <a href="{{route('operator.index')}}" title="Operator Management"
-                            data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Operator Type</span>
+                        <a href="{{route('operator_type.index')}}" title="Operator Type Management"
+                            data-filter-tags="operators type managements">
+                            <span class="nav-link-text" data-i18n="nav.operators_type_managements">Operator Type</span>
                         </a>
                     </li>
                 </ul>
@@ -154,7 +168,6 @@
                 </ul>
             </li>
             @endhasanyrole
-            @hasanyrole('superadmin')
             <li class="">
                 <a href="#" title="Theme Settings" data-filter-tags="theme settings">
                     <i class="fal fa-cog"></i>
@@ -169,7 +182,6 @@
                     </li>
                 </ul>
             </li>
-            @endhasanyrole
             @hasanyrole('superadmin')
             <li class="">
                 <a href="#" title="Theme Settings" data-filter-tags="theme settings">
@@ -186,7 +198,6 @@
                 </ul>
             </li>
             @endhasanyrole
-            @hasanyrole('superadmin')
             <li class="">
                 <a href="#" title="Theme Settings" data-filter-tags="theme settings">
                     <i class="fal fa-cog"></i>
@@ -201,7 +212,6 @@
                     </li>
                 </ul>
             </li>
-            @endhasanyrole
             @hasanyrole('superadmin')
             <li class="">
                 <a href="{{route('logs')}}" title="System Log" data-filter-tags="System Log">

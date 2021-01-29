@@ -19,14 +19,16 @@
     <div class="col-xl-12">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>
+                <h2>
                     Operator <span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
+                    @can('add_users')
                     <a class="nav-link active" href="{{route('operator.create')}}"><i class="fal fa-plus-circle">
                         </i>
                         <span class="nav-link-text">Add New</span>
                     </a>
+                    @endcan
                     <button class="btn btn-panel" data-action="panel-fullscreen" data-toggle="tooltip"
                         data-offset="0,10" data-original-title="Fullscreen"></button>
                 </div>
@@ -35,12 +37,17 @@
                 <div class="panel-content">
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th width="120px">Action</th>
-                </tr>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Role</th>
+                                <th>City</th>
+                                <th>Operator Type</th>
+                                <th>Last Login</th>
+                                <th>Login From</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
@@ -82,14 +89,7 @@
 <script src="{{asset('js/datagrid/datatables/datatables.bundle.js')}}"></script>
 <script>
     $(document).ready(function(){
-        $.ajaxSetup({
-          headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
-    });
-     
-     
-       var table = $('#datatable').DataTable({
+        $('#datatable').DataTable({
             "processing": true,
             "serverSide": true,
             "responsive": true,
@@ -103,19 +103,23 @@
                     }
             },
             "columns": [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'name', name: 'name'},
-            {data: 'action', name: 'action', orderable: false, searchable: false},
-        ]
-    });
-    // Delete Data
-    $('#datatable').on('click', '.delete-btn[data-url]', function (e) {
+                {data:'rownum',width:'*',searchable:false},
+                {data: 'email',width:'*'},
+                {data: 'role',width:'*'},
+                {data: 'city_id', width: '*'},
+                {data: 'operator_id', width: '*'},
+                {data: 'last_login_at',width:'*'},
+                {data: 'last_login_ip',width:'*'},
+                {data: 'action',width:'10%',searchable:false}    
+            ]
+        });
+        
+        // Delete Data
+        $('#datatable').on('click', '.delete-btn[data-url]', function (e) {
             e.preventDefault();
             var id = $(this).attr('data-id');
             var url = $(this).attr('data-url');
             var token = $(this).attr('data-token');
-            console.log(id,url,token);
-            
             $(".delete-form").attr("action",url);
             $('body').find('.delete-form').append('<input name="_token" type="hidden" value="'+ token +'">');
             $('body').find('.delete-form').append('<input name="_method" type="hidden" value="DELETE">');

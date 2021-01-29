@@ -9,6 +9,7 @@ use App\Models\Pelanggaran;
 use App\Models\Province;
 use App\Models\Jenis_laporan;
 use App\Models\Jenis_apresiasi;
+use App\Models\User;
 
 use Auth;
 use DataTables;
@@ -26,11 +27,15 @@ class LaporanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(User $uuid)
     {
-        $laporan = Laporan::all();
+        $users = Auth::user($uuid);
+        // dd($users);
         if (request()->ajax()) {
-            $data = Laporan::latest()->get();
+          DB::statement(DB::raw('set @rownum=0'));
+          $data = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+          'id','uuid','jenis_pelanggaranan','keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'created_by'])->where('kota',$users->kota)->get();
+
 
             return Datatables::of($data)
                     ->addIndexColumn()
@@ -49,6 +54,9 @@ class LaporanController extends Controller
                     })
                     ->editColumn('jenis_laporan',function($row){
                         return $row->jenis_laporan->name;
+                    })
+                    ->editColumn('kota',function($row){
+                        return $row->kota->city_name;
                     })
             ->removeColumn('id')
             ->removeColumn('uuid')

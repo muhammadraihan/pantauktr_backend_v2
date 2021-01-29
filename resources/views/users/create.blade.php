@@ -63,22 +63,6 @@
                         <div class="help-block text-danger">{{ $errors->first('role') }}</div>
                         @endif
                     </div>
-                    <div class="form-group col-md-4 mb-3">
-                        {!! Form::label('city_id', 'City', ['class' => 'required form-label']) !!}
-                        {!! Form::select('city_id', $city_id, '', ['class' => 'select2 form-control'.($errors->has('city_id') ? 'is-invalid':''), 'required'
-                        => '', 'placeholder' => 'Select city ...']) !!}
-                        @if ($errors->has('city_id'))
-                        <div class="help-block text-danger">{{ $errors->first('city_id') }}</div>
-                        @endif
-                    </div>
-                    <div class="form-group col-md-4 mb-3">
-                        {!! Form::label('operator_id', 'Operator', ['class' => 'required form-label']) !!}
-                        {!! Form::select('operator_id', $operator_id, '', ['class' => 'select2 form-control'.($errors->has('operator_id') ? 'is-invalid':''), 'required'
-                        => '', 'placeholder' => 'Select Operator ...']) !!}
-                        @if ($errors->has('operator_id'))
-                        <div class="help-block text-danger">{{ $errors->first('operator_id') }}</div>
-                        @endif
-                    </div>
                 </div>
                 <div
                     class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">

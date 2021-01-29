@@ -30,4 +30,8 @@ class Laporan extends Model
     public function jenis_apresiasi(){
         return $this->belomgsTo(Jenis_apresiasi::class, 'jenis_apresiasi', 'uuid');
     }
+
+    public function kota(){
+        return $this->belongsTo(Kota::class, 'kota', 'uuid');
+    }
 }
