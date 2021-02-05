@@ -18,19 +18,17 @@ class JwtMiddleware extends BaseMiddleware
      */
     public function handle($request, Closure $next)
     {
-        try {
-            // this for using default laravel user auth 
-            // change if you need custom auth table
-            $pelapor = JWTAuth::parseToken()->authenticate();
-          } catch (Exception $e) {
-            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
-              return response()->json(['status' => 'TOKEN_IS_INVALID'],500);
-            } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
-              return response()->json(['status' => 'TOKEN_IS_EXPIRED',500]);
-            } else {
-              return response()->json(['status' => 'TOKEN_NOT_FOUND',500]);
-            }
-          }
-        return $next($request);
+      try {
+        $pelapor = JWTAuth::parseToken()->authenticate();
+      } catch (Exception $e) {
+        if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
+          return response()->json(['status' => 'TOKEN_IS_INVALID'],500);
+        } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
+          return response()->json(['status' => 'TOKEN_IS_EXPIRED',500]);
+        } else {
+          return response()->json(['status' => 'TOKEN_NOT_FOUND',500]);
+        }
+      }
+      return $next($request);
     }
 }
