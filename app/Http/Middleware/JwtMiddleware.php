@@ -21,7 +21,7 @@ class JwtMiddleware extends BaseMiddleware
         try {
             // this for using default laravel user auth 
             // change if you need custom auth table
-            $user = JWTAuth::parseToken()->authenticate();
+            $pelapor = JWTAuth::parseToken()->authenticate();
           } catch (Exception $e) {
             if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
               return response()->json(['status' => 'TOKEN_IS_INVALID'],500);
