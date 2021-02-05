@@ -14,21 +14,20 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['prefix' => 'v2'], function() {
-    Route::get('login/{provider}', 'Api\AuthController@redirect');
+    Route::get('login/{provider}', 'Api\AuthController@RedirectLogin');
     Route::post('login', 'Api\AuthController@LoginPelapor');
     Route::post('register', 'Api\AuthController@RegisterPelapor');
-    Route::post('login/{provider}/token','Api\AuthController@getToken');
+    Route::post('login/{provider}/token','Api\AuthController@CreateTokenForSocialLogin');
     Route::post('deploy', 'DeployController@DeployApps');
+    Route::get('refresh-token','Api\AuthController@RefreshToken');
   });
 
 Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
-    Route::get('checktoken','Api\AuthController@CheckToken');
-    Route::get('logout', 'Api\AuthController@logout');
-    Route::get('pelapor', 'Api\AuthController@pelapor');
-    Route::get('jenisLaporan','Api\ReferensiController@getJenisLaporan');
-    Route::get('jenisPelanggaran','Api\ReferensiController@getJenisPelanggaran');
-    Route::get('jenisApresiasi','Api\ReferensiController@getJenisApresiasi');
-    Route::post('lapor','Api\LaporController@lapor');
-    // Route::get('laporan','Api\LaporanController@listLaporan');
-
+  Route::get('checktoken','Api\AuthController@CheckToken');
+  Route::get('logout', 'Api\AuthController@Logout');
+  Route::get('profile', 'Api\AuthController@Pelapor');
+  Route::get('jenisLaporan','Api\ReferensiController@getJenisLaporan');
+  Route::get('jenisPelanggaran','Api\ReferensiController@getJenisPelanggaran');
+  Route::get('jenisApresiasi','Api\ReferensiController@getJenisApresiasi');
+  Route::post('lapor','Api\LaporController@lapor');
 });
