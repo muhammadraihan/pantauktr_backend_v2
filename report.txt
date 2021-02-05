@@ -1,0 +1,4 @@
+user controller masih ancur,
+samakan nama database dengan nama model,
+tambahkan public function dan teman teman di model yang membutuhkan relasi
+semua user masih harus diliat ulang

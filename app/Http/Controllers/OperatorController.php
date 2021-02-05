@@ -20,29 +20,43 @@ use Image;
 use Response;
 use URL;
 
-class UserController extends Controller
+class OperatorController extends Controller
 {
     // auth trait for access control level
-    use Authorizable;
+    // use Authorizable;
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request, User $uuid)
     {
+        $users = Auth::user($uuid);
+        // dd($users);
         if (request()->ajax()) {
           DB::statement(DB::raw('set @rownum=0'));
-          $users = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-          'id','uuid','name','email','last_login_at','last_login_ip'])->get();
-
+          if ($request->user()->hasRole('operator')){
+          $userss = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+          'id','uuid','email','last_login_at','last_login_ip', 'city_id', 'operator_id'])->where('city_id',$users->city_id)->get();
+          }else{
+            $userss = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+            'id','uuid','email','last_login_at','last_login_ip', 'city_id', 'operator_id'])->get();
+          }
           // dd($users);
-          return DataTables::of($users)
+          return DataTables::of($userss)
           ->addColumn('role',function($user){
             foreach ($user->roles as $role) {
               return $role->name;
             }
+          })
+          ->editColumn('city_id',function($row){
+            // dd($row);
+            return $row->city->city_name ?? null;
+          })
+          ->editColumn('operator_id',function($row){
+
+            return $row->operator->name ?? null;
           })
           ->editColumn('last_login_at', function($user){
             if(!empty($user->last_login_at)){
@@ -52,7 +66,7 @@ class UserController extends Controller
           
           ->addColumn('action', function ($user) {
             if(auth()->user()->can('edit_users','delete_users')){
-              return '<a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="'.route('users.edit',$user->uuid).'"><i class="fal fa-edit"></i></a>
+              return '<a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="'.route('operator.edit',$user->uuid).'"><i class="fal fa-edit"></i></a>
               <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="'.URL::route('users.destroy',$user->uuid).'" data-id="'.$user->uuid.'" data-token="'.csrf_token().'" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
             }
             else{
@@ -63,8 +77,10 @@ class UserController extends Controller
           ->removeColumn('uuid')
           ->make();
           }
-          return view('users.index');
+        //   return Auth::user();
+          return view('operator.index', compact('users'));
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -74,7 +90,9 @@ class UserController extends Controller
     public function create()
     {
       $roles = Role::all()->pluck('name','name');
-      return view('users.create',compact('roles'));
+      $city_id = Kota::all()->pluck('city_name', 'uuid');
+      $operator_id = Operator_type::all()->pluck('name','uuid');
+      return view('operator.create',compact('city_id', 'operator_id', 'roles'));
     }
 
     /**
@@ -90,6 +108,8 @@ class UserController extends Controller
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8',
         'role' => 'required',
+        'city_id' => 'required',
+        'operator_id' => 'required',
     ];
 
     $messages = [
@@ -105,14 +125,16 @@ class UserController extends Controller
       $user->name = $request->name;
       $user->email = $request->email;
       $user->password = Hash::make($password);
+      $user->city_id = $request->city_id;
+      $user->operator_id = $request->operator_id;
       $user->save();
       // assign role to user
       if($request->get('role')) {
         $user->assignRole($request->get('role'));
       }
 
-      toastr()->success('New User Added','Success');
-      return redirect()->route('users.index');
+      toastr()->success('New Operator Added','Success');
+      return redirect()->route('operator.index');
     }
 
     /**
@@ -136,8 +158,10 @@ class UserController extends Controller
     {
       $roles = Role::all()->pluck('name','name');
       $user = User::uuid($uuid);
+      $city_id = Kota::all()->pluck('city_name','uuid');
+      $operator_id = Operator_type::all()->pluck('name', 'uuid');
       // dd($user->roles[0]['name']);
-      return view('users.edit', compact('roles','user'));
+      return view('operator.edit', compact('roles','user', 'city_id', 'operator_id'));
     }
 
     /**
@@ -151,10 +175,11 @@ class UserController extends Controller
     {
       // Validation
       $rules = [
-        'name' => 'required|min:2',
         'email' => 'required|email|unique:users',
         'password' => 'required|min:8',
         'role' => 'required',
+        'city_id' => 'required',
+        'operator_id' => 'required',
     ];
 
     $messages = [
@@ -162,8 +187,9 @@ class UserController extends Controller
     ];
       // Saving data
       $user = User::uuid($uuid);
-      $user->name = $request->name;
       $user->email = $request->email;
+      $user->city_id = $request->city_id;
+      $user->operator_id = $request->operator_id;
       // Check password change
       if($request->get('password')) {
         $this->validate($request,[
@@ -179,8 +205,8 @@ class UserController extends Controller
         $user->syncRoles([$request->get('role')]);
       }
 
-      toastr()->success('User Edited','Success');
-      return redirect()->route('users.index');
+      toastr()->success('Operator Edited','Success');
+      return redirect()->route('operator.index');
     }
 
     /**
@@ -197,8 +223,8 @@ class UserController extends Controller
       // delete user
       $user->delete();
 
-      toastr()->success('User Deleted','Success');
-      return redirect()->route('users.index');
+      toastr()->success('Operator Deleted','Success');
+      return redirect()->route('operator.index');
     }
 
     /**

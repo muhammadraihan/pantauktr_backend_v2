@@ -13,11 +13,22 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::group(['prefix' => 'v1'], function() {
-    Route::post('login', 'Api\AuthController@Login');
-});
+Route::group(['prefix' => 'v2'], function() {
+    Route::post('login', 'Api\AuthController@login');
+    Route::get('login/{provider}', 'Api\AuthController@redirect');
+    Route::post('login/{provider}/token','Api\AuthController@getToken');
+    Route::post('deploy', 'DeployController@DeployApps');
+  });
 
-// Auth route
-Route::group(['prefix' => 'v1', 'middleware' => ['jwt']], function() {
-    Route::get('logout', 'Api\AuthController@Logout');
+Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
+// Route::group(['prefix' => 'v2'], function(){
+    Route::get('checktoken','Api\AuthController@checkToken');
+    Route::get('logout', 'Api\AuthController@logout');
+    Route::get('pelapor', 'Api\AuthController@pelapor');
+    Route::get('jenisLaporan','Api\ReferensiController@getJenisLaporan');
+    Route::get('jenisPelanggaran','Api\ReferensiController@getJenisPelanggaran');
+    Route::get('jenisApresiasi','Api\ReferensiController@getJenisApresiasi');
+    Route::post('lapor','Api\LaporController@lapor');
+    Route::get('laporan','Api\LaporanController@listLaporan');
+
 });
