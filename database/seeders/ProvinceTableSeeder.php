@@ -23,14 +23,10 @@ class ProvinceTableSeeder extends Seeder
 
       //url data
       $url = "http://dev.farizdotid.com/api/daerahindonesia/provinsi";
-      // $id = 7032; // change based on id dapil
-      $randomNum = substr(str_shuffle("0123456789"), 0, 13);
       $json = file_get_contents($url, false, stream_context_create($stream_opts));
-      // dd($json);
       // Ask for mendownload data, default is no
         if ($this->command->confirm('Anda yakin mendownload data ?')) {
             $data = json_decode($json);
-            // dd($data);
             //progress bar
             $this->command->getOutput()->createProgressBar(count($data->provinsi));
             $this->command->getOutput()->progressStart();

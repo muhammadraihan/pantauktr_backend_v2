@@ -10,8 +10,9 @@ use App\Models\Pelanggaran;
 
 class ReferensiController extends Controller
 {
-    public function getJenisLaporan()
+    public function getJenisLaporan(Request $request)
     {
+        // dd($request->header('Authorization'));
         $jenisLaporan = Jenis_laporan::select('id','uuid','name')->get();
         return response()->json([
             'success' => true,
@@ -19,7 +20,7 @@ class ReferensiController extends Controller
         ],200);
     }
 
-    public function getJenisPelanggaran()
+    public function getJenisPelanggaran(Request $request)
     {
         $jenisPelanggaran = Pelanggaran::select('id','uuid','name')->get();
         return response()->json([
@@ -28,7 +29,7 @@ class ReferensiController extends Controller
         ],200);
     }
 
-    public function getJenisApresiasi()
+    public function getJenisApresiasi(Request $request)
     {
         $jenisApresiasi = Jenis_apresiasi::select('id','uuid','name')->get();
         return response()->json([

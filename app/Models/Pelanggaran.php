@@ -12,7 +12,7 @@ class Pelanggaran extends Model
     use Uuid;
 
     protected $fillable = [
-        'name', 'created_by', 'edited_by'
+        'name', 'keterangan','created_by', 'edited_by'
     ];
 
     public function userCreate(){

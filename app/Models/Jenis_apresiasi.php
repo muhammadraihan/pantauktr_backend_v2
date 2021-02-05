@@ -12,7 +12,7 @@ class Jenis_apresiasi extends Model
     use Uuid;
 
     protected $fillable = [
-        'name'
+        'name','created_by','edited_by'
     ];
 
     public function userCreate(){
