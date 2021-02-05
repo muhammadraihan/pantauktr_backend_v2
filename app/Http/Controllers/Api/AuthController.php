@@ -10,14 +10,12 @@ use Carbon\Carbon;
 
 use Auth;
 use Config;
-use DB;
+use Exception;
 use Hash;
 use Helper;
 use JWTAuth;
-use JWTFactory;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Socialite;
-use Tymon\JWTAuth\Facades\JWTAuth as FacadesJWTAuth;
 use Validator;
 
 class AuthController extends Controller
@@ -40,13 +38,6 @@ class AuthController extends Controller
     ]);
   }
 
-  // protected function CreateNewToken($token, $type){
-  //   return response()->json([
-  //     'access_token' => $token,
-  //     'expires_in' => JWTAuth::factory()->getTTL() * env('JWT_EXPIRES_MINUTES', 60),
-  //   ],200);
-  // }
-
   /**
    * Check token if still valid or expired or not not found
    * @return json
@@ -62,10 +53,16 @@ class AuthController extends Controller
     }
   }
 
+  /**
+   * Register new pelapor
+   *
+   * @param Request $request
+   * @return json
+   */
   public function RegisterPelapor(Request $request)
   {
     $rules = [
-      'email' => 'required|email|unique:pelapors',
+      'email' => 'bail|required|email|unique:pelapors',
       'password' => 'required|min:8',
     ];
 
@@ -84,15 +81,31 @@ class AuthController extends Controller
     
     // retrieve password
     $password = trim($request->password);
-    // saving pelapor
-    $pelapor = Pelapor::create([
-      'email' => $request->email,
-      'password' => Hash::make($password),
-      'provider' => 'manual'
-    ]);
-    $token = JWTAuth::fromUser($pelapor);
+    try {
+      // saving pelapor
+      $pelapor = Pelapor::create([
+        'email' => $request->email,
+        'password' => Hash::make($password),
+        'provider' => 'manual'
+      ]);
+
+      try {
+        $token = JWTAuth::fromUser($pelapor);
+      } catch (JWTException $th) {
+        return response()->json([
+          'success' => false,
+          'message' => 'Failed to generate token',
+        ],500);
+      }
+    } catch (Exception $th) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Server failed to retrieve request',
+      ],500);
+    }
 
     return response()->json([
+      'success' => true,
       'pelapor' => [
         'uuid' => $pelapor->uuid,
         'email' => $pelapor->email,
@@ -102,7 +115,7 @@ class AuthController extends Controller
         'access_token' => $token,
         'expires_in' => JWTAuth::factory()->getTTL().' minutes',
       ]
-    ]);
+      ],200);
   }
 
   public function LoginPelapor(Request $request)
@@ -118,6 +131,7 @@ class AuthController extends Controller
     $validator = Validator::make($credentials, $rules);
     if ($validator->fails()) {
       return response()->json([
+        'success' => false,
         'message' => $validator->messages(),
       ], 400);
     }
@@ -126,13 +140,15 @@ class AuthController extends Controller
       // Check Email if exists
       if (!$token = JWTAuth::attempt($credentials)) {
         return response()->json([
+          'success' => false,
           'message' => 'Email not registered',
         ], 400);
       }
     } catch (JWTException $e) {
       // Check if Email or Password match
       return response()->json([
-        'message' => $e,
+        'success' => false,
+        'message' => 'Failed to login',
       ], 500);
     }
 
@@ -145,38 +161,20 @@ class AuthController extends Controller
 
     // All good give 'em token
     return response()->json([
+      'success' => true,
       'access_token' => $token,
-      'expires_in' => JWTAuth::factory()->getTTL() * 60,
-      ]);
+      'expires_in' => JWTAuth::factory()->getTTL().' minutes',
+    ],200);
   }
-
-  public function Logout(Request $request)
-  {
-    // Get JWT Token from the request header key "Authorization"
-    $token = $request->header('Authorization');
-    // Invalidate the token
-    try {
-      JWTAuth::invalidate($token);
-      return response()->json([
-        'message' => "Logged out.",
-      ], 200);
-    } catch (JWTException $e) {
-      // something went wrong whilst attempting to encode the token
-      return response()->json([
-        'message' => $e,
-      ], 500);
-    }
-  }
-
-  public function redirect($provider)
+  
+  public function RedirectLogin($provider)
   {
     return Socialite::driver($provider)->stateless()->redirect();
   }
 
-  public function getToken($provider, Request $request)
+  public function CreateTokenForSocialLogin($provider, Request $request)
   {
     $access_token = $request->get('access_token');
-    // $auth_pelapor = Socialite::driver($provider)->stateless()->user();
     $auth_pelapor = Socialite::driver($provider)->userFromToken($access_token);
 
     // split name to be first and last name
@@ -198,27 +196,24 @@ class AuthController extends Controller
         'lastname' => $lastname,
         'email'    => !empty($auth_pelapor->user['email']) ? $auth_pelapor->user['email'] : '',
         'provider' => $provider,
-        'provider_id' => $auth_pelapor->user['id'],
         'avatar' => $auth_pelapor->avatar,
         'last_login_at' => Carbon::now()->toDateTimeString(),
         'last_login_ip' => $request->getClientIp(),
       ]);
-      $app_token = JWTAuth::fromUser($pelapor);
+      $token = JWTAuth::fromUser($pelapor);
       return response()->json([
         'success' => true,
-        'data' => [
-          'app_token' => $app_token,
-        ]
+        'access_token' => $token,
+        'expires_in' => JWTAuth::factory()->getTTL().' minutes',
       ], 200);
     }
     // if exists return token
     else {
-      $app_token = JWTAuth::fromUser($pelapor);
+      $token = JWTAuth::fromUser($pelapor);
       return response()->json([
         'success' => true,
-        'data' => [
-          'app_token' => $app_token,
-        ]
+        'access_token' => $token,
+        'expires_in' => JWTAuth::factory()->getTTL().' minutes',
       ], 200);
     }
   }
@@ -228,7 +223,7 @@ class AuthController extends Controller
    * @param  Request $request [description]
    * @return [type]           [description]
    */
-  public function pelapor(Request $request)
+  public function Pelapor(Request $request)
   {
     // Get JWT Token from the request header key "Authorization"
     $token = $request->header('Authorization');
@@ -246,6 +241,45 @@ class AuthController extends Controller
         'last_login_ip' => $pelapor->last_login_ip,
       ]
     ], 200);
+  }
+
+  public function RefreshToken(Request $request)
+  {
+    // Get JWT Token from the request header key "Authorization"
+    $token = $request->header('Authorization');
+    try {
+      $refresh_token = JWTAuth::parseToken($token)->refresh();
+      return response()->json([
+        'success' => true,
+        'access_token' => $refresh_token,
+        'expires_in' => JWTAuth::factory()->getTTL().' minutes',
+      ],200);
+    } catch (JWTException $e) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Token cannot be refreshed, please login',
+      ],500);
+    }
+  }
+
+  public function Logout(Request $request)
+  {
+    // Get JWT Token from the request header key "Authorization"
+    $token = $request->header('Authorization');
+    // Invalidate the token
+    try {
+      JWTAuth::invalidate($token);
+      return response()->json([
+        'success' => true,
+        'message' => "Logged out.",
+      ], 200);
+    } catch (JWTException $e) {
+      // something went wrong whilst attempting to encode the token
+      return response()->json([
+        'success' => false,
+        'message' => $e,
+      ], 500);
+    }
   }
 
 }
