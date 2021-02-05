@@ -22,7 +22,7 @@ class CreatePelaporsTable extends Migration
             $table->string('password')->nullable();
             $table->string('provider')->nullable();
             $table->string('avatar')->nullable();
-            $table->string('reward_point');
+            $table->string('reward_point')->nullable();
             $table->string('last_login_ip')->nullable();
             $table->string('last_login_at')->nullable();
             $table->timestamps();
