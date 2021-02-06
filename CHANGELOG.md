@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## 2.0.0 (2021-02-05)
+
+
+### Features
+
+* Adding basic data seeder ([1cab052](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/1cab05235748c492f13c8446ae6e7c4ed322c799))
+* Adding manual register features ([c0bcccc](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/c0bcccc93b7abffd419006e74df134c6549bc03b))
+* Kota automated seed based in province code ([16b1614](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/16b16144f044c179f066b82a28fe13c5dcf92c65))
+* Refresh tokens endpoint added ([056a3a8](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/056a3a8efc38b2cf78eec26cb9fca8a59b341ed7))
+
+
+### Bug Fixes
+
+* Adding JWT aliases and provider in config ([bdb0121](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/bdb01213ceb20a0acaacf733e6cfe799497dec3e))
+* Adding log activity and JWT auth support ([bd8572c](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/bd8572cd7d56219972ec19fd67869a623265c086))
+* Adding nullble in reward point column ([67af8a8](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/67af8a898130561dfe25063669e929b6d0b91fe7))
+* Adding request arguments in method ([7fc0596](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/7fc0596fd6cc070a2c31397bf0275e190cc4e661))
+
 ## [1.2.0](https://git.wbaindonesia.com/wbaindonesia/starterkit/compare/v1.1.0...v1.2.0) (2020-12-08)
 
 
