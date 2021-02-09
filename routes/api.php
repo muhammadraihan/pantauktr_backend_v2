@@ -20,7 +20,9 @@ Route::group(['prefix' => 'v2'], function() {
     Route::post('login/{provider}/token','Api\AuthController@CreateTokenForSocialLogin');
     Route::post('deploy', 'DeployController@DeployApps');
     Route::get('refresh-token','Api\AuthController@RefreshToken');
-  });
+    Route::post('pelapor/forgot-password','Api\AuthController@ResetPasswordOTP');
+    Route::post('pelapor/update-password','Api\AuthController@UpdateForgotPassword');
+});
 
 Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
   Route::get('checktoken','Api\AuthController@CheckToken');
