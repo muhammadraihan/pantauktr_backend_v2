@@ -28,7 +28,7 @@ class Helper
   public static function pelapor()
   {
     try {
-      if (! $user = JWTAuth::parseToken()->authenticate()) {
+      if (! $pelapor = JWTAuth::parseToken()->authenticate()) {
         return response()->json(['status' => 'ACCOUNT_NOT_FOUND'], 404);
       }
     } catch (Exception $e) {
@@ -40,6 +40,6 @@ class Helper
         return response()->json(['status' => 'TOKEN_NOT_FOUND'],500);
       }
     }
-    return $user;
+    return $pelapor;
   }
 }
