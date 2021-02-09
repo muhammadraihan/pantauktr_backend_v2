@@ -73,7 +73,7 @@ class PelanggaranController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|min:2|alpha',
+            'name' => 'required|min:2',
         ];
 
         $messages = [
@@ -126,7 +126,7 @@ class PelanggaranController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'required|min:2|alpha',
+            'name' => 'required|min:2',
         ];
 
         $messages = [

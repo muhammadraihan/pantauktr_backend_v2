@@ -38,6 +38,7 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function() {
     Route::resource('province', 'ProvinceController');
     Route::resource('laporan', 'LaporanController');
     Route::resource('operator', 'OperatorController');
+    Route::resource('chart', 'ChartController');
 
     // user Profile
     Route::get('profile', 'UserController@profile')->name('profile');

@@ -114,9 +114,9 @@
             },
             "columns": [
             {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'jenis_pelanggaran' name: 'jenis_pelanggaran'},
-            {data: 'jenis_laporan' nama: 'jenis_laporan'},
-            {data: 'jenis_apresiasi' nama: 'jenis_apresiasi'},
+            {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
+            {data: 'jenis_laporan', name: 'jenis_laporan'},
+            {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
             {data: 'keterangan', name: 'keterangan'},
             {data: 'photo', name: 'photo'},
             {data: 'lat', name: 'lat'},

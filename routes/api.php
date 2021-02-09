@@ -20,8 +20,8 @@ Route::group(['prefix' => 'v2'], function() {
     Route::post('deploy', 'DeployController@DeployApps');
   });
 
-Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
-// Route::group(['prefix' => 'v2'], function(){
+// Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
+Route::group(['prefix' => 'v2'], function(){
     Route::get('checktoken','Api\AuthController@checkToken');
     Route::get('logout', 'Api\AuthController@logout');
     Route::get('pelapor', 'Api\AuthController@pelapor');

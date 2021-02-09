@@ -73,11 +73,12 @@ class Jenis_ApresiasiController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|min:2|alpha'
+            'name' => 'required|min:2'
         ];
 
         $messages = [
             '*.required' => 'Field tidak boleh kosong !',
+            '*.min' => 'Nama tidak boleh kurang dari 2 karakter !',
         ];
 
         $this->validate($request, $rules, $messages);
@@ -126,7 +127,7 @@ class Jenis_ApresiasiController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'name' => 'required|min:2|alpha',
+            'name' => 'required|min:2',
         ];
 
         $messages = [
