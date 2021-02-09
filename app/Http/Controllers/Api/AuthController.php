@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
+use App\Notifications\SendOTPNotification;
 use App\Models\Pelapor;
 use Carbon\Carbon;
+use Seshac\Otp\Otp;
+use Seshac\Otp\Models\Otp as OtpModel;
 
 use Auth;
 use Config;
@@ -68,6 +71,7 @@ class AuthController extends Controller
 
     $messages = [
       '*.required' => 'Tidak boleh kosong',
+      '*.email' => 'Format email salah,mohon gunakan alamat email',
       '*.unique' => 'Email sudah digunakan,harap gunakan alamat email yang lain',
       '*.min' => 'Password minimal 8 karakter',
     ];
@@ -124,7 +128,7 @@ class AuthController extends Controller
     $credentials = $request->only('email', 'password');
     // Validation rules
     $rules = [
-      'email' => 'required',
+      'email' => 'required|email',
       'password' => 'required',
     ];
     // validation
@@ -141,7 +145,7 @@ class AuthController extends Controller
       if (!$token = JWTAuth::attempt($credentials)) {
         return response()->json([
           'success' => false,
-          'message' => 'Email not registered',
+          'message' => 'Email atau password salah',
         ], 400);
       }
     } catch (JWTException $e) {
@@ -258,6 +262,116 @@ class AuthController extends Controller
       return response()->json([
         'success' => false,
         'message' => 'Token cannot be refreshed, please login',
+      ],500);
+    }
+  }
+
+  public function ResetPasswordOTP(Request $request)
+  {
+    // get email
+    $credentials = $request->only('email');
+    // Validation rules
+    $rules = [
+      'email' => 'required|email',
+    ];
+    // validation
+    $validator = Validator::make($credentials, $rules);
+    if ($validator->fails()) {
+      return response()->json([
+        'success' => false,
+        'message' => $validator->messages(),
+      ], 400);
+    }
+    // select pelapor
+    $pelapor = Pelapor::where('email', $request->email)->first();
+    // if not found throw error
+    if (!$pelapor) {
+      return response()->json([
+        "success" => false,
+        "message" => 'Email tidak terdapat dalam sistem, harap masukkan email yang terdaftar !',
+      ],404);
+    }
+    // try to send OTP to email
+    try {
+      // generate OTP
+      $OTP =  Otp::generate($request->email);
+      // prepare email parameter
+      $details = [
+        'email' => $pelapor->email,
+        'otp' => $OTP->token,
+        'expiry' => env('OTP_VALIDITY_TIME')
+      ];
+      // send email
+      $pelapor->notify(new SendOTPNotification($details));
+      return response()->json([
+        "success" => true,
+        "message" => 'Instruksi perubahan password sudah terkirim ke email terdaftar',
+      ],200);
+    } catch (Exception $e) {
+      return response()->json([
+        "success" => false,
+        "message" => 'Gagal mengirim ke email, silahkan coba beberapa saat lagi',
+      ],500);
+    }
+  }
+
+  private function VerifyOtp($identifier, $otp)
+  {
+    return Otp::validate($identifier,$otp);
+  }
+  
+  public function UpdateForgotPassword(Request $request)
+  {
+    $rules =[
+      'otp' => 'required',
+      'new-password' => 'required|string|min:8',
+      'confirm-password' => 'required|same:new-password',
+    ];
+    $messages = [
+      '*.required' => 'Tidak boleh kosong',
+      '*.min' => 'Password minimal 8 karakter',
+      '*.same' => 'Password tidak sama'
+    ];
+
+    // validation
+    $validator = Validator::make($request->all(), $rules,$messages);
+    if ($validator->fails()) {
+      return response()->json([
+        'success' => false,
+        'message' => $validator->messages(),
+      ], 400);
+    }
+
+    // check if new password is match with confirmation password
+    if(strcmp($request->get('new-password'),$request->get('confirm-password')) !== 0){
+      return response()->json([
+        'success' => false,
+        'message' => 'Password tidak cocok dengan konfirmasi',
+      ], 400);
+    }
+
+    try {
+      $OtpModel = OtpModel::where('token', $request->otp)->where('expired',false)->first();
+      $verify = $this->VerifyOtp($OtpModel->identifier,$request->otp);
+      // dd($verify);
+      if ($verify->status == true) {
+        $pelapor = Pelapor::where('email', $OtpModel->identifier)->first();
+        // dd($pelapor);
+        $pelapor->password = Hash::make($request->get('confirm-password'));
+        $pelapor->save();
+        return response()->json([
+          "success" => true,
+          "message" => 'Password berhasil diubah, silahkan login',
+        ],200);
+      }
+      return response()->json([
+        "success" => $verify->status,
+        "message" => $verify->message,
+      ],200);
+    } catch (Exception $th) {
+      return response()->json([
+        "success" => false,
+        "message" => 'Server error, please try again later',
       ],500);
     }
   }
