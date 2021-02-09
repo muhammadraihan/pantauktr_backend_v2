@@ -7,8 +7,8 @@ use App\Models\Laporan;
 use App\Models\Pelapor;
 use App\Models\Pelanggaran;
 use App\Models\Province;
-use App\Models\Jenis_laporan;
 use App\Models\Jenis_apresiasi;
+use App\Models\Jenis_laporan;
 use App\Models\User;
 
 use Auth;
@@ -27,43 +27,43 @@ class LaporanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(User $uuid)
+    public function index(Request $request, User $uuid)
     {
         $users = Auth::user($uuid);
+        // $kota = explode(" ", $users->city->city_name);
+        // dd($kota);
         // dd($users);
         if (request()->ajax()) {
           DB::statement(DB::raw('set @rownum=0'));
-          $data = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-          'id','uuid','jenis_pelanggaranan','keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'created_by'])->where('kota',$users->kota)->get();
-
-
-            return Datatables::of($data)
+          if ($request->user()->hasRole('operator')){
+            $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+            'id','uuid','jenis_pelanggaran', 'jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by'])->where('kota', 'like', $users->city->city_name)->get();
+          }else{
+            $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+            'id','uuid','jenis_pelanggaran','jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by'])->get();
+          }
+        //   dd($userss);
+            return Datatables::of($userss) 
                     ->addIndexColumn()
                     ->editColumn('created_by',function($row){
-                        return $row->userCreate->name;
+                        return $row->userCreate->firstname ?? null;
                     })
                     ->editColumn('jenis_pelanggaran',function($row){
-                        if($row->jenis_pelanggaran != null){
-                        return $row->jenis_pelanggaran->name;
-                        }else{
-                            return null;
-                        }
+                        return $row->pelanggaran->name ?? null;
+                        
                     })
                     ->editColumn('jenis_apresiasi',function($row){
-                        return $row->jenis_apresiasi->name;
+                        return $row->japresiasi->name ?? null;
                     })
                     ->editColumn('jenis_laporan',function($row){
-                        return $row->jenis_laporan->name;
-                    })
-                    ->editColumn('kota',function($row){
-                        return $row->kota->city_name;
+                        return $row->jlaporan->name;
                     })
             ->removeColumn('id')
             ->removeColumn('uuid')
             ->make(true);
         }
 
-        return view('laporan.index');
+        return view('laporan.index', compact('users'));
     }
 
     /**
@@ -71,6 +71,7 @@ class LaporanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
     public function create()
     {
         //

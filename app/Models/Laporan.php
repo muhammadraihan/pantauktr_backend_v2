@@ -23,15 +23,11 @@ class Laporan extends Model
         return $this->belongsTo(Pelanggaran::class, 'jenis_pelanggaran', 'uuid');
     }
 
-    public function jenis_laporan(){
+    public function jlaporan(){
         return $this->belongsTo(Jenis_laporan::class, 'jenis_laporan', 'uuid');
     }
 
-    public function jenis_apresiasi(){
-        return $this->belomgsTo(Jenis_apresiasi::class, 'jenis_apresiasi', 'uuid');
-    }
-
-    public function kota(){
-        return $this->belongsTo(Kota::class, 'kota', 'uuid');
-    }
+    public function japresiasi(){
+        return $this->belongsTo(Jenis_apresiasi::class, 'jenis_apresiasi', 'uuid');
+    }   
 }
