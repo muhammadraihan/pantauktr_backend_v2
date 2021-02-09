@@ -18,7 +18,10 @@ Route::group(['prefix' => 'v2'], function() {
     Route::get('login/{provider}', 'Api\AuthController@redirect');
     Route::post('login/{provider}/token','Api\AuthController@getToken');
     Route::post('deploy', 'DeployController@DeployApps');
-  });
+    Route::get('refresh-token','Api\AuthController@RefreshToken');
+    Route::post('pelapor/forgot-password','Api\AuthController@ResetPasswordOTP');
+    Route::post('pelapor/update-password','Api\AuthController@UpdateForgotPassword');
+});
 
 // Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
 Route::group(['prefix' => 'v2'], function(){

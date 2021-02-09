@@ -21,6 +21,7 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.0",
         "laravelcollective/html": "^6.0",
+        "seshac/otp-generator": "^0.0.6",
         "spatie/geocoder": "^3.10",
         "spatie/laravel-activitylog": "^3.16",
         "spatie/laravel-permission": "^3.0",
