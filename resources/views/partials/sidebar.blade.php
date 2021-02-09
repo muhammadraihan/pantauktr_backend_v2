@@ -212,6 +212,20 @@
                     </li>
                 </ul>
             </li>
+            <li class="">
+                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                    <i class="fal fa-cog"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">Chart</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{route('chart.index')}}" title="Chart Management"
+                            data-filter-tags="Chart managements">
+                            <span class="nav-link-text" data-i18n="nav.users_managements">Chart</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
             @hasanyrole('superadmin')
             <li class="">
                 <a href="{{route('logs')}}" title="System Log" data-filter-tags="System Log">

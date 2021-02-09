@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0-0](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.0.0...v2.1.0-0) (2021-02-09)
+
+
+### Features
+
+* Add forgot password api endpoint ([f59397d](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/f59397d8f222bbe58ae96dfd4e9652f8abeecc8c))
+* Add forgot password method ([d8b3160](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/d8b3160edc11747c40df7d611fe35f4a88478a1f))
+
 ## 2.0.0 (2021-02-05)
 
 
