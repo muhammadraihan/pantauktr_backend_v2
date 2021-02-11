@@ -128,11 +128,15 @@ class AuthController extends Controller
     $credentials = $request->only('email', 'password');
     // Validation rules
     $rules = [
-      'email' => 'required|email',
+      'email' => 'bail|required|email',
       'password' => 'required',
     ];
-    // validation
-    $validator = Validator::make($credentials, $rules);
+
+    $messages = [
+      '*.required' => 'Tidak boleh kosong',
+      '*.email' => 'Format email salah,mohon gunakan alamat email',
+    ];
+    $validator = Validator::make($request->all(), $rules,$messages);
     if ($validator->fails()) {
       return response()->json([
         'success' => false,
@@ -166,8 +170,11 @@ class AuthController extends Controller
     // All good give 'em token
     return response()->json([
       'success' => true,
-      'access_token' => $token,
-      'expires_in' => JWTAuth::factory()->getTTL().' minutes',
+      'pelapor' => $pelapor,
+      'token' => [
+        'access_token' => $token,
+        'expires_in' => JWTAuth::factory()->getTTL(),
+      ]
     ],200);
   }
   
