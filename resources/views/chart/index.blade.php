@@ -41,57 +41,17 @@
 @section('js')
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script>
-// Highcharts.chart('chartPelanggaran', {
-//     chart: {
-//         type: 'area'
-//     },
-//     title: {
-//         text: 'Chart Pelanggaran'
-//     },
-//     xAxis: {
-//         categories: ['a', 'b', 'c'],
-//         tickmarkPlacement: 'on',
-//         title: {
-//             enabled: false
-//         }
-//     },
-//     yAxis: {
-//         title: {
-//             text: 'Jumlah Laporan'
-//         },
-//         labels: {
-//             formatter: function () {
-//                 return this.value ;
-//             }
-//         }
-//     },
-//     tooltip: {
-//         split: true,
-//         valueSuffix: ''
-//     },
-//     plotOptions: {
-//         area: {
-//             stacking: 'normal',
-//             lineColor: '#666666',
-//             lineWidth: 1,
-//             marker: {
-//                 lineWidth: 1,
-//                 lineColor: '#666666'
-//             }
-//         }
-//     },
-//     series: [{
-//         name: 'KTR',
-//         data: [3,10,2]
-//     },{
-//         name: 'TAPSBan',
-//         data: [5,5,9]
-//     },{
-//         name: 'POS',
-//         data: [1,2]
-//     }]
-// });
 
+var data = {!!json_encode($arrPelanggaran)!!}
+// console.log(data);
+var series = [];
+var values = [];
+for (const [key, value] of Object.entries(data)) {
+    series.push(key);
+    values.push(value);
+//   console.log(key, value);
+}
+console.log(series,values);
 Highcharts.chart('chartPelanggaran', {
     chart: {
         type: 'column'
@@ -100,7 +60,7 @@ Highcharts.chart('chartPelanggaran', {
         text: 'Chart Pelanggaran'
     },
     xAxis: {
-        categories: {!!json_encode($jenis_pelanggaran)!!},
+        categories: series,
         crosshair: true
     },
     yAxis: {
@@ -110,18 +70,21 @@ Highcharts.chart('chartPelanggaran', {
         }
     },
     series: [{
-        name: 'KTR',
-        data: {!!json_encode($data_ktr)!!}
-    },{
-        name: 'TAPSBan',
-        data: {!!json_encode($data_tapsban)!!}
-    },{
-        name: 'POS',
-        data: {!!json_encode($data_pos)!!}
+        name: series,
+        data: values
     }],
     
 });
 
+var data = {!!json_encode($arrApresiasi)!!}
+// console.log(data);
+var series = [];
+var values = [];
+for (const [key, value] of Object.entries(data)) {
+    series.push(key);
+    values.push(value);
+//   console.log(key, value);
+}
 Highcharts.chart('chartApresiasi', {
     chart: {
         type: 'column'
@@ -130,7 +93,7 @@ Highcharts.chart('chartApresiasi', {
         text: 'Chart Apresiasi'
     },
     xAxis: {
-        categories: {!!json_encode($jenis_apresiasi)!!},
+        categories: series,
         crosshair: true
     },
     yAxis: {
@@ -140,13 +103,10 @@ Highcharts.chart('chartApresiasi', {
         }
     },
     series: [{
-        name: 'Apresiasi',
-        data: {!!json_encode($data_apresiasi)!!}
-    },{
-        name: 'Masukan',
-        data: {!!json_encode($data_masukan)!!}
-    }
-    ]
+        name: series,
+        data: values
+    }]
 });
+
 </script>
 @endsection

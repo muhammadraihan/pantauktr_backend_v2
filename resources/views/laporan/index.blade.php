@@ -3,6 +3,7 @@
 @section('title', 'Laporan Management')
 
 @section('css')
+<link rel="stylesheet" media="screen, print" href="{{asset('css/formplugins/select2/select2.bundle.css')}}">
 <link rel="stylesheet" media="screen, print" href="{{asset('css/datagrid/datatables/datatables.bundle.css')}}">
 @endsection
 
@@ -28,7 +29,26 @@
                 </div>
             </div>
             <div class="panel-container show">
+            @hasanyrole('superadmin')
+                <div class="form-group col-md-5 mb-3">
+                    <label>Provinsi</label>
+                    <select name="province" class="select2 form-control">
+                        <option selected disabled>Choose a Province</option>
+                        @foreach($province as $provinsi)
+                            <option value="{{ $provinsi->province_code }}"> {{ $provinsi->province_name }} </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div id="kota" class="form-group col-md-5 mb-3" hidden>
+                    <label>Kota</label>
+                    <select name="kota" class="select-kota form-control">
+                        
+                    </select>
+                </div>
+            @endhasanyrole
                 <div class="panel-content">
+                <a href="{{route('cetak.laporan_pelanggaran')}}" class="btn btn-primary" target="_blank">CETAK PELANGGARAN PDF</a>
+                <a href="{{route('cetak.laporan_apresiasi')}}" class="btn btn-primary" target="_blank">CETAK APRESIASI PDF</a>
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
         <thead>
@@ -50,6 +70,7 @@
                 <th>Negara</th>
                 <th>Place ID</th>
                 <th>Created By</th>
+                <th>Created At</th>
                 </tr>
                         </thead>
                     </table>
@@ -90,8 +111,39 @@
 
 @section('js')
 <script src="{{asset('js/datagrid/datatables/datatables.bundle.js')}}"></script>
+<script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
 <script>
+   
+
     $(document).ready(function(){
+        $('.select2').select2();
+    $('.select-kota').select2();
+    // $('.select-kota').hide();
+
+    $('.select2').on('change',function (e){
+        var uuid = $(this).val();
+        // console.log(uuid);
+        $.ajax({
+            url: "{{route('get.kota')}}",
+            type: 'GET',
+            data: {param: uuid},
+            success: function (response) {
+                // console.log(response);
+                $('#kota').attr('hidden',false);
+                $.each(response, function(key,value){
+                    // console.log(value,key);
+                    $(".select-kota").append('<option value="'+ value.city_name +'">'+ value.city_name +'</option>');
+                    // $("#jadwal").append('<option value="'+ value.id +'">'+ value.kualifikasi.nama_kualifikasi +' '+ value.nomor_lomba.nomor_lomba +' , '+ 'Tanggal'+ ' '+ value.waktu_mulai +'</option>');
+                });
+               
+            }
+        });
+    });
+                $('.select-kota').on('change',function(e){
+                    var city_name = $(this).val();
+                   table.column(12).search('^'+city_name+'$',true,true,false).draw();
+                });
+
         $.ajaxSetup({
           headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -130,6 +182,7 @@
             {data: 'negara', name: 'negara'},
             {data: 'place_id', name: 'place_id'},
             {data: 'created_by', name: 'created_by'},
+            {data: 'created_at', name: 'created_at'},
         ]
     });
     // Delete Data

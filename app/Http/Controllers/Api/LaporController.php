@@ -49,7 +49,7 @@ class LaporController extends Controller
         $address = $response['address_components'];
 
         // $folder = public_path().'/lampiran'.'/'.$pelapor->uuid.'/';
-        $folder = public_path().'lampiran'.'/'.'8fb51d0e-4207-42cf-8f42-34e128eb6ab5'.'/';
+        $folder = public_path().'/lampiran'.'/'.'8fb51d0e-4207-42cf-8f42-34e128eb6ab5'.'/';
         if (!File::exists($folder)) {
         File::makeDirectory($folder, 0775, true, true);
         }
