@@ -140,7 +140,7 @@ class LaporController extends Controller
         // dd($pelapor->uuid);
         // select laporan based on user auth
         $list = Laporan::select('jenis_pelanggaran','jenis_laporan','keterangan','photo','nama_lokasi','created_at')
-        ->where('creates_by',$pelapor->uuid)->get();
+        ->where('created_by',$pelapor->uuid)->get();
         // dd($list,$pelapor->uuid);
         // form response
         for ($i=0; $i < count($list) ; $i++) {
@@ -166,7 +166,7 @@ class LaporController extends Controller
         // dd($pelapor->uuid);
         // $pelapor = 'ec5ddeb0-0b9c-433c-8e20-dc451f8ca714';
         $list = Laporan::select('jenis_pelanggaran','jenis_laporan','keterangan','photo','nama_lokasi','created_at')
-        ->where('creates_by',$pelapor->uuid)
+        ->where('created_by',$pelapor->uuid)
         ->where('uuid',$id)
         ->get();
         // dd($list);

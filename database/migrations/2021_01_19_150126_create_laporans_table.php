@@ -31,7 +31,7 @@ class CreateLaporansTable extends Migration
             $table->string('place_id')->nullable();
             $table->string('jenis_laporan')->nullable();
             $table->string('jenis_apresiasi')->nullable();
-            $table->string('creates_by')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }
