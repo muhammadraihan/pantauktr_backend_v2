@@ -10,6 +10,8 @@ use GuzzleHttp\Client;
 use Carbon\Carbon;
 
 use App\Models\Laporan;
+use App\Models\Pelapor;
+use App\Models\User;
 
 use Auth;
 use Config;
@@ -23,8 +25,19 @@ use Validator;
 
 class LaporController extends Controller
 {
+    public function __construct()
+    {
+      Config::set('jwt.user', Pelapor::class);
+      Config::set('auth.providers',[
+        'users' => [
+        'driver' => 'eloquent',
+        'model' => Pelapor::class,
+        ]]);
+    }
+
     public function lapor(Request $request)
     {
+        $pelapor = Helper::pelapor();
         $validator = Validator::make($request->all(), [
             'jenis_laporan' => 'required',
             'keterangan' => 'required',
@@ -48,8 +61,7 @@ class LaporController extends Controller
         $response = $geocoder->getAddressForCoordinates($lat,$lng);
         $address = $response['address_components'];
 
-        // $folder = public_path().'/lampiran'.'/'.$pelapor->uuid.'/';
-        $folder = public_path().'lampiran'.'/'.'8fb51d0e-4207-42cf-8f42-34e128eb6ab5'.'/';
+        $folder = public_path().'/lampiran'.'/'.$pelapor->uuid.'/';
         if (!File::exists($folder)) {
         File::makeDirectory($folder, 0775, true, true);
         }
@@ -95,8 +107,7 @@ class LaporController extends Controller
             }
         }
         $laporan->place_id = $request->place_id;
-        // $laporan->created_by = $pelapor->uuid;
-        $laporan->created_by = "8fb51d0e-4207-42cf-8f42-34e128eb6ab5";
+        $laporan->created_by = $pelapor->uuid;
         $laporan->save();
         } catch (Exception $e) {
         // catch error and rollback data saving if fails
@@ -126,14 +137,45 @@ class LaporController extends Controller
         );
         // get pelapor details based on auth token
         $pelapor = Helper::pelapor();
+        // dd($pelapor->uuid);
         // select laporan based on user auth
-        $list = Laporan::select('jenis_pelanggaran','keterangan','photo','nama_lokasi','created_at')
-        ->where('created_by',$pelapor->uuid)->get();
+        $list = Laporan::select('jenis_pelanggaran','jenis_laporan','keterangan','photo','nama_lokasi','created_at')
+        ->where('creates_by',$pelapor->uuid)->get();
+        // dd($list,$pelapor->uuid);
         // form response
         for ($i=0; $i < count($list) ; $i++) {
             $tanggal = Carbon::parse($list[$i]->created_at)->format('l\\, j F Y H:i:s');
             $response['data'][$i]= array();
-            $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->pelanggaran->nama_pelanggaran;
+            $response['data'][$i]['jenis_laporan'] = $list[$i]->JenisLaporan->name;
+            $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->pelanggaran->name;
+            $response['data'][$i]['nama_lokasi'] = $list[$i]->nama_lokasi;
+            $response['data'][$i]['tanggal'] = $tanggal;
+        }
+        // return response
+        return response()->json($response,200);
+    }
+
+    public function detailLaporan($id)
+    {
+        $response = array(
+            'success' => true,
+            'data' => array(),
+        );
+        // get pelapor details based on auth token
+        $pelapor = Helper::pelapor();
+        // dd($pelapor->uuid);
+        // $pelapor = 'ec5ddeb0-0b9c-433c-8e20-dc451f8ca714';
+        $list = Laporan::select('jenis_pelanggaran','jenis_laporan','keterangan','photo','nama_lokasi','created_at')
+        ->where('creates_by',$pelapor->uuid)
+        ->where('uuid',$id)
+        ->get();
+        // dd($list);
+
+        for ($i=0; $i < count($list) ; $i++) {
+            $tanggal = Carbon::parse($list[$i]->created_at)->format('l\\, j F Y H:i:s');
+            $response['data'][$i]= array();
+            $response['data'][$i]['jenis_laporan'] = $list[$i]->JenisLaporan->name;
+            $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->pelanggaran->name;
             $response['data'][$i]['keterangan'] = $list[$i]->keterangan;
             $response['data'][$i]['photo'] = url('/').'/lampiran'.'/'.$pelapor->uuid.'/'.$list[$i]->photo;
             $response['data'][$i]['nama_lokasi'] = $list[$i]->nama_lokasi;

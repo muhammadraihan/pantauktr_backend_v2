@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Traits\Uuid;
 
-class Pelapor extends Model
+class Pelapor extends Authenticatable implements JWTSubject
 {
     use HasFactory;
     use Uuid;
@@ -47,5 +49,18 @@ class Pelapor extends Model
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Data has been {$eventName}";
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }
