@@ -24,8 +24,8 @@ Route::group(['prefix' => 'v2'], function() {
     Route::post('pelapor/update-password','Api\AuthController@UpdateForgotPassword');
 });
 
-// Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
-Route::group(['prefix' => 'v2'], function(){
+Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
+// Route::group(['prefix' => 'v2'], function(){
     Route::get('checktoken','Api\AuthController@checkToken');
     Route::get('logout', 'Api\AuthController@logout');
     Route::get('/profil/pelapor', 'Api\AuthController@pelapor');
@@ -33,6 +33,7 @@ Route::group(['prefix' => 'v2'], function(){
     Route::get('jenis-pelanggaran','Api\ReferensiController@getJenisPelanggaran');
     Route::get('jenis-apresiasi','Api\ReferensiController@getJenisApresiasi');
     Route::post('lapor','Api\LaporController@lapor');
-    Route::get('laporan','Api\LaporanController@listLaporan');
+    Route::get('laporan','Api\LaporController@listLaporan');
+    Route::get('laporan/{id}','Api\LaporController@detailLaporan');
 
 });

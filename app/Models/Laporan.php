@@ -23,7 +23,7 @@ class Laporan extends Model
         return $this->belongsTo(Pelanggaran::class, 'jenis_pelanggaran', 'uuid');
     }
 
-    public function jlaporan(){
+    public function JenisLaporan(){
         return $this->belongsTo(Jenis_laporan::class, 'jenis_laporan', 'uuid');
     }
 
