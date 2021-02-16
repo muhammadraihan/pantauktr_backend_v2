@@ -3,21 +3,40 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Contracts\Auth\CanResetPassword;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+
 use App\Traits\Uuid;
 
-class Pelapor extends Authenticatable implements JWTSubject
+class Pelapor extends Authenticatable implements JWTSubject, CanResetPassword
 {
     use HasFactory;
+    use Notifiable;
     use Uuid;
+    use LogsActivity;
     
     protected $fillable = [
         'firstname', 'lastname', 'email', 'password', 'provider', 'avatar', 'reward_point', 'last_login_ip', 'last_login_at'
     ];
 
-    protected static $logAttributes = ['*'];
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'id',
+    ];
+
+    /**
+     * The attibutes for logging the event change
+     *
+     * @var array
+     */
+    protected static $logAttributes = ['firstname', 'lastname','name', 'email','password','avatar'];
 
     /**
      * Logging name
@@ -50,7 +69,10 @@ class Pelapor extends Authenticatable implements JWTSubject
     {
         return "Data has been {$eventName}";
     }
-
+    /**
+     * Get the identifier that will be stored in the subject claim of the JWT.
+     * @return mixed
+     */
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -63,4 +85,5 @@ class Pelapor extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
 }

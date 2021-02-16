@@ -35,6 +35,7 @@ _ide_*
 
 ### macOS ###
 # General
+.idea
 .DS_Store
 .AppleDouble
 .LSOverride

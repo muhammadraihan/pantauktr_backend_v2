@@ -17,6 +17,7 @@ class CreatePelanggaransTable extends Migration
             $table->id();
             $table->string('uuid')->unique();
             $table->string('name')->nullable();
+            $table->string('keterangan')->nullable();
             $table->string('created_by')->nullable();
             $table->string('edited_by')->nullable();
             $table->timestamps();

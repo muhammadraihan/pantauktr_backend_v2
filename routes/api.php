@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 Route::group(['prefix' => 'v2'], function() {
     Route::post('deploy', 'DeployController@DeployApps');
     Route::post('register','Api\AuthController@RegisterPelapor');
-    Route::post('login', 'Api\AuthController@Login');
+    Route::post('login', 'Api\AuthController@LoginPelapor');
     Route::get('login/{provider}', 'Api\AuthController@redirect');
     Route::post('login/{provider}/token','Api\AuthController@getToken');
     Route::get('refresh-token','Api\AuthController@RefreshToken');
