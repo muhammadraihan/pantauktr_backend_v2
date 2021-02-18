@@ -5,6 +5,7 @@
 @section('css')
 <link rel="stylesheet" media="screen, print" href="{{asset('css/formplugins/select2/select2.bundle.css')}}">
 <link rel="stylesheet" media="screen, print" href="{{asset('css/datagrid/datatables/datatables.bundle.css')}}">
+<link rel="stylesheet" media="screen, print" href="{{asset('css/formplugins/bootstrap-datepicker/bootstrap-datepicker.css')}}">
 @endsection
 
 @section('content')
@@ -29,180 +30,126 @@
                 </div>
             </div>
             <div class="panel-container show">
-            @hasanyrole('superadmin')
-                <div class="form-group col-md-5 mb-3">
-                    <label>Provinsi</label>
-                    <select name="province" class="select2 form-control">
-                        <option selected disabled>Choose a Province</option>
-                        @foreach($province as $provinsi)
-                            <option value="{{ $provinsi->province_code }}"> {{ $provinsi->province_name }} </option>
-                        @endforeach
-                    </select>
+            <div class="form-group col-md-5 mb-3">
+                    <label>Tahun</label>
+                    <input type="text" class="form-control js-bg-target" placeholder="Tahun"
+                            id="tahun" name="tahun">
                 </div>
-                <div id="kota" class="form-group col-md-5 mb-3" hidden>
-                    <label>Kota</label>
-                    <select name="kota" class="select-kota form-control">
-                        
-                    </select>
+                <div id="" class="form-group col-md-5 mb-3">
+                    <label>Bulan</label>
+                    <input type="text" class="form-control js-bg-target" placeholder="Bulan"
+                            id="bulan" name="bulan">
                 </div>
-            @endhasanyrole
                 <div class="panel-content">
                 <a href="{{route('cetak.laporan_pelanggaran')}}" class="btn btn-primary" target="_blank">CETAK PELANGGARAN PDF</a>
                 <a href="{{route('cetak.laporan_apresiasi')}}" class="btn btn-primary" target="_blank">CETAK APRESIASI PDF</a>
+                </div>
+                <div class="panel-content">
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Jenis Pelanggaran</th>
-                <th>Jenis Laporan</th>
-                <th>Jenis Apresiasi</th>
-                <th>Keterangan</th>
-                <th>Photo</th>
-                <th>Latitude</th>
-                <th>Longitude</th>
-                <th>Nama Lokasi</th>
-                <th>Alamat</th>
-                <th>Kelurahan</th>
-                <th>Kecamatan</th>
-                <th>Kota</th>
-                <th>Provinsi</th>
-                <th>Negara</th>
-                <th>Place ID</th>
-                <th>Created By</th>
-                <th>Created At</th>
-                </tr>
-                        </thead>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Jenis Pelanggaran</th>
+                                <th>Jenis Laporan</th>
+                                <th>Jenis Apresiasi</th>
+                                <th>Keterangan</th>
+                                <th>Photo</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                <th>Nama Lokasi</th>
+                                <th>Alamat</th>
+                                <th>Kelurahan</th>
+                                <th>Kecamatan</th>
+                                <th>Kota</th>
+                                <th>Provinsi</th>
+                                <th>Negara</th>
+                                <th>Place ID</th>
+                                <th>Created By</th>
+                                <th>Created At</th>
+                                </tr>
+                            </thead>
                     </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<form action="" method="POST" class="delete-form">
-    {{ csrf_field() }}
-    <!-- Delete modal center -->
-    <div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">
-                        Confirmation
-                        <small class="m-0 text-muted">
-                        </small>
-                    </h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true"><i class="fal fa-times"></i></span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    Are you sure want to delete data?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary remove-data-from-delete-form"
-                        data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Delete Data</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</form>
 @endsection
 
 @section('js')
 <script src="{{asset('js/datagrid/datatables/datatables.bundle.js')}}"></script>
 <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
+<script src="{{asset('js/formplugins/bootstrap-datepicker/bootstrap-datepicker.js')}}"></script>
 <script>
    
 
-    $(document).ready(function(){
-        $('.select2').select2();
-    $('.select-kota').select2();
-    // $('.select-kota').hide();
+   $(document).ready(function(){
+            var tahun = [];
+            $('#tahun').on('change',function (e){
+                var id = $(this).val();
+                tahun.push(id);
+            });
 
-    $('.select2').on('change',function (e){
-        var uuid = $(this).val();
-        // console.log(uuid);
-        $.ajax({
-            url: "{{route('get.kota')}}",
-            type: 'GET',
-            data: {param: uuid},
-            success: function (response) {
-                // console.log(response);
-                $('#kota').attr('hidden',false);
-                $.each(response, function(key,value){
-                    // console.log(value,key);
-                    $(".select-kota").append('<option value="'+ value.city_name +'">'+ value.city_name +'</option>');
-                    // $("#jadwal").append('<option value="'+ value.id +'">'+ value.kualifikasi.nama_kualifikasi +' '+ value.nomor_lomba.nomor_lomba +' , '+ 'Tanggal'+ ' '+ value.waktu_mulai +'</option>');
+            $('#tahun').datepicker({
+                orientation: "bottom left",
+                format: " yyyy", // Notice the Extra space at the beginning
+                viewMode: "years",
+                minViewMode: "years",
+                todayHighlight:'TRUE',
+                autoclose: true,
+            });
+
+            $('#bulan').datepicker({
+                orientation: "bottom left",
+                format: " mm", // Notice the Extra space at the beginning
+                viewMode: "months",
+                minViewMode: "months",
+                todayHighlight:'TRUE',
+                autoclose: true,
+            });
+
+            $('#bulan').on('change',function (e){
+                    var bulan = $(this).val();
+                    // console.log(value,key);     
+                    var table = $('#datatable').DataTable({
+                        "destroy": true,
+                        "processing": true,
+                        "serverSide": true,
+                        "responsive": true,
+                        "order": [[ 0, "asc" ]],
+                        "ajax":{
+                            url:'{{route('laporan.index')}}',
+                            type : "GET",
+                            data: {bulan: bulan,tahun: tahun[0]},
+                            dataType: 'json',
+                            error: function(data){
+                                console.log(data);
+                                }
+                        },
+                        "columns": [
+                        {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                        {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
+                        {data: 'jenis_laporan', name: 'jenis_laporan'},
+                        {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
+                        {data: 'keterangan', name: 'keterangan'},
+                        {data: 'photo', name: 'photo'},
+                        {data: 'lat', name: 'lat'},
+                        {data: 'lng', name: 'lng'},
+                        {data: 'nama_lokasi', name: 'nama_lokasi'},
+                        {data: 'alamat', name: 'alamat'},
+                        {data: 'kelurahan', name: 'kelurahan'},
+                        {data: 'kecamatan', name: 'kecamatan'},
+                        {data: 'kota', name: 'kota'},
+                        {data: 'propinsi', name: 'propinsi'},
+                        {data: 'negara', name: 'negara'},
+                        {data: 'place_id', name: 'place_id'},
+                        {data: 'created_by', name: 'created_by'},
+                        {data: 'created_at', name: 'created_at'},
+                    ]
                 });
-               
-            }
-        });
-    });
-                $('.select-kota').on('change',function(e){
-                    var city_name = $(this).val();
-                   table.column(12).search('^'+city_name+'$',true,true,false).draw();
-                });
-
-        $.ajaxSetup({
-          headers: {
-              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          }
-    });
-     
-     
-       var table = $('#datatable').DataTable({
-            "processing": true,
-            "serverSide": true,
-            "responsive": true,
-            "order": [[ 0, "asc" ]],
-            "ajax":{
-                url:'{{route('laporan.index')}}',
-                type : "GET",
-                dataType: 'json',
-                error: function(data){
-                    console.log(data);
-                    }
-            },
-            "columns": [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
-            {data: 'jenis_laporan', name: 'jenis_laporan'},
-            {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
-            {data: 'keterangan', name: 'keterangan'},
-            {data: 'photo', name: 'photo'},
-            {data: 'lat', name: 'lat'},
-            {data: 'lng', name: 'lng'},
-            {data: 'nama_lokasi', name: 'nama_lokasi'},
-            {data: 'alamat', name: 'alamat'},
-            {data: 'kelurahan', name: 'kelurahan'},
-            {data: 'kecamatan', name: 'kecamatan'},
-            {data: 'kota', name: 'kota'},
-            {data: 'propinsi', name: 'propinsi'},
-            {data: 'negara', name: 'negara'},
-            {data: 'place_id', name: 'place_id'},
-            {data: 'created_by', name: 'created_by'},
-            {data: 'created_at', name: 'created_at'},
-        ]
-    });
-    // Delete Data
-    $('#datatable').on('click', '.delete-btn[data-url]', function (e) {
-            e.preventDefault();
-            var id = $(this).attr('data-id');
-            var url = $(this).attr('data-url');
-            var token = $(this).attr('data-token');
-            console.log(id,url,token);
-            
-            $(".delete-form").attr("action",url);
-            $('body').find('.delete-form').append('<input name="_token" type="hidden" value="'+ token +'">');
-            $('body').find('.delete-form').append('<input name="_method" type="hidden" value="DELETE">');
-            $('body').find('.delete-form').append('<input name="id" type="hidden" value="'+ id +'">');
-        });
-
-        // Clear Data When Modal Close
-        $('.remove-data-from-delete-form').on('click',function() {
-            $('body').find('.delete-form').find("input").remove();
-        });
+                e.preventDefault();
+            });
     });
 </script>
 @endsection

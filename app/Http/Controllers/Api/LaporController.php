@@ -48,8 +48,7 @@ class LaporController extends Controller
         $response = $geocoder->getAddressForCoordinates($lat,$lng);
         $address = $response['address_components'];
 
-        // $folder = public_path().'/lampiran'.'/'.$pelapor->uuid.'/';
-        $folder = public_path().'/lampiran'.'/'.'8fb51d0e-4207-42cf-8f42-34e128eb6ab5'.'/';
+        $folder = public_path().'/lampiran'.'/'.$pelapor->uuid.'/';
         if (!File::exists($folder)) {
         File::makeDirectory($folder, 0775, true, true);
         }
@@ -95,8 +94,7 @@ class LaporController extends Controller
             }
         }
         $laporan->place_id = $request->place_id;
-        // $laporan->created_by = $pelapor->uuid;
-        $laporan->created_by = "8fb51d0e-4207-42cf-8f42-34e128eb6ab5";
+        $laporan->created_by = $pelapor->uuid;
         $laporan->save();
         } catch (Exception $e) {
         // catch error and rollback data saving if fails

@@ -39,9 +39,9 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function() {
     Route::resource('laporan', 'LaporanController');
     Route::resource('operator', 'OperatorController');
     Route::get('chart', 'ChartController@index')->name('chart.index');
-    Route::post('chart', 'ChartController@store')->name('chart.store');
-    
-    Route::get('kotas', 'LaporanController@kota')->name('get.kota');
+    Route::post('chart', 'ChartController@store')->name('chart.store');    
+    Route::get('bulans', 'LaporanController@bulans')->name('get.bulans');
+    Route::get('bulan', 'ChartController@bulan')->name('get.bulan');
     Route::get('cetak-pdf-pelanggaran', 'LaporanController@cetakpelanggaran')->name('cetak.laporan_pelanggaran');
     Route::get('cetak-pdf-apresiasi', 'LaporanController@cetakapresiasi')->name('cetak.laporan_apresiasi');
 

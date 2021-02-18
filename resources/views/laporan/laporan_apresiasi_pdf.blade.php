@@ -25,6 +25,9 @@
 				<th>Nama Lokasi</th>
 				<th>Alamat</th>
                 <th>Kota</th>
+				<th>Provinsi</th>
+				<th>Negara</th>
+				<th>Place ID</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -38,6 +41,9 @@
 				<td>{{$p->nama_lokasi}}</td>
 				<td>{{$p->alamat}}</td>
                 <td>{{$p->kota}}</td>
+				<td>{{$p->propinsi}}</td>
+				<td>{{$p->negara}}</td>
+				<td>{{$p->place_id}}</td>
 			</tr>
 			@endforeach
 		</tbody>

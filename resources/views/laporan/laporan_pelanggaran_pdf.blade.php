@@ -18,13 +18,16 @@
 	<table class='table table-bordered'>
 		<thead>
 			<tr>
-				<th>No</th>
+				<th style="vertical-align:middle;text-align:center;">No</th>
 				<th>Jenis Laporan</th>
 				<th>Jenis Pelanggaran</th>
 				<th>Keterangan</th>
 				<th>Nama Lokasi</th>
-				<th>Alamat</th>
+				<th style="vertical-align:middle;text-align:center;">Alamat</th>
 				<th style="vertical-align:middle;text-align:center;">Kota</th>
+				<th style="vertical-align:middle;text-align:center;">Provinsi</th>
+				<th style="vertical-align:middle;text-align:center;">Negara</th>
+				<th style="vertical-align:middle;text-align:center;">Place ID</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -38,6 +41,9 @@
 				<td>{{$p->nama_lokasi}}</td>
 				<td>{{$p->alamat}}</td>
 				<td>{{$p->kota}}</td>
+				<td>{{$p->propinsi}}</td>
+				<td>{{$p->negara}}</td>
+				<td>{{$p->place_id}}</td>
 			</tr>
 			@endforeach
 		</tbody>
