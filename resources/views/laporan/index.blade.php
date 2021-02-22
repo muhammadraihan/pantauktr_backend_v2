@@ -33,12 +33,12 @@
             <div class="form-group col-md-5 mb-3">
                     <label>Tahun</label>
                     <input type="text" class="form-control js-bg-target" placeholder="Tahun"
-                            id="tahun" name="tahun">
+                            id="tahun" name="tahun" autocomplete="off">
                 </div>
                 <div id="" class="form-group col-md-5 mb-3">
                     <label>Bulan</label>
                     <input type="text" class="form-control js-bg-target" placeholder="Bulan"
-                            id="bulan" name="bulan">
+                            id="bulan" name="bulan" autocomplete="off">
                 </div>
                 <div class="panel-content">
                 <a href="{{route('cetak.laporan_pelanggaran')}}" class="btn btn-primary" target="_blank">CETAK PELANGGARAN PDF</a>

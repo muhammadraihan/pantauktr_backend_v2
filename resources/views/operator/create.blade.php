@@ -30,14 +30,14 @@
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('name','Full Name',['class' => 'required form-label'])}}
-                        {{ Form::text('name',null,['placeholder' => 'Full Name','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required'])}}
+                        {{ Form::text('name',null,['placeholder' => 'Full Name','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                         @if ($errors->has('name'))
                         <div class="invalid-feedback">{{ $errors->first('name') }}</div>
                         @endif
                     </div>
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('email','Email Address',['class' => 'required form-label'])}}
-                        {{ Form::text('email',null,['placeholder' => 'Email Address','class' => 'form-control '.($errors->has('email') ? 'is-invalid':''),'required'])}}
+                        {{ Form::text('email',null,['placeholder' => 'Email Address','class' => 'form-control '.($errors->has('email') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                         @if ($errors->has('email'))
                         <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                         @endif
@@ -45,7 +45,7 @@
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('password','Password',['class' => 'required form-label'])}}
                         <div id="password" class="input-group">
-                            {{ Form::text('password',null,['placeholder' => 'Password','class' => 'form-control '.($errors->has('password') ? 'is-invalid':''),'required'])}}
+                            {{ Form::text('password',null,['placeholder' => 'Password','class' => 'form-control '.($errors->has('password') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                             <div class="input-group-append">
                                 <button id="getNewPass" type="button"
                                     class="btn btn-primary waves-effect waves-themed getNewPass">Generate</button>

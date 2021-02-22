@@ -108,7 +108,6 @@ class ChartController extends Controller
             $jenis_pelanggaran[] = $lp->name;
             $data_pelanggaran[] = $laporan_pelanggaran;
         }
-        // dd($arrPelanggaran);
 
         foreach($laporan_apresiasi as $ls){
             $jenis_apresiasi[] = $ls->name;
@@ -120,7 +119,6 @@ class ChartController extends Controller
     }
 
     public function bulan(Request $request, User $uuid){
-        // dd($request->all());
         $users = Auth::user($uuid);
         if ($request->user()->hasRole('operator'))
         {
@@ -187,13 +185,11 @@ class ChartController extends Controller
                 $jenis_pelanggaran[] = $lp->name;
                 $data_pelanggaran[] = $laporan_pelanggaran;
             }
-            // dd($arrPelanggaran);
 
             foreach($laporan_apresiasi as $ls){
                 $jenis_apresiasi[] = $ls->name;
                 $data_apresiasi[] = $laporan_apresiasi;
             }
-        // dd($arrPelanggaran);
         return response()->json([$arrPelanggaran, $arrApresiasi]);
     }
 }

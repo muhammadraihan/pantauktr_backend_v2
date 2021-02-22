@@ -33,12 +33,12 @@
                 <div class="form-group col-md-5 mb-3">
                     <label>Tahun</label>
                     <input type="text" class="form-control js-bg-target" placeholder="Tahun"
-                            id="tahun" name="tahun">
+                            id="tahun" name="tahun" autocomplete="off">
                 </div>
                 <div id="" class="form-group col-md-5 mb-3">
                     <label>Bulan</label>
                     <input type="text" class="form-control js-bg-target" placeholder="Bulan"
-                            id="bulan" name="bulan">
+                            id="bulan" name="bulan" autocomplete="off">
                 </div>
                 <div class="panel-content">
                     <div id="chartPelanggaran"></div>
@@ -60,7 +60,7 @@
 
         $('#tahun').datepicker({
             orientation: "bottom left",
-            format: " yyyy", // Notice the Extra space at the beginning
+            format: " yyyy", 
             viewMode: "years",
             minViewMode: "years",
             todayHighlight:'TRUE',
@@ -69,7 +69,7 @@
 
         $('#bulan').datepicker({
             orientation: "bottom left",
-            format: " mm", // Notice the Extra space at the beginning
+            format: " mm", 
             viewMode: "months",
             minViewMode: "months",
             todayHighlight:'TRUE',
@@ -78,7 +78,6 @@
 
         $('#bulan').on('change',function (e){
             var tahun = $('#tahun').val();
-                // console.log(tahun);
             var bulan = $(this).val();
             var formatbulan = moment(bulan, 'MM').format('MMMM');
 
@@ -87,14 +86,12 @@
             type: 'GET',
             data: {bulan: bulan, tahun: tahun},
             success: function (response) {
-                // console.log(response);
                 var series = [];
                 var values = [];
                 $.each(response[0], function(key,value){
                     series.push(key);
                     values.push(value);
                 });
-                // console.log(series,values);
                 Highcharts.chart('chartPelanggaran', {
                     chart: {
                         type: 'column'
