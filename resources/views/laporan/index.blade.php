@@ -85,11 +85,6 @@
    
 
    $(document).ready(function(){
-            var tahun = [];
-            $('#tahun').on('change',function (e){
-                var id = $(this).val();
-                tahun.push(id);
-            });
 
             $('#tahun').datepicker({
                 orientation: "bottom left",
@@ -110,8 +105,9 @@
             });
 
             $('#bulan').on('change',function (e){
+                var tahun = $('#tahun').val();
+                console.log(tahun);
                     var bulan = $(this).val();
-                    // console.log(value,key);     
                     var table = $('#datatable').DataTable({
                         "destroy": true,
                         "processing": true,
@@ -119,9 +115,10 @@
                         "responsive": true,
                         "order": [[ 0, "asc" ]],
                         "ajax":{
+                            cache:false,
                             url:'{{route('laporan.index')}}',
                             type : "GET",
-                            data: {bulan: bulan,tahun: tahun[0]},
+                            data: {bulan: bulan,tahun: tahun},
                             dataType: 'json',
                             error: function(data){
                                 console.log(data);

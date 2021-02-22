@@ -67,13 +67,6 @@
             autoclose: true,
         });
 
-        var tahun = [];
-
-        $('#tahun').on('change',function (e){
-            var id = $(this).val();
-            tahun.push(id);
-        });
-
         $('#bulan').datepicker({
             orientation: "bottom left",
             format: " mm", // Notice the Extra space at the beginning
@@ -84,13 +77,15 @@
         });
 
         $('#bulan').on('change',function (e){
+            var tahun = $('#tahun').val();
+                // console.log(tahun);
             var bulan = $(this).val();
             var formatbulan = moment(bulan, 'MM').format('MMMM');
 
         $.ajax({
             url: "{{route('get.bulan')}}",
             type: 'GET',
-            data: {bulan: bulan, tahun: tahun[0]},
+            data: {bulan: bulan, tahun: tahun},
             success: function (response) {
                 // console.log(response);
                 var series = [];

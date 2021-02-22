@@ -49,8 +49,8 @@ class LaporanController extends Controller
             $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
             'id','uuid','jenis_pelanggaran', 'jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
             ->where('kota', 'like', $users->city->city_name)
-            ->whereYear('created_at', $request['tahun'])
-            ->whereMonth('created_at', $request['bulan'])
+            ->whereYear('created_at', (int)$request['tahun'])
+            ->whereMonth('created_at', (int)$request['bulan'])
             ->get();
           }else{
             $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
