@@ -38,6 +38,7 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function() {
     Route::resource('province', 'ProvinceController');
     Route::resource('laporan', 'LaporanController');
     Route::resource('operator', 'OperatorController');
+    Route::resource('external_link', 'ExternalController');
     Route::get('chart', 'ChartController@index')->name('chart.index');
     Route::post('chart', 'ChartController@store')->name('chart.store');    
     Route::get('bulans', 'LaporanController@bulans')->name('get.bulans');
