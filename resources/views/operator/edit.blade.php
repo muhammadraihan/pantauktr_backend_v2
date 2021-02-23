@@ -30,7 +30,7 @@
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('email','Email Address',['class' => 'required form-label'])}}
-                        {{ Form::text('email',$user->email,['placeholder' => 'Email Address','class' => 'form-control '.($errors->has('email') ? 'is-invalid':''),'required'])}}
+                        {{ Form::text('email',$user->email,['placeholder' => 'Email Address','class' => 'form-control '.($errors->has('email') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                         @if ($errors->has('email'))
                         <div class="invalid-feedback">{{ $errors->first('email') }}</div>
                         @endif
@@ -38,7 +38,7 @@
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('password','Password',['class' => 'required form-label'])}}
                         <div id="password" class="input-group">
-                            {{ Form::text('password',null,['id' => 'passwordForm','placeholder' => '********','class' => 'form-control '.($errors->has('password') ? 'is-invalid':''),'required','disabled' => 'disabled'])}}
+                            {{ Form::text('password',null,['id' => 'passwordForm','placeholder' => '********','class' => 'form-control '.($errors->has('password') ? 'is-invalid':''),'required','disabled' => 'disabled', 'autocomplete' => 'off'])}}
                             <div class="input-group-append">
                                 <button id="getNewPass" type="button"
                                     class="btn btn-primary waves-effect waves-themed getNewPass" disabled="disabled">Generate</button>
