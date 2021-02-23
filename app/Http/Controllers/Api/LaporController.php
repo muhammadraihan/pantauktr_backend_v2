@@ -137,11 +137,9 @@ class LaporController extends Controller
         );
         // get pelapor details based on auth token
         $pelapor = Helper::pelapor();
-        // dd($pelapor->uuid);
         // select laporan based on user auth
         $list = Laporan::select('jenis_pelanggaran','jenis_laporan','keterangan','photo','nama_lokasi','created_at')
         ->where('created_by',$pelapor->uuid)->get();
-        // dd($list,$pelapor->uuid);
         // form response
         for ($i=0; $i < count($list) ; $i++) {
             $tanggal = Carbon::parse($list[$i]->created_at)->format('l\\, j F Y H:i:s');
@@ -163,13 +161,10 @@ class LaporController extends Controller
         );
         // get pelapor details based on auth token
         $pelapor = Helper::pelapor();
-        // dd($pelapor->uuid);
-        // $pelapor = 'ec5ddeb0-0b9c-433c-8e20-dc451f8ca714';
         $list = Laporan::select('jenis_pelanggaran','jenis_laporan','keterangan','photo','nama_lokasi','created_at')
         ->where('created_by',$pelapor->uuid)
         ->where('uuid',$id)
         ->get();
-        // dd($list);
 
         for ($i=0; $i < count($list) ; $i++) {
             $tanggal = Carbon::parse($list[$i]->created_at)->format('l\\, j F Y H:i:s');

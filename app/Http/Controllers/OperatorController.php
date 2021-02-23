@@ -33,7 +33,6 @@ class OperatorController extends Controller
     public function index(Request $request, User $uuid)
     {
         $users = Auth::user($uuid);
-        // dd($users);
         if (request()->ajax()) {
           DB::statement(DB::raw('set @rownum=0'));
           if ($request->user()->hasRole('operator')){
@@ -43,7 +42,7 @@ class OperatorController extends Controller
             $userss = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
             'id','uuid','email','last_login_at','last_login_ip', 'city_id', 'operator_id'])->get();
           }
-          // dd($users);
+          
           return DataTables::of($userss)
           ->addColumn('role',function($user){
             foreach ($user->roles as $role) {
@@ -51,7 +50,7 @@ class OperatorController extends Controller
             }
           })
           ->editColumn('city_id',function($row){
-            // dd($row);
+            
             return $row->city->city_name ?? null;
           })
           ->editColumn('operator_id',function($row){
@@ -77,7 +76,6 @@ class OperatorController extends Controller
           ->removeColumn('uuid')
           ->make();
           }
-        //   return Auth::user();
           return view('operator.index', compact('users'));
     }
 

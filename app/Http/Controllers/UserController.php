@@ -37,7 +37,6 @@ class UserController extends Controller
           $users = User::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
           'id','uuid','name','email','last_login_at','last_login_ip'])->get();
 
-          // dd($users);
           return DataTables::of($users)
           ->addColumn('role',function($user){
             foreach ($user->roles as $role) {
