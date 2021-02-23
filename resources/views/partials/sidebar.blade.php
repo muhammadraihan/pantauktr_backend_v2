@@ -198,6 +198,22 @@
                 </ul>
             </li>
             @endhasanyrole
+
+            <li class="">
+                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                    <i class="fal fa-cog"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">External Link</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{route('external_link.index')}}" title="External Link Management"
+                            data-filter-tags="external link managements">
+                            <span class="nav-link-text" data-i18n="nav.operators_managements">External Link</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             <li class="">
                 <a href="#" title="Theme Settings" data-filter-tags="theme settings">
                     <i class="fal fa-cog"></i>
@@ -212,6 +228,7 @@
                     </li>
                 </ul>
             </li>
+
             <li class="">
                 <a href="#" title="Theme Settings" data-filter-tags="theme settings">
                     <i class="fal fa-cog"></i>

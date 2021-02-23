@@ -16,7 +16,7 @@ class Laporan extends Model
     ];
 
     public function userCreate(){
-        return $this->belongsTo(Pelapor::class, 'created_by','uuid');
+        return $this->belongsTo(User::class, 'created_by','uuid');
     }
 
     public function pelanggaran(){

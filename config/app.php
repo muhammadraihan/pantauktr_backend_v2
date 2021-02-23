@@ -165,11 +165,11 @@ return [
         /*
          * Package Service Providers...
          */
-        Intervention\Image\ImageServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
-        Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yoeunes\Toastr\ToastrServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -215,8 +215,6 @@ return [
         'Hash' => Illuminate\Support\Facades\Hash::class,
         'Helper' => App\Helper\Helper::class,
         'Image' => Intervention\Image\Facades\Image::class,
-        'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class, 
-        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
@@ -236,6 +234,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Geocoder' => Spatie\Geocoder\Facades\Geocoder::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
 
     ],
 
