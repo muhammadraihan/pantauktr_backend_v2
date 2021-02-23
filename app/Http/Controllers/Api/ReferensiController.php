@@ -12,7 +12,6 @@ class ReferensiController extends Controller
 {
     public function getJenisLaporan(Request $request)
     {
-        // dd($request->header('Authorization'));
         $jenisLaporan = Jenis_laporan::select('id','uuid','name')->get();
         return response()->json([
             'success' => true,

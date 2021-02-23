@@ -25,7 +25,6 @@ Route::group(['prefix' => 'v2'], function() {
 });
 
 Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
-// Route::group(['prefix' => 'v2'], function(){
     Route::get('checktoken','Api\AuthController@checkToken');
     Route::get('logout', 'Api\AuthController@logout');
     Route::get('/profil/pelapor', 'Api\AuthController@pelapor');
@@ -35,5 +34,6 @@ Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
     Route::post('lapor','Api\LaporController@lapor');
     Route::get('laporan','Api\LaporController@listLaporan');
     Route::get('laporan/{id}','Api\LaporController@detailLaporan');
-
+    Route::get('blog-list','Api\ExternalLinkController@listLink');
+    Route::get('blog-list/{id}','Api\ExternalLinkController@getOneBlog');
 });

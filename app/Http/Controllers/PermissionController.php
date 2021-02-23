@@ -74,7 +74,6 @@ class PermissionController extends Controller
             ]);
             // get checkbox value
             $crud = $request->input('action');
-            // dd($crud);
             if ($crud != null) {
                 foreach ($crud as $action) {
                     // combine resource name with crud action item name
