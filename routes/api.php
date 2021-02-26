@@ -24,7 +24,8 @@ Route::group(['prefix' => 'v2'], function() {
     Route::post('pelapor/update-password','Api\AuthController@UpdateForgotPassword');
 });
 
-Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
+// Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
+Route::group(['prefix' => 'v2'], function() {
     Route::get('checktoken','Api\AuthController@checkToken');
     Route::get('logout', 'Api\AuthController@logout');
     Route::get('/profil/pelapor', 'Api\AuthController@pelapor');
@@ -36,4 +37,5 @@ Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function() {
     Route::get('laporan/{id}','Api\LaporController@detailLaporan');
     Route::get('blog-list','Api\ExternalLinkController@listLink');
     Route::get('blog-list/{id}','Api\ExternalLinkController@getOneBlog');
+    Route::get('notif','Api\PushNotificationController@notification');
 });
