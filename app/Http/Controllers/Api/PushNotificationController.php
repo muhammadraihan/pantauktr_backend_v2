@@ -23,19 +23,23 @@ class PushNotificationController extends Controller
         $res = Helper::notify($notification_id, $title, $message, $id,$type);
         
         // return $res;
-        if($res == 1){
+        return response()->json([
+                    'success' => true,
+                    'messages' => $res,
+                    ],200);
+        // if($res == 1){
         
-            // success code
-            return response()->json([
-                'success' => true,
-                'messages' => 'Notif terkirim',
-                ],200);
-        }else{
+        //     // success code
+        //     return response()->json([
+        //         'success' => true,
+        //         'messages' => 'Notif terkirim',
+        //         ],200);
+        // }else{
         
-            return response()->json([
-                'success' => true,
-                'messages' => 'Notif gagal',
-                ],400);
-        }
+        //     return response()->json([
+        //         'success' => true,
+        //         'messages' => 'Notif gagal',
+        //         ],400);
+        // }
     }
 }
