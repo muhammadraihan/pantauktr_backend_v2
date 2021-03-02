@@ -67,6 +67,7 @@
                                 <th>Place ID</th>
                                 <th>Created By</th>
                                 <th>Created At</th>
+                                <th>Tindak lanjut</th>
                                 </tr>
                             </thead>
                     </table>
@@ -143,6 +144,7 @@
                         {data: 'place_id', name: 'place_id'},
                         {data: 'created_by', name: 'created_by'},
                         {data: 'created_at', name: 'created_at'},
+                        {data: 'action',width:'10%',searchable:false}    
                     ]
                 });
                 e.preventDefault();

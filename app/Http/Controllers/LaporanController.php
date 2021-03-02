@@ -9,6 +9,8 @@ use App\Models\Pelanggaran;
 use App\Models\Province;
 use App\Models\Jenis_apresiasi;
 use App\Models\Jenis_laporan;
+use App\Models\TindakLanjut;
+use App\Models\Operator_type;
 use App\Models\User;
 use App\Models\Kota;
 use Carbon\Carbon;
@@ -72,7 +74,7 @@ class LaporanController extends Controller
                         return $row->japresiasi->name ?? null;
                     })
                     ->editColumn('jenis_laporan',function($row){
-                        return $row->jlaporan->name;
+                        return $row->jenislaporan->name ;
                     })
                     ->editColumn('photo', function($row){
                         $url = asset('publiclampiran');
@@ -81,9 +83,13 @@ class LaporanController extends Controller
                     ->editColumn('created_at',function($row){
                         return Carbon::parse($row->created_at)->format('l\\, j F Y H:i:s');
                     })
+                    ->addColumn('action', function($row){
+                        return '
+                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="'.route('tindaklanjut.index',$row->uuid).'"><i class="fal fa-edit"></i></a>';
+                 })
             ->removeColumn('id')
             ->removeColumn('uuid')
-            ->rawColumns(['photo'])
+            ->rawColumns(['photo','action'])
             ->make(true);
         }
 
@@ -160,6 +166,38 @@ class LaporanController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function tindaklanjut($id)
+    {
+        $idlaporan = Laporan::uuid($id);
+        // dd($idlaporan);
+        return view('laporan.tindak_lanjut',compact('idlaporan'));
+    }
+
+    public function storetindaklanjut(Request $request)
+    {
+        $rules = [
+            'keterangan' => 'required|min:2',
+            'status' => 'required'
+        ];
+
+        $messages = [
+            '*.required' => 'Field tidak boleh kosong !',
+        ];
+
+        $this->validate($request, $rules, $messages);
+          // Saving data
+          $tindaklanjut = new TindakLanjut();
+          $tindaklanjut->laporan_id = $request->laporan_id;
+          $tindaklanjut->keterangan = $request->keterangan;
+          $tindaklanjut->status = $request->status;
+          $tindaklanjut->updated_by = Auth::user()->uuid;
+    
+          $tindaklanjut->save();
+    
+          toastr()->success('Tindak Lanjut Updated','Success');
+          return redirect()->route('laporan.index');
+    }
+
     public function create()
     {
         //
@@ -195,7 +233,7 @@ class LaporanController extends Controller
      */
     public function edit($id)
     {
-        //
+        
     }
 
     /**
@@ -207,7 +245,7 @@ class LaporanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+       
     }
 
     /**
