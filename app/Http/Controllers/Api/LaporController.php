@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use App\Models\Laporan;
 use App\Models\Pelapor;
 use App\Models\User;
+use App\Models\TindakLanjut;
 
 use Auth;
 use Config;
@@ -108,6 +109,7 @@ class LaporController extends Controller
         }
         $laporan->place_id = $request->place_id;
         $laporan->created_by = $pelapor->uuid;
+        $laporan->status = 0;
         $laporan->save();
         } catch (Exception $e) {
         // catch error and rollback data saving if fails
