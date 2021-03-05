@@ -58,7 +58,12 @@
 
 @section('js')
 <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
+
 <script>
+
+    
+
+
     $(document).ready(function(){
         $('.select2').select2();
         

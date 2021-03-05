@@ -46,6 +46,7 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function() {
     Route::get('cetak-pdf-pelanggaran', 'LaporanController@cetakpelanggaran')->name('cetak.laporan_pelanggaran');
     Route::get('cetak-pdf-apresiasi', 'LaporanController@cetakapresiasi')->name('cetak.laporan_apresiasi');
     Route::get('tindak_lanjut/{id}', 'LaporanController@tindaklanjut')->name('tindaklanjut.index');
+    Route::get('tindak_lanjut_notification', 'LaporanController@sendNotifToAndroid')->name('tindaklanjut.notif');
     Route::post('tindak_lanjut', 'LaporanController@storetindaklanjut')->name('tindaklanjut.store');
 
 
