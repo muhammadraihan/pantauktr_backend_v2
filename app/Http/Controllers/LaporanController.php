@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 use App\Models\Laporan;
 use App\Models\Pelapor;
 use App\Models\Pelanggaran;
@@ -13,6 +14,8 @@ use App\Models\TindakLanjut;
 use App\Models\Operator_type;
 use App\Models\User;
 use App\Models\Kota;
+use App\Libraries\Firebase;
+use App\Libraries\Push;
 use Carbon\Carbon;
 
 use Auth;
@@ -24,6 +27,8 @@ use Image;
 use Response;
 use URL;
 use PDF;
+use Helper;
+
 
 class LaporanController extends Controller
 {
@@ -185,17 +190,65 @@ class LaporanController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
+        $laporan = Laporan::uuid($request->laporan_id);
+        $laporan->status = $request->status;
+        $laporan->save();
           // Saving data
-          $tindaklanjut = new TindakLanjut();
-          $tindaklanjut->laporan_id = $request->laporan_id;
-          $tindaklanjut->keterangan = $request->keterangan;
-          $tindaklanjut->status = $request->status;
-          $tindaklanjut->updated_by = Auth::user()->uuid;
+        $tindaklanjut = new TindakLanjut();
+        $tindaklanjut->laporan_id = $request->laporan_id;
+        $tindaklanjut->keterangan = $request->keterangan;
+        $tindaklanjut->status = $request->status;
+        $tindaklanjut->updated_by = Auth::user()->uuid;
     
-          $tindaklanjut->save();
-    
-          toastr()->success('Tindak Lanjut Updated','Success');
-          return redirect()->route('laporan.index');
+        $tindaklanjut->save();
+        $this->sendNotifToAndroid($tindaklanjut);
+
+        toastr()->success('Tindak Lanjut Updated','Success');
+        return redirect()->route('laporan.index');
+    }
+
+    public function sendNotifToAndroid($messages)
+    {
+        //token from env
+        $token = "AAAA7vtgV4o:APA91bGc7FLESkwOnW1Mne4tcyZwENKSyQoirOny555Np4TU-F8wpr99KGughY2UNV-INUyspE-g2M9iRwZ1g-82m6oCLEpbU5fEtW80IuqpFIH2W11oLWDjt3fnZP_Xyyt5f6vCW8jS";  
+        //token from device
+        // $token = Laporan::uuid($messages->laporan_id)->pluck('token_device');
+        $from = "d0IckHe9o1l3aPayOh553P:APA91bGyzUPnsqCjQ6xDTBW_ZUG1TQ-JL3wu053nmgWlT3le1vEen_s6Ty8R9kiUd2M2Vr8RwNLgCAcu3G8-xbrVG5VxQoMosxPdAogSaIPZ7k0xX-fnDgjTrnIsFJcnKIf5_qJ5TGWR";
+        
+        $msg = collect(array
+              (
+                'body'  => $messages->status,
+                'title' => "Status Laporan",
+                'receiver' => 'erw',
+                'icon'  => "https://image.flaticon.com/icons/png/512/270/270014.png",/*Default Icon*/
+                'sound' => 'mySound'/*Default sound*/
+              ))->toJson();
+
+        $fields = (object)array
+                (
+                    
+                    'to'        => $from,
+                    'notification'  => array(
+                        "data" => $msg,
+                    )
+                );
+
+        $headers = array
+                (
+                    'Authorization: key=' . $token,
+                    'Content-Type: application/json'
+                );
+        //#Send Reponse To FireBase Server 
+        $ch = curl_init();
+        curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
+        curl_setopt( $ch,CURLOPT_POST, true );
+        curl_setopt( $ch,CURLOPT_HTTPHEADER, $headers );
+        curl_setopt( $ch,CURLOPT_RETURNTRANSFER, true );
+        curl_setopt( $ch,CURLOPT_SSL_VERIFYPEER, false );
+        curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
+        $result = curl_exec($ch );
+        return $result;
+        curl_close( $ch );
     }
 
     public function create()

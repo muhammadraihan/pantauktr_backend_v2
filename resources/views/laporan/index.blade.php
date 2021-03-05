@@ -82,8 +82,58 @@
 <script src="{{asset('js/datagrid/datatables/datatables.bundle.js')}}"></script>
 <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
 <script src="{{asset('js/formplugins/bootstrap-datepicker/bootstrap-datepicker.js')}}"></script>
+
+<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script>
 <script>
-   
+   // Your web app's Firebase configuration
+   var firebaseConfig = {
+
+        apiKey: "AIzaSyC50URuPt2twB2PPnVL9EnNfmTutnfzRz8",
+        authDomain: "beaming-inn-300511.firebaseapp.com",
+        projectId: "beaming-inn-300511",
+        storageBucket: "beaming-inn-300511.appspot.com",
+        messagingSenderId: "1026419611530",
+        appId: "1:1026419611530:web:0d434f6cc08fae077f9a73",
+        measurementId: "G-4S57JLB9YP"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    //firebase.analytics();
+    const messaging = firebase.messaging();
+    messaging
+    .requestPermission()
+    .then(function () {
+    //MsgElem.innerHTML = "Notification permission granted." 
+    console.log("Notification permission granted.");
+
+    // get the token in the form of promise
+    return messaging.getToken()
+    })
+    .then(function(token) {
+    // print the token on the HTML page     
+    console.log('token',token);
+
+
+
+    })
+    .catch(function (err) {
+    console.log(err);
+    });
+
+    messaging.onMessage(function(payload) {
+    console.log(payload);
+    var notify;
+    notify = new Notification(payload.notification.title,{
+        body: payload.notification.body,
+        icon: payload.notification.icon,
+        tag: "Dummy"
+    });
+    console.log(payload.notification);
+    });
+
+    self.addEventListener('notificationclick', function(event) {       
+    event.notification.close();
+    });
 
    $(document).ready(function(){
 
