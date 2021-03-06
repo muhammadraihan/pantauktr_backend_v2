@@ -110,6 +110,7 @@ class LaporController extends Controller
         $laporan->place_id = $request->place_id;
         $laporan->created_by = $pelapor->uuid;
         $laporan->status = 0;
+        $laporan->device_token = $request->device_token;
         $laporan->save();
         } catch (Exception $e) {
         // catch error and rollback data saving if fails
