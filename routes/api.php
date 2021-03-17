@@ -26,6 +26,7 @@ Route::group(['prefix' => 'v2'], function () {
 });
 
 Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function () {
+    // Route::group(['prefix' => 'v2'], function() {
 
     Route::get('checktoken', 'Api\AuthController@checkToken');
     Route::get('/profil/pelapor', 'Api\AuthController@pelapor');
