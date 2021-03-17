@@ -48,10 +48,12 @@ class AuthController extends Controller
   public function CheckToken()
   {
     if (!JWTAuth::parseToken()->authenticate()) {
-      return response()->json(['status' => 'ACCOUNT_NOT_FOUND'], 404);
+      return response()->json(
+        ['success' => false, 'status' => 'ACCOUNT_NOT_FOUND']
+      );
     } else {
       return response()->json(
-        ['status' => 'TOKEN_OK']
+        ['success' => false, 'status' => 'TOKEN_OK']
       );
     }
   }
@@ -75,14 +77,14 @@ class AuthController extends Controller
       '*.unique' => 'Email sudah digunakan,harap gunakan alamat email yang lain',
       '*.min' => 'Password minimal 8 karakter',
     ];
-    $validator = Validator::make($request->all(), $rules,$messages);
+    $validator = Validator::make($request->all(), $rules, $messages);
 
-    if($validator->fails()) {
-        return response()->json([
-            'message' => $validator->messages()
-        ],400);
+    if ($validator->fails()) {
+      return response()->json([
+        'message' => $validator->messages()
+      ]);
     }
-    
+
     // retrieve password
     $password = trim($request->password);
     try {
@@ -90,7 +92,7 @@ class AuthController extends Controller
       $pelapor = Pelapor::create([
         'email' => $request->email,
         'password' => Hash::make($password),
-        'provider' => 'manual'
+        'provider' => 'manual',
       ]);
 
       try {
@@ -99,27 +101,22 @@ class AuthController extends Controller
         return response()->json([
           'success' => false,
           'message' => 'Failed to generate token',
-        ],500);
+        ]);
       }
     } catch (Exception $th) {
       return response()->json([
         'success' => false,
         'message' => 'Server failed to retrieve request',
-      ],500);
+      ]);
     }
 
     return response()->json([
       'success' => true,
-      'pelapor' => [
-        'uuid' => $pelapor->uuid,
-        'email' => $pelapor->email,
-        'provider' => $pelapor->provider,
-      ],
       'token' => [
         'access_token' => $token,
-        'expires_in' => JWTAuth::factory()->getTTL().' minutes',
+        'expires_in' => JWTAuth::factory()->getTTL() . ' minutes',
       ]
-      ],200);
+    ]);
   }
 
   public function LoginPelapor(Request $request)
@@ -136,12 +133,12 @@ class AuthController extends Controller
       '*.required' => 'Tidak boleh kosong',
       '*.email' => 'Format email salah,mohon gunakan alamat email',
     ];
-    $validator = Validator::make($request->all(), $rules,$messages);
+    $validator = Validator::make($request->all(), $rules, $messages);
     if ($validator->fails()) {
       return response()->json([
         'success' => false,
         'message' => $validator->messages(),
-      ], 400);
+      ]);
     }
     // attempt login process
     try {
@@ -150,14 +147,14 @@ class AuthController extends Controller
         return response()->json([
           'success' => false,
           'message' => 'Email atau password salah',
-        ], 400);
+        ]);
       }
     } catch (JWTException $e) {
       // Check if Email or Password match
       return response()->json([
         'success' => false,
         'message' => 'Failed to login',
-      ], 500);
+      ]);
     }
 
     // get last login for tracking purpose
@@ -170,14 +167,13 @@ class AuthController extends Controller
     // All good give 'em token
     return response()->json([
       'success' => true,
-      'pelapor' => $pelapor,
       'token' => [
         'access_token' => $token,
         'expires_in' => JWTAuth::factory()->getTTL(),
       ]
-    ],200);
+    ]);
   }
-  
+
   public function RedirectLogin($provider)
   {
     return Socialite::driver($provider)->stateless()->redirect();
@@ -185,8 +181,8 @@ class AuthController extends Controller
 
   public function CreateTokenForSocialLogin($provider, Request $request)
   {
-    $access_token = $request->get('access_token');
-    $auth_pelapor = Socialite::driver($provider)->userFromToken($access_token);
+    $service_token = $request->get('service-token');
+    $auth_pelapor = Socialite::driver($provider)->userFromToken($service_token);
 
     // split name to be first and last name
     $name = $auth_pelapor->user['name'];
@@ -214,18 +210,22 @@ class AuthController extends Controller
       $token = JWTAuth::fromUser($pelapor);
       return response()->json([
         'success' => true,
-        'access_token' => $token,
-        'expires_in' => JWTAuth::factory()->getTTL().' minutes',
-      ], 200);
+        'token' => [
+          'access_token' => $token,
+          'expires_in' => JWTAuth::factory()->getTTL(),
+        ],
+      ]);
     }
     // if exists return token
     else {
       $token = JWTAuth::fromUser($pelapor);
       return response()->json([
         'success' => true,
-        'access_token' => $token,
-        'expires_in' => JWTAuth::factory()->getTTL().' minutes',
-      ], 200);
+        'token' => [
+          'access_token' => $token,
+          'expires_in' => JWTAuth::factory()->getTTL(),
+        ]
+      ]);
     }
   }
 
@@ -236,22 +236,11 @@ class AuthController extends Controller
    */
   public function Pelapor(Request $request)
   {
-    // Get JWT Token from the request header key "Authorization"
-    $token = $request->header('Authorization');
-    $payload = JWTAuth::getPayload($token)->toArray();
     $pelapor = Helper::pelapor();
     return response()->json([
       'success' => true,
-      'data' => [
-        'uuid' => $pelapor->uuid,
-        'firstname' => $pelapor->firstname,
-        'lastname' => $pelapor->lastname,
-        'email' => $pelapor->email,
-        'avatar' => $pelapor->avatar,
-        'last_login_at' => $pelapor->last_login_at,
-        'last_login_ip' => $pelapor->last_login_ip,
-      ]
-    ], 200);
+      'data' => $pelapor,
+    ]);
   }
 
   public function RefreshToken(Request $request)
@@ -262,14 +251,16 @@ class AuthController extends Controller
       $refresh_token = JWTAuth::parseToken($token)->refresh();
       return response()->json([
         'success' => true,
-        'access_token' => $refresh_token,
-        'expires_in' => JWTAuth::factory()->getTTL().' minutes',
-      ],200);
+        'token' => [
+          'access_token' => $refresh_token,
+          'expires_in' => JWTAuth::factory()->getTTL() . ' minutes',
+        ]
+      ]);
     } catch (JWTException $e) {
       return response()->json([
         'success' => false,
         'message' => 'Token cannot be refreshed, please login',
-      ],500);
+      ]);
     }
   }
 
@@ -296,7 +287,7 @@ class AuthController extends Controller
       return response()->json([
         "success" => false,
         "message" => 'Email tidak terdapat dalam sistem, harap masukkan email yang terdaftar !',
-      ],404);
+      ]);
     }
     // try to send OTP to email
     try {
@@ -313,23 +304,23 @@ class AuthController extends Controller
       return response()->json([
         "success" => true,
         "message" => 'Instruksi perubahan password sudah terkirim ke email terdaftar',
-      ],200);
+      ]);
     } catch (Exception $e) {
       return response()->json([
         "success" => false,
         "message" => 'Gagal mengirim ke email, silahkan coba beberapa saat lagi',
-      ],500);
+      ]);
     }
   }
 
   private function VerifyOtp($identifier, $otp)
   {
-    return Otp::validate($identifier,$otp);
+    return Otp::validate($identifier, $otp);
   }
-  
+
   public function UpdateForgotPassword(Request $request)
   {
-    $rules =[
+    $rules = [
       'otp' => 'required',
       'new-password' => 'required|string|min:8',
       'confirm-password' => 'required|same:new-password',
@@ -341,7 +332,7 @@ class AuthController extends Controller
     ];
 
     // validation
-    $validator = Validator::make($request->all(), $rules,$messages);
+    $validator = Validator::make($request->all(), $rules, $messages);
     if ($validator->fails()) {
       return response()->json([
         'success' => false,
@@ -350,16 +341,22 @@ class AuthController extends Controller
     }
 
     // check if new password is match with confirmation password
-    if(strcmp($request->get('new-password'),$request->get('confirm-password')) !== 0){
+    if (strcmp($request->get('new-password'), $request->get('confirm-password')) !== 0) {
       return response()->json([
         'success' => false,
         'message' => 'Password tidak cocok dengan konfirmasi',
-      ], 400);
+      ]);
     }
 
     try {
+<<<<<<< HEAD
       $OtpModel = OtpModel::where('token', $request->otp)->where('expired',false)->first();
       $verify = $this->VerifyOtp($OtpModel->identifier,$request->otp);
+=======
+      $OtpModel = OtpModel::where('token', $request->otp)->where('expired', false)->first();
+      $verify = $this->VerifyOtp($OtpModel->identifier, $request->otp);
+      // dd($verify);
+>>>>>>> develop
       if ($verify->status == true) {
         $pelapor = Pelapor::where('email', $OtpModel->identifier)->first();
         $pelapor->password = Hash::make($request->get('confirm-password'));
@@ -367,17 +364,17 @@ class AuthController extends Controller
         return response()->json([
           "success" => true,
           "message" => 'Password berhasil diubah, silahkan login',
-        ],200);
+        ]);
       }
       return response()->json([
         "success" => $verify->status,
         "message" => $verify->message,
-      ],200);
+      ]);
     } catch (Exception $th) {
       return response()->json([
         "success" => false,
         "message" => 'Server error, please try again later',
-      ],500);
+      ]);
     }
   }
 
@@ -391,14 +388,13 @@ class AuthController extends Controller
       return response()->json([
         'success' => true,
         'message' => "Logged out.",
-      ], 200);
+      ]);
     } catch (JWTException $e) {
       // something went wrong whilst attempting to encode the token
       return response()->json([
         'success' => false,
         'message' => $e,
-      ], 500);
+      ]);
     }
   }
-
 }

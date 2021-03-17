@@ -57,7 +57,8 @@
                     </div>
                     <div class="form-group col-md-4 mb-3">
                         {!! Form::label('role', 'Role', ['class' => 'required form-label']) !!}
-                        {!! Form::select('role', $roles, '', ['class' => 'select2 form-control'.($errors->has('role') ? 'is-invalid':''), 'required'
+                        {!! Form::select('role', $roles, '', ['class' => 'select2 form-control'.($errors->has('role') ?
+                        'is-invalid':''), 'required'
                         => '', 'placeholder' => 'Select a role ...']) !!}
                         @if ($errors->has('role'))
                         <div class="help-block text-danger">{{ $errors->first('role') }}</div>
@@ -65,7 +66,8 @@
                     </div>
                     <div class="form-group col-md-4 mb-3">
                         {!! Form::label('city_id', 'City', ['class' => 'required form-label']) !!}
-                        {!! Form::select('city_id', $city_id, '', ['class' => 'select2 form-control'.($errors->has('city_id') ? 'is-invalid':''), 'required'
+                        {!! Form::select('city_id', $city_id, '', ['class' => 'select2
+                        form-control'.($errors->has('city_id') ? 'is-invalid':''), 'required'
                         => '', 'placeholder' => 'Select city ...']) !!}
                         @if ($errors->has('city_id'))
                         <div class="help-block text-danger">{{ $errors->first('city_id') }}</div>
@@ -73,7 +75,8 @@
                     </div>
                     <div class="form-group col-md-4 mb-3">
                         {!! Form::label('operator_id', 'Operator', ['class' => 'required form-label']) !!}
-                        {!! Form::select('operator_id', $operator_id, '', ['class' => 'select2 form-control'.($errors->has('operator_id') ? 'is-invalid':''), 'required'
+                        {!! Form::select('operator_id', $operator_id, '', ['class' => 'select2
+                        form-control'.($errors->has('operator_id') ? 'is-invalid':''), 'required'
                         => '', 'placeholder' => 'Select Operator ...']) !!}
                         @if ($errors->has('operator_id'))
                         <div class="help-block text-danger">{{ $errors->first('operator_id') }}</div>
