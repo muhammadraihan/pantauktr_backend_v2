@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('title', 'Jenis Laporan Edit')
+@section('title', 'External Link Edit')
 
 @section('css')
 <link rel="stylesheet" media="screen, print" href="{{asset('css/formplugins/select2/select2.bundle.css')}}">
@@ -11,9 +11,9 @@
     <div class="col-xl-6">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>Edit <span class="fw-300"><i>{{$jenis_laporan->name}}</i></span></h2>
+            <h2>Edit <span class="fw-300"><i>{{$external->title}}</i></span></h2>
                 <div class="panel-toolbar">
-                    <a class="nav-link active" href="{{route('jenis_laporan.index')}}"><i class="fal fa-arrow-alt-left">
+                    <a class="nav-link active" href="{{route('external_link.index')}}"><i class="fal fa-arrow-alt-left">
                         </i>
                         <span class="nav-link-text">Back</span>
                     </a>
@@ -26,13 +26,27 @@
                     <div class="panel-tag">
                         Form with <code>*</code> can not be empty.
                     </div>
-                    {!! Form::open(['route' => ['jenis_laporan.update',$jenis_laporan->uuid],'method' => 'PUT','class' =>
+                    {!! Form::open(['route' => ['external_link.update',$external->uuid],'method' => 'PUT','class' =>
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-4 mb-3">
-                        {{ Form::label('name','Jenis Laporan',['class' => 'required form-label'])}}
-                        {{ Form::text('name',$jenis_laporan->name,['placeholder' => 'Jenis Laporan','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
-                        @if ($errors->has('name'))
-                        <div class="invalid-feedback">{{ $errors->first('name') }}</div>
+                        {{ Form::label('title','Title',['class' => 'required form-label'])}}
+                        {{ Form::text('title',$external->title,['placeholder' => 'Title','class' => 'form-control '.($errors->has('title') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                        @if ($errors->has('title'))
+                        <div class="invalid-feedback">{{ $errors->first('title') }}</div>
+                        @endif
+                    </div>
+                    <div class="form-group col-md-4 mb-3">
+                        {{ Form::label('description','Description',['class' => 'required form-label'])}}
+                        {{ Form::text('description',$external->description,['placeholder' => 'Description','class' => 'form-control '.($errors->has('description') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                        @if ($errors->has('description'))
+                        <div class="invalid-feedback">{{ $errors->first('description') }}</div>
+                        @endif
+                    </div>
+                    <div class="form-group col-md-4 mb-3">
+                        {{ Form::label('link','Link',['class' => 'required form-label'])}}
+                        {{ Form::text('link',$external->link,['placeholder' => 'Link','class' => 'form-control '.($errors->has('link') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                        @if ($errors->has('link'))
+                        <div class="invalid-feedback">{{ $errors->first('link') }}</div>
                         @endif
                     </div>
                 <div

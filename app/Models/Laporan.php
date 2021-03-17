@@ -16,14 +16,14 @@ class Laporan extends Model
     ];
 
     public function userCreate(){
-        return $this->belongsTo(Pelapor::class, 'created_by','uuid');
+        return $this->belongsTo(User::class, 'created_by','uuid');
     }
 
     public function pelanggaran(){
         return $this->belongsTo(Pelanggaran::class, 'jenis_pelanggaran', 'uuid');
     }
 
-    public function jlaporan(){
+    public function JenisLaporan(){
         return $this->belongsTo(Jenis_laporan::class, 'jenis_laporan', 'uuid');
     }
 

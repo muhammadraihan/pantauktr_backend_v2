@@ -349,12 +349,16 @@ class AuthController extends Controller
     }
 
     try {
+<<<<<<< HEAD
+      $OtpModel = OtpModel::where('token', $request->otp)->where('expired',false)->first();
+      $verify = $this->VerifyOtp($OtpModel->identifier,$request->otp);
+=======
       $OtpModel = OtpModel::where('token', $request->otp)->where('expired', false)->first();
       $verify = $this->VerifyOtp($OtpModel->identifier, $request->otp);
       // dd($verify);
+>>>>>>> develop
       if ($verify->status == true) {
         $pelapor = Pelapor::where('email', $OtpModel->identifier)->first();
-        // dd($pelapor);
         $pelapor->password = Hash::make($request->get('confirm-password'));
         $pelapor->save();
         return response()->json([

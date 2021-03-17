@@ -4,6 +4,8 @@
 
 @section('css')
 <link rel="stylesheet" media="screen, print" href="{{asset('css/datagrid/datatables/datatables.bundle.css')}}">
+<link rel="stylesheet" media="screen, print" href="{{asset('css/formplugins/select2/select2.bundle.css')}}">
+<link rel="stylesheet" media="screen, print" href="{{asset('css/formplugins/bootstrap-datepicker/bootstrap-datepicker.css')}}">
 @endsection
 
 @section('content')
@@ -28,6 +30,16 @@
                 </div>
             </div>
             <div class="panel-container show">
+                <div class="form-group col-md-5 mb-3">
+                    <label>Tahun</label>
+                    <input type="text" class="form-control js-bg-target" placeholder="Tahun"
+                            id="tahun" name="tahun" autocomplete="off">
+                </div>
+                <div id="" class="form-group col-md-5 mb-3">
+                    <label>Bulan</label>
+                    <input type="text" class="form-control js-bg-target" placeholder="Bulan"
+                            id="bulan" name="bulan" autocomplete="off">
+                </div>
                 <div class="panel-content">
                     <div id="chartPelanggaran"></div>
                     <div id="chartApresiasi"></div>
@@ -39,114 +51,102 @@
 @endsection
                 
 @section('js')
+<script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
 <script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="{{asset('js/formplugins/bootstrap-datepicker/bootstrap-datepicker.js')}}"></script>
+<script src="{{asset('js/dependency/moment/moment.js')}}"></script>
+
 <script>
-// Highcharts.chart('chartPelanggaran', {
-//     chart: {
-//         type: 'area'
-//     },
-//     title: {
-//         text: 'Chart Pelanggaran'
-//     },
-//     xAxis: {
-//         categories: ['a', 'b', 'c'],
-//         tickmarkPlacement: 'on',
-//         title: {
-//             enabled: false
-//         }
-//     },
-//     yAxis: {
-//         title: {
-//             text: 'Jumlah Laporan'
-//         },
-//         labels: {
-//             formatter: function () {
-//                 return this.value ;
-//             }
-//         }
-//     },
-//     tooltip: {
-//         split: true,
-//         valueSuffix: ''
-//     },
-//     plotOptions: {
-//         area: {
-//             stacking: 'normal',
-//             lineColor: '#666666',
-//             lineWidth: 1,
-//             marker: {
-//                 lineWidth: 1,
-//                 lineColor: '#666666'
-//             }
-//         }
-//     },
-//     series: [{
-//         name: 'KTR',
-//         data: [3,10,2]
-//     },{
-//         name: 'TAPSBan',
-//         data: [5,5,9]
-//     },{
-//         name: 'POS',
-//         data: [1,2]
-//     }]
-// });
 
-Highcharts.chart('chartPelanggaran', {
-    chart: {
-        type: 'column'
-    },
-    title: {
-        text: 'Chart Pelanggaran'
-    },
-    xAxis: {
-        categories: {!!json_encode($jenis_pelanggaran)!!},
-        crosshair: true
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: 'Jumlah Laporan'
-        }
-    },
-    series: [{
-        name: 'KTR',
-        data: {!!json_encode($data_ktr)!!}
-    },{
-        name: 'TAPSBan',
-        data: {!!json_encode($data_tapsban)!!}
-    },{
-        name: 'POS',
-        data: {!!json_encode($data_pos)!!}
-    }],
-    
-});
+        $('#tahun').datepicker({
+            orientation: "bottom left",
+            format: " yyyy", 
+            viewMode: "years",
+            minViewMode: "years",
+            todayHighlight:'TRUE',
+            autoclose: true,
+        });
 
-Highcharts.chart('chartApresiasi', {
-    chart: {
-        type: 'column'
-    },
-    title: {
-        text: 'Chart Apresiasi'
-    },
-    xAxis: {
-        categories: {!!json_encode($jenis_apresiasi)!!},
-        crosshair: true
-    },
-    yAxis: {
-        min: 0,
-        title: {
-            text: 'Jumlah Laporan'
-        }
-    },
-    series: [{
-        name: 'Apresiasi',
-        data: {!!json_encode($data_apresiasi)!!}
-    },{
-        name: 'Masukan',
-        data: {!!json_encode($data_masukan)!!}
-    }
-    ]
-});
+        $('#bulan').datepicker({
+            orientation: "bottom left",
+            format: " mm", 
+            viewMode: "months",
+            minViewMode: "months",
+            todayHighlight:'TRUE',
+            autoclose: true,
+        });
+
+        $('#bulan').on('change',function (e){
+            var tahun = $('#tahun').val();
+            var bulan = $(this).val();
+            var formatbulan = moment(bulan, 'MM').format('MMMM');
+
+        $.ajax({
+            url: "{{route('get.bulan')}}",
+            type: 'GET',
+            data: {bulan: bulan, tahun: tahun},
+            success: function (response) {
+                var series = [];
+                var values = [];
+                $.each(response[0], function(key,value){
+                    series.push(key);
+                    values.push(value);
+                });
+                Highcharts.chart('chartPelanggaran', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Chart Pelanggaran' + ' ' +formatbulan
+                    },
+                    xAxis: {
+                        categories: series,
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Jumlah Laporan'
+                        }
+                    },
+                    series: [{
+                        name: series,
+                        data: values
+                    }],
+
+                });
+                
+                var apresiasi = [];
+                var laporan = [];
+                $.each(response[1], function(key,value){
+                    apresiasi.push(key);
+                    laporan.push(value);
+                });
+                Highcharts.chart('chartApresiasi', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Chart Apresiasi' + ' ' +formatbulan
+                    },
+                    xAxis: {
+                        categories: apresiasi,
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Jumlah Laporan'
+                        }
+                    },
+                    series: [{
+                        name: apresiasi,
+                        data: laporan
+                    }]
+                });
+            }
+        });
+    });
+
 </script>
 @endsection

@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('title', 'Jenis Laporan Edit')
+@section('title', 'Tindak Lanjut')
 
 @section('css')
 <link rel="stylesheet" media="screen, print" href="{{asset('css/formplugins/select2/select2.bundle.css')}}">
@@ -11,9 +11,9 @@
     <div class="col-xl-6">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>Edit <span class="fw-300"><i>{{$jenis_laporan->name}}</i></span></h2>
+                <h2>Tindak Lanjut</h2>
                 <div class="panel-toolbar">
-                    <a class="nav-link active" href="{{route('jenis_laporan.index')}}"><i class="fal fa-arrow-alt-left">
+                    <a class="nav-link active" href="{{route('laporan.index')}}"><i class="fal fa-arrow-alt-left">
                         </i>
                         <span class="nav-link-text">Back</span>
                     </a>
@@ -26,15 +26,25 @@
                     <div class="panel-tag">
                         Form with <code>*</code> can not be empty.
                     </div>
-                    {!! Form::open(['route' => ['jenis_laporan.update',$jenis_laporan->uuid],'method' => 'PUT','class' =>
+                    {!! Form::open(['route' => 'tindaklanjut.store','method' => 'POST','class' =>
                     'needs-validation','novalidate']) !!}
+                    <input type="hidden" name="laporan_id" value="{{$idlaporan->uuid}}">
                     <div class="form-group col-md-4 mb-3">
-                        {{ Form::label('name','Jenis Laporan',['class' => 'required form-label'])}}
-                        {{ Form::text('name',$jenis_laporan->name,['placeholder' => 'Jenis Laporan','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
-                        @if ($errors->has('name'))
-                        <div class="invalid-feedback">{{ $errors->first('name') }}</div>
+                        {{ Form::label('keterangan','Keterangan',['class' => 'required form-label'])}}
+                        {{ Form::text('keterangan',null,['placeholder' => 'Keterangan','class' => 'form-control '.($errors->has('keterangan') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                        @if ($errors->has('keterangan'))
+                        <div class="invalid-feedback">{{ $errors->first('keterangan') }}</div>
                         @endif
                     </div>
+                    <div class="form-group col-md-4 mb-3">
+                        {!! Form::label('status', 'Status', ['class' => 'required form-label']) !!}
+                        {!! Form::select('status', array('1' => 'Tindak Lanjut', '2' => 'Selesai'), '', ['class' => 'select2 form-control'.($errors->has('status') ? 'is-invalid':''), 'required'
+                        => '', 'placeholder' => 'Select status ...']) !!}
+                        @if ($errors->has('status'))
+                        <div class="help-block text-danger">{{ $errors->first('status') }}</div>
+                        @endif
+                    </div>
+                </div>
                 <div
                     class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
                     <button class="btn btn-primary ml-auto" type="submit">Submit</button>
@@ -48,7 +58,12 @@
 
 @section('js')
 <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
+
 <script>
+
+    
+
+
     $(document).ready(function(){
         $('.select2').select2();
         
@@ -68,17 +83,6 @@
         $(".getNewPass").click(function(){
             var field = $('#password').closest('div').find('input[name="password"]');
             field.val(randString(field));
-        });
-
-        //Enable input and button change password
-        $('#enablePassChange').click(function() {
-            if ($(this).is(':checked')) {
-                $('#passwordForm').attr('disabled',false); //enable input
-                $('#getNewPass').attr('disabled',false); //enable button
-            } else {
-                    $('#passwordForm').attr('disabled', true); //disable input
-                    $('#getNewPass').attr('disabled', true); //disable button
-            }
         });
     });
 </script>

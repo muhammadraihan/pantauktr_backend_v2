@@ -30,7 +30,7 @@
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('name','Nama Operator',['class' => 'required form-label'])}}
-                        {{ Form::text('name',null,['placeholder' => 'Nama Operator','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required'])}}
+                        {{ Form::text('name',null,['placeholder' => 'Nama Operator','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                         @if ($errors->has('name'))
                         <div class="invalid-feedback">{{ $errors->first('name') }}</div>
                         @endif

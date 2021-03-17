@@ -5,7 +5,7 @@ return [
     /*
      * The api key used when sending Geocoding requests to Google.
      */
-    'key' => env('GOOGLE_MAPS_GEOCODING_API_KEY', 'AIzaSyBobcvw-gVqusxiYgkn5VtF3jwZLcS3xWw'),
+    'key' => env('GOOGLE_MAPS_GEOCODING_API_KEY', 'AIzaSyAmXkZ3Fegk9RipFYwkQ_bNAQDtPsRwBOU'),
 
     /*
      * The language param used to set response translations for textual data.
