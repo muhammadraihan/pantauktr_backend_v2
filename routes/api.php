@@ -20,13 +20,13 @@ Route::group(['prefix' => 'v2'], function () {
     Route::post('register', 'Api\AuthController@RegisterPelapor');
     Route::post('login', 'Api\AuthController@LoginPelapor');
     Route::post('refresh-token', 'Api\AuthController@RefreshToken');
+    Route::get('login/{provider}', 'Api\AuthController@RedirectLogin');
     Route::post('login/{provider}/token', 'Api\AuthController@CreateTokenForSocialLogin');
     Route::post('pelapor/forgot-password', 'Api\AuthController@ResetPasswordOTP');
     Route::post('pelapor/update-password', 'Api\AuthController@UpdateForgotPassword');
 });
 
 Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function () {
-    // Route::group(['prefix' => 'v2'], function() {
 
     Route::get('checktoken', 'Api\AuthController@checkToken');
     Route::get('/profil/pelapor', 'Api\AuthController@pelapor');
