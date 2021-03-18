@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['prefix' => 'v2'], function () {
+    Route::get('logout', 'Api\AuthController@logout');
+    Route::get('login/{provider}', 'Api\AuthController@RedirectLogin');
     Route::post('deploy', 'DeployController@DeployApps');
     Route::post('register', 'Api\AuthController@RegisterPelapor');
     Route::post('login', 'Api\AuthController@LoginPelapor');
@@ -25,10 +27,8 @@ Route::group(['prefix' => 'v2'], function () {
 });
 
 Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function () {
-    // Route::group(['prefix' => 'v2'], function() {
 
     Route::get('checktoken', 'Api\AuthController@checkToken');
-    Route::get('logout', 'Api\AuthController@logout');
     Route::get('/profil/pelapor', 'Api\AuthController@pelapor');
 
     Route::get('jenis-laporan', 'Api\ReferensiController@getJenisLaporan');
