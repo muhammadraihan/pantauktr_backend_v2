@@ -183,7 +183,6 @@ class AuthController extends Controller
   {
     $service_token = $request->get('service-token');
     $auth_pelapor = Socialite::driver($provider)->userFromToken($service_token);
-
     // split name to be first and last name
     $name = $auth_pelapor->user['name'];
     $parts = explode(" ", $name);
