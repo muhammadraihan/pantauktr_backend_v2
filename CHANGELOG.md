@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0-3](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.1.0-2...v2.1.0-3) (2021-03-18)
+
+
+### Features
+
+* Upload image laporan to google storage ([51695dd](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/51695ddf4f0d8eb559d92cdf1cdcdd704b9dc652))
+
 ## [2.1.0-2](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.1.0-1...v2.1.0-2) (2021-03-17)
 
 
