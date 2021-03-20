@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.1.0-4](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.1.0-3...v2.1.0-4) (2021-03-20)
+
+
+### Features
+
+* Add count jumlah laporan and reward point when pelapor post laoran ([be8a232](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/be8a232a5a761def333fefc76c3e6eaf3e6698a2))
+
 ## [2.1.0-3](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.1.0-2...v2.1.0-3) (2021-03-18)
 
 
