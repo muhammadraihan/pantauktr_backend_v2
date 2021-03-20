@@ -119,6 +119,10 @@ class LaporController extends Controller
             $laporan->status = 0;
             $laporan->device_token = $request->device_token;
             $laporan->save();
+            // update reward point
+            $pelapor = Pelapor::uuid($pelapor->uuid);
+            $pelapor->reward_point++;
+            $pelapor->save();
         } catch (Exception $e) {
             // catch error and rollback data saving if fails
             DB::rollback();
