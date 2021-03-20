@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 
 use App\Notifications\SendOTPNotification;
 use App\Models\Pelapor;
+use App\Models\Laporan;
 use Carbon\Carbon;
 use Seshac\Otp\Otp;
 use Seshac\Otp\Models\Otp as OtpModel;
 
 use Auth;
 use Config;
+use DB;
 use Exception;
 use Hash;
 use Helper;
@@ -87,14 +89,21 @@ class AuthController extends Controller
 
     // retrieve password
     $password = trim($request->password);
+    // retrive firstname from email username
+    $extract_username = explode("@", $request->email);
+    $firstname = $extract_username[0];
+    // begin transaction
+    DB::beginTransaction();
     try {
       // saving pelapor
       $pelapor = Pelapor::create([
+        'firstname' => $firstname,
         'email' => $request->email,
         'password' => Hash::make($password),
         'provider' => 'manual',
+        'last_login_at' => Carbon::now()->toDateTimeString(),
+        'last_login_ip' => $request->getClientIp(),
       ]);
-
       try {
         $token = JWTAuth::fromUser($pelapor);
       } catch (JWTException $th) {
@@ -104,12 +113,15 @@ class AuthController extends Controller
         ]);
       }
     } catch (Exception $th) {
+      // begin transaction
+      DB::rollback();
       return response()->json([
         'success' => false,
         'message' => 'Server failed to retrieve request',
       ]);
     }
-
+    // if no error commit data saving
+    DB::commit();
     return response()->json([
       'success' => true,
       'token' => [
@@ -159,7 +171,7 @@ class AuthController extends Controller
 
     // get last login for tracking purpose
     $loggedInPelapor = Auth::user();
-    $pelapor = Pelapor::find($loggedInPelapor->id);
+    $pelapor = Pelapor::uuid($loggedInPelapor->uuid);
     $pelapor->last_login_at = Carbon::now()->toDateTimeString();
     $pelapor->last_login_ip = $request->getClientIp();
     $pelapor->save();
@@ -197,16 +209,29 @@ class AuthController extends Controller
     $pelapor = Pelapor::where('email', $auth_pelapor->email)->first();
     // if not exists create new account and return token
     if (!$pelapor) {
-      $pelapor = Pelapor::create([
-        'firstname' => $firstname,
-        'lastname' => $lastname,
-        'email'    => !empty($auth_pelapor->user['email']) ? $auth_pelapor->user['email'] : '',
-        'provider' => $provider,
-        'avatar' => $auth_pelapor->avatar,
-        'last_login_at' => Carbon::now()->toDateTimeString(),
-        'last_login_ip' => $request->getClientIp(),
-      ]);
-      $token = JWTAuth::fromUser($pelapor);
+      // begin transaction
+      DB::beginTransaction();
+      try {
+        $pelapor = Pelapor::create([
+          'firstname' => $firstname,
+          'lastname' => $lastname,
+          'email'    => !empty($auth_pelapor->user['email']) ? $auth_pelapor->user['email'] : '',
+          'provider' => $provider,
+          'avatar' => $auth_pelapor->avatar,
+          'last_login_at' => Carbon::now()->toDateTimeString(),
+          'last_login_ip' => $request->getClientIp(),
+        ]);
+        $token = JWTAuth::fromUser($pelapor);
+      } catch (\Throwable $th) {
+        // begin transaction
+        DB::rollback();
+        return response()->json([
+          'success' => false,
+          'message' => 'Server failed to retrieve request',
+        ]);
+      }
+      // if no error commit data saving
+      DB::commit();
       return response()->json([
         'success' => true,
         'token' => [
@@ -236,9 +261,20 @@ class AuthController extends Controller
   public function Pelapor(Request $request)
   {
     $pelapor = Helper::pelapor();
+    $jumlah_laporan =  Laporan::where('created_by', $pelapor->uuid)->count();
     return response()->json([
       'success' => true,
-      'data' => $pelapor,
+      'pelapor' => [
+        'uuid' => $pelapor->uuid,
+        'email' => $pelapor->email,
+        'provider' => $pelapor->provider,
+        'firstname' => $pelapor->firstname,
+        'lastname' => $pelapor->lastname,
+        'avatar' => $pelapor->lastname,
+        'jumlah_laporan' => $jumlah_laporan,
+        'reward_point' => $pelapor->reward_point,
+        'last_login' => $pelapor->last_login_at,
+      ],
     ]);
   }
 
