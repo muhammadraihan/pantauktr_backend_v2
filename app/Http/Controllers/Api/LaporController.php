@@ -4,15 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
 use Spatie\Geocoder\Geocoder;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
 
 use App\Models\Laporan;
 use App\Models\Pelapor;
-use App\Models\User;
-use App\Models\TindakLanjut;
 
 use Auth;
 use Config;
@@ -41,6 +38,7 @@ class LaporController extends Controller
     public function lapor(Request $request)
     {
         $pelapor = Helper::pelapor();
+        $uniqueCode = Helper::GenerateReportNumber(13);
         $validator = Validator::make($request->all(), [
             'jenis_laporan' => 'required',
             'keterangan' => 'required',
@@ -85,6 +83,7 @@ class LaporController extends Controller
         DB::beginTransaction();
         try {
             $laporan = new Laporan;
+            $laporan->nomor_laporan = 'KTR' . '-' . $uniqueCode;
             $laporan->jenis_laporan = $request->jenis_laporan;
             if (!empty($request->jenis_pelanggaran)) {
                 $laporan->jenis_pelanggaran = $request->jenis_pelanggaran;
@@ -96,7 +95,8 @@ class LaporController extends Controller
             $laporan->lat = $lat;
             $laporan->lng = $lng;
             $laporan->nama_lokasi = $request->nama_lokasi;
-            $laporan->alamat = $response['formatted_address'];
+            $laporan->detail_lokasi = $request->detail_lokasi;
+            $laporan->alamat = $request->alamat;
             foreach ($address as $key => $value) {
                 if (array_search('administrative_area_level_4', $value->types) !== false) {
                     $laporan->kelurahan = $value->long_name;
@@ -151,12 +151,14 @@ class LaporController extends Controller
         // get pelapor details based on auth token
         $pelapor = Helper::pelapor();
         // select laporan based on user auth
-        $list = Laporan::select('jenis_pelanggaran', 'jenis_laporan', 'keterangan', 'photo', 'nama_lokasi', 'created_at')
+        $list = Laporan::select('uuid', 'nomor_laporan', 'jenis_pelanggaran', 'jenis_laporan', 'keterangan', 'photo', 'nama_lokasi', 'created_at')
             ->where('created_by', $pelapor->uuid)->get();
         // form response
         for ($i = 0; $i < count($list); $i++) {
             $tanggal = Carbon::parse($list[$i]->created_at)->format('l\\, j F Y H:i:s');
             $response['data'][$i] = array();
+            $response['data'][$i]['uuid'] = $list[$i]->uuid;
+            $response['data'][$i]['nomor_laporan'] = $list[$i]->nomor_laporan;
             $response['data'][$i]['jenis_laporan'] = $list[$i]->JenisLaporan->name;
             $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->pelanggaran->name;
             $response['data'][$i]['nama_lokasi'] = $list[$i]->nama_lokasi;
