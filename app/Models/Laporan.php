@@ -12,7 +12,7 @@ class Laporan extends Model
     use Uuid;
 
     protected $fillable = [
-        'jenis_pelanggaran', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'jenis_laporan', 'jenis_apresiasi', 'created_by'
+        'nomor_laporan', 'jenis_pelanggaran', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'jenis_laporan', 'jenis_apresiasi', 'created_by'
     ];
 
     public function userCreate()
