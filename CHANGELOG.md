@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.2.0](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.1.0...v2.2.0) (2021-04-06)
+
+
+### Features
+
+* Adding generate report number function ([1816e2c](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/1816e2c2045f8c3273c0f9b704945fcf5b78dc1b))
+* Now support update name in api endpoint ([d6ac856](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/d6ac8564e762fb7c57db56422366414bf78d8ff9))
+
+
+### Bug Fixes
+
+* Adding nomor_laporan column ([a73e9ee](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/a73e9eebfde6e2cc7185ec68f6cee6e7bc618406))
+* Adding nomor_laporan in fillable ([e47e784](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/e47e784a4351453cadedc18b37ab2e1c4da5733e))
+* Adding place name and address request from apps ([fd72f77](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/fd72f771c89df8db35cb218fc62669ad2ea66f2a))
+
 ## [2.1.0](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.1.0-4...v2.1.0) (2021-04-05)
 
 ## [2.1.0-4](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.1.0-3...v2.1.0-4) (2021-03-20)
