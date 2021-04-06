@@ -16,12 +16,14 @@ class CreateLaporansTable extends Migration
         Schema::create('laporans', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
+            $table->string('nomor_laporan')->nullable();
             $table->string('jenis_pelanggaran')->nullable();
             $table->text('keterangan')->nullable();
             $table->string('photo')->nullable();
             $table->string('lat')->nullable();
             $table->string('lng')->nullable();
             $table->string('nama_lokasi')->nullable();
+            $table->string('detail_lokasi')->nullable();
             $table->string('alamat')->nullable();
             $table->string('kelurahan')->nullable();
             $table->string('kecamatan')->nullable();

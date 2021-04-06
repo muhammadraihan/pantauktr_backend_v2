@@ -222,7 +222,7 @@ class AuthController extends Controller
           'last_login_ip' => $request->getClientIp(),
         ]);
         $token = JWTAuth::fromUser($pelapor);
-      } catch (\Throwable $th) {
+      } catch (Exception $th) {
         // begin transaction
         DB::rollback();
         return response()->json([
@@ -405,6 +405,94 @@ class AuthController extends Controller
         "message" => 'Server error, please try again later',
       ]);
     }
+  }
+
+  public function UpdateName(Request $request)
+  {
+    $pelapor = Helper::pelapor();
+    $update_pelapor = Pelapor::uuid($pelapor->uuid);
+
+    if ($request->get('firstname')) {
+      $update_pelapor->firstname = $request->firstname;
+    }
+
+    if ($request->get('lastname')) {
+      $update_pelapor->lastname = $request->lastname;
+    }
+    try {
+      $update_pelapor->save();
+    } catch (Exception $th) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Server failed to retrieve request',
+      ]);
+    }
+    return response()->json([
+      'success' => true,
+      'message' => 'Nama berhasil diubah',
+    ]);
+  }
+
+  public function UpdatePassword(Request $request)
+  {
+    $pelapor = Helper::pelapor();
+
+    $rules = [
+      'old-password' => 'required',
+      'new-password' => 'required|string|min:8',
+      'confirm-password' => 'required',
+    ];
+
+    $messages = [
+      '*.required' => 'This field can not be empty',
+      'new-password.min' => 'New Password must be at least 8 characters'
+    ];
+
+    $validator = Validator::make($request->all(), $rules, $messages);
+    if ($validator->fails()) {
+      return response()->json([
+        'success' => false,
+        'message' => $validator->messages(),
+      ]);
+    }
+
+    // check user current password if match
+    if (!Hash::check($request->get('old-password'), $pelapor->password)) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Password lama anda tidak cocok',
+      ]);
+    }
+
+    // check if user using same fucking password for the new password
+    if (strcmp($request->get('old-password'), $request->get('new-password')) == 0) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Password baru anda sama dengan password lama, harap gunakan password yang berbeda',
+      ]);
+    }
+
+    // check if new password is match with confirmation password
+    if (strcmp($request->get('new-password'), $request->get('confirm-password')) !== 0) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Password baru anda tidak cocok',
+      ]);
+    }
+    try {
+      $update_pelapor = Pelapor::uuid($pelapor->uuid);
+      $update_pelapor->password = Hash::make($request->get('confirm-password'));
+      $update_pelapor->save();
+    } catch (Exception $e) {
+      return response()->json([
+        'success' => false,
+        'message' => $e,
+      ]);
+    }
+    return response()->json([
+      'success' => true,
+      'message' => 'Password berhasil diubah',
+    ]);
   }
 
   public function Logout(Request $request)

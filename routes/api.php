@@ -27,9 +27,10 @@ Route::group(['prefix' => 'v2'], function () {
 });
 
 Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function () {
-
     Route::get('checktoken', 'Api\AuthController@checkToken');
-    Route::get('/profil/pelapor', 'Api\AuthController@pelapor');
+    Route::get('profile/pelapor', 'Api\AuthController@pelapor');
+    Route::post('profile/update/name', 'Api\AuthController@UpdateName');
+    Route::post('profile/update/password', 'Api\AuthController@UpdatePassword');
 
     Route::get('jenis-laporan', 'Api\ReferensiController@getJenisLaporan');
     Route::get('jenis-pelanggaran', 'Api\ReferensiController@getJenisPelanggaran');
