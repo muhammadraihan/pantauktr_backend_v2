@@ -30,6 +30,7 @@ Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function () {
 
     Route::get('checktoken', 'Api\AuthController@checkToken');
     Route::get('/profil/pelapor', 'Api\AuthController@pelapor');
+    Route::post('/profil/update/name', 'Api\AuthController@UpdateName');
 
     Route::get('jenis-laporan', 'Api\ReferensiController@getJenisLaporan');
     Route::get('jenis-pelanggaran', 'Api\ReferensiController@getJenisPelanggaran');
