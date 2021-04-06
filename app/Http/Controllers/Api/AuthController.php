@@ -222,7 +222,7 @@ class AuthController extends Controller
           'last_login_ip' => $request->getClientIp(),
         ]);
         $token = JWTAuth::fromUser($pelapor);
-      } catch (\Throwable $th) {
+      } catch (Exception $th) {
         // begin transaction
         DB::rollback();
         return response()->json([
@@ -405,6 +405,32 @@ class AuthController extends Controller
         "message" => 'Server error, please try again later',
       ]);
     }
+  }
+
+  public function UpdateName(Request $request)
+  {
+    $pelapor = Helper::pelapor();
+    $update_pelapor = Pelapor::uuid($pelapor->uuid);
+
+    if ($request->get('firstname')) {
+      $update_pelapor->firstname = $request->firstname;
+    }
+
+    if ($request->get('lastname')) {
+      $update_pelapor->lastname = $request->lastname;
+    }
+    try {
+      $update_pelapor->save();
+    } catch (Exception $th) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Server failed to retrieve request',
+      ]);
+    }
+    return response()->json([
+      'success' => true,
+      'message' => 'Nama berhasil diubah',
+    ]);
   }
 
   public function Logout(Request $request)
