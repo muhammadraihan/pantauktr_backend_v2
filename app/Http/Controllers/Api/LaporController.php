@@ -151,18 +151,20 @@ class LaporController extends Controller
         // get pelapor details based on auth token
         $pelapor = Helper::pelapor();
         // select laporan based on user auth
-        $list = Laporan::select('uuid', 'nomor_laporan', 'jenis_pelanggaran', 'jenis_laporan', 'keterangan', 'photo', 'nama_lokasi', 'created_at')
-            ->where('created_by', $pelapor->uuid)->get();
+        $list = Laporan::select('uuid', 'jenis_laporan', 'jenis_pelanggaran', 'jenis_apresiasi', 'nama_lokasi', 'created_at')
+            ->where('created_by', $pelapor->uuid)->orderByDesc('created_at')->get();
         // form response
         for ($i = 0; $i < count($list); $i++) {
-            $tanggal = Carbon::parse($list[$i]->created_at)->format('l\\, j F Y H:i:s');
+            // parsing carbon to locale config
+            $tanggalBuat = Carbon::parse($list[$i]->created_at)->translatedFormat('j F Y');
             $response['data'][$i] = array();
             $response['data'][$i]['uuid'] = $list[$i]->uuid;
-            $response['data'][$i]['nomor_laporan'] = $list[$i]->nomor_laporan;
+            $response['data'][$i]['jenis_laporan_kode'] = (int)$list[$i]->jenis_laporan;
             $response['data'][$i]['jenis_laporan'] = $list[$i]->JenisLaporan->name;
-            $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->pelanggaran->name;
-            $response['data'][$i]['nama_lokasi'] = $list[$i]->nama_lokasi;
-            $response['data'][$i]['tanggal'] = $tanggal;
+            $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->jenis_pelanggaran == null ? "" : $list[$i]->pelanggaran->name;
+            $response['data'][$i]['jenis_apresiasi'] = $list[$i]->jenis_apresiasi == null ? "" : $list[$i]->japresiasi->name;
+            $response['data'][$i]['lokasi'] = $list[$i]->nama_lokasi;
+            $response['data'][$i]['tanggal_laporan'] = $tanggalBuat;
         }
         // return response
         return response()->json($response, 200);
@@ -170,28 +172,47 @@ class LaporController extends Controller
 
     public function detailLaporan($id)
     {
-        $response = array(
-            'success' => true,
-            'data' => array(),
-        );
         // get pelapor details based on auth token
         $pelapor = Helper::pelapor();
-        $list = Laporan::select('jenis_pelanggaran', 'jenis_laporan', 'keterangan', 'photo', 'nama_lokasi', 'created_at')
+        $detailLaporan = Laporan::select('uuid', 'nomor_laporan', 'jenis_laporan', 'jenis_pelanggaran', 'jenis_apresiasi', 'keterangan', 'photo', 'nama_lokasi', 'detail_lokasi', 'status', 'created_at', 'updated_at')
             ->where('created_by', $pelapor->uuid)
             ->where('uuid', $id)
-            ->get();
-
-        for ($i = 0; $i < count($list); $i++) {
-            $tanggal = Carbon::parse($list[$i]->created_at)->format('l\\, j F Y H:i:s');
-            $response['data'][$i] = array();
-            $response['data'][$i]['jenis_laporan'] = $list[$i]->JenisLaporan->name;
-            $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->pelanggaran->name;
-            $response['data'][$i]['keterangan'] = $list[$i]->keterangan;
-            $response['data'][$i]['photo'] = url('/') . '/lampiran' . '/' . $pelapor->uuid . '/' . $list[$i]->photo;
-            $response['data'][$i]['nama_lokasi'] = $list[$i]->nama_lokasi;
-            $response['data'][$i]['tanggal'] = $tanggal;
+            ->first();
+        // change status code to human readable for good sake
+        $status = '';
+        switch ($detailLaporan->status) {
+            case 0:
+                $status = 'Diterima';
+                break;
+            case 1:
+                $status = 'Ditindaklanjuti';
+                break;
+            case 2:
+                $status = 'Selesai';
+                break;
+            default:
+                $status = 'Diterima';
+                break;
         }
+        // parsing carbon to locale config
+        $tanggalBuat = Carbon::parse($detailLaporan->created_at)->translatedFormat('l\\, j F Y H:i:s');
+        $tanggalUbah = Carbon::parse($detailLaporan->updated_at)->translatedFormat('l\\, j F Y H:i:s');
         // return response
-        return response()->json($response, 200);
+        return response()->json([
+            'success' => true,
+            'detail' => [
+                'uuid' => $detailLaporan->uuid,
+                'nomor_laporan' => $detailLaporan->nomor_laporan,
+                'jenis_laporan' => $detailLaporan->jenisLaporan->name,
+                'jenis_pelanggaran' => $detailLaporan->pelanggaran->name,
+                'jenis_apresiasi' => $detailLaporan->jenis_apresiasi == null ? "" : $detailLaporan->japresiasi->name,
+                'lokasi' => $detailLaporan->nama_lokasi,
+                'detil_lokasi' => $detailLaporan->detail_lokasi,
+                'keterangan' => $detailLaporan->keterangan,
+                'photo' => $detailLaporan->photo,
+                'status' => $status,
+                'tanggal_laporan' => $tanggalBuat,
+            ],
+        ]);
     }
 }
