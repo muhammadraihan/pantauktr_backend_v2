@@ -270,7 +270,7 @@ class AuthController extends Controller
         'provider' => $pelapor->provider,
         'firstname' => $pelapor->firstname,
         'lastname' => $pelapor->lastname,
-        'avatar' => $pelapor->lastname,
+        'avatar' => $pelapor->avatar,
         'jumlah_laporan' => $jumlah_laporan,
         'reward_point' => $pelapor->reward_point,
         'last_login' => $pelapor->last_login_at,
@@ -508,7 +508,7 @@ class AuthController extends Controller
       // something went wrong whilst attempting to encode the token
       return response()->json([
         'success' => false,
-        'message' => $e,
+        'message' => 'Logout failed, Token is expired',
       ]);
     }
   }
