@@ -22,11 +22,11 @@ class JwtMiddleware extends BaseMiddleware
       $pelapor = JWTAuth::parseToken()->authenticate();
     } catch (Exception $e) {
       if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-        return response()->json(['success' => false, 'message' => 'TOKEN_IS_INVALID']);
+        return response()->json(['success' => false, 'message' => 'TOKEN_IS_INVALID'], 401);
       } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-        return response()->json(['success' => false, 'message' => 'TOKEN_IS_EXPIRED']);
+        return response()->json(['success' => false, 'message' => 'TOKEN_IS_EXPIRED'], 401);
       } else {
-        return response()->json(['success' => false, 'message' => 'TOKEN_NOT_FOUND']);
+        return response()->json(['success' => false, 'message' => 'TOKEN_NOT_FOUND'], 401);
       }
     }
     return $next($request);
