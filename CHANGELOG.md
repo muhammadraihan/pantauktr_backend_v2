@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.4](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.3...v2.2.4) (2021-04-16)
+
+
+### Bug Fixes
+
+* Avatar on null in profile api ([4fd0579](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/4fd05796455ed101a8c6928d08b2a58c22c4721e))
+
 ### [2.2.3](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.2...v2.2.3) (2021-04-15)
 
 
