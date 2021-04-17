@@ -10,19 +10,19 @@ class ExternalLinkController extends Controller
 {
     public function listLink(Request $request)
     {
-        $blog = External_link::select('uuid','title','description','link')->get();
+        $blog = External_link::select('uuid', 'title', 'description', 'link')->orderByDesc('created_at')->get();
         return response()->json([
             'success' => true,
             'data' => $blog,
-        ],200);
+        ], 200);
     }
 
-    public function getOneBlog(Request $request,$id)
+    public function getOneBlog(Request $request, $id)
     {
-        $blog = External_link::select('uuid','title','description','link')->where('uuid',$id)->first();
+        $blog = External_link::select('uuid', 'title', 'description', 'link')->where('uuid', $id)->first();
         return response()->json([
             'success' => true,
             'data' => $blog,
-        ],200);
+        ], 200);
     }
 }
