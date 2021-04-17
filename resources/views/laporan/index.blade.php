@@ -86,118 +86,120 @@
 <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script>
 <script>
    // Your web app's Firebase configuration
-   var firebaseConfig = {
+//    var firebaseConfig = {
 
-        apiKey: "AIzaSyC50URuPt2twB2PPnVL9EnNfmTutnfzRz8",
-        authDomain: "beaming-inn-300511.firebaseapp.com",
-        projectId: "beaming-inn-300511",
-        storageBucket: "beaming-inn-300511.appspot.com",
-        messagingSenderId: "1026419611530",
-        appId: "1:1026419611530:web:0d434f6cc08fae077f9a73",
-        measurementId: "G-4S57JLB9YP"
-    };
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    //firebase.analytics();
-    const messaging = firebase.messaging();
-    messaging
-    .requestPermission()
-    .then(function () {
-    //MsgElem.innerHTML = "Notification permission granted." 
-    console.log("Notification permission granted.");
+//         apiKey: "AIzaSyC50URuPt2twB2PPnVL9EnNfmTutnfzRz8",
+//         authDomain: "beaming-inn-300511.firebaseapp.com",
+//         projectId: "beaming-inn-300511",
+//         storageBucket: "beaming-inn-300511.appspot.com",
+//         messagingSenderId: "1026419611530",
+//         appId: "1:1026419611530:web:0d434f6cc08fae077f9a73",
+//         measurementId: "G-4S57JLB9YP"
+//     };
+//     // Initialize Firebase
+//     firebase.initializeApp(firebaseConfig);
+//     //firebase.analytics();
+//     const messaging = firebase.messaging();
+    // messaging
+    // .requestPermission()
+    // .then(function () {
+    // //MsgElem.innerHTML = "Notification permission granted." 
+    // console.log("Notification permission granted.");
 
-    // get the token in the form of promise
-    return messaging.getToken()
-    })
-    .then(function(token) {
-    // print the token on the HTML page     
-    console.log('token',token);
+    // // get the token in the form of promise
+    // return messaging.getToken()
+    // })
+    // .then(function(token) {
+    // // print the token on the HTML page     
+    // console.log('token',token);
 
 
 
-    })
-    .catch(function (err) {
-    console.log(err);
-    });
+    // })
+    // .catch(function (err) {
+    // console.log(err);
+    // });
 
-    messaging.onMessage(function(payload) {
-    console.log(payload);
-    var notify;
-    notify = new Notification(payload.notification.title,{
-        body: payload.notification.body,
-        icon: payload.notification.icon,
-        tag: "Dummy"
-    });
-    console.log(payload.notification);
-    });
+    // messaging.onMessage(function(payload) {
+    // console.log(payload);
+    // var notify;
+    // notify = new Notification(payload.notification.title,{
+    //     body: payload.notification.body,
+    //     icon: payload.notification.icon,
+    //     tag: "Dummy"
+    // });
+    // console.log(payload.notification);
+    // });
 
-    self.addEventListener('notificationclick', function(event) {       
-    event.notification.close();
-    });
+    // self.addEventListener('notificationclick', function(event) {       
+    // event.notification.close();
+    // });
 
    $(document).ready(function(){
 
-            $('#tahun').datepicker({
-                orientation: "bottom left",
-                format: " yyyy", // Notice the Extra space at the beginning
-                viewMode: "years",
-                minViewMode: "years",
-                todayHighlight:'TRUE',
-                autoclose: true,
-            });
+        $('#tahun').datepicker({
+            orientation: "bottom left",
+            format: " yyyy", // Notice the Extra space at the beginning
+            viewMode: "years",
+            minViewMode: "years",
+            todayHighlight:'TRUE',
+            autoclose: true,
+        });
 
-            $('#bulan').datepicker({
-                orientation: "bottom left",
-                format: " mm", // Notice the Extra space at the beginning
-                viewMode: "months",
-                minViewMode: "months",
-                todayHighlight:'TRUE',
-                autoclose: true,
-            });
+        $('#bulan').datepicker({
+            orientation: "bottom left",
+            format: " mm", // Notice the Extra space at the beginning
+            viewMode: "months",
+            minViewMode: "months",
+            todayHighlight:'TRUE',
+            autoclose: true,
+        });
 
-            $('#bulan').on('change',function (e){
-                var tahun = $('#tahun').val();
-                console.log(tahun);
-                    var bulan = $(this).val();
-                    var table = $('#datatable').DataTable({
-                        "destroy": true,
-                        "processing": true,
-                        "serverSide": true,
-                        "responsive": true,
-                        "order": [[ 0, "asc" ]],
-                        "ajax":{
-                            cache:false,
-                            url:'{{route('laporan.index')}}',
-                            type : "GET",
-                            data: {bulan: bulan,tahun: tahun},
-                            dataType: 'json',
-                            error: function(data){
-                                console.log(data);
-                                }
-                        },
-                        "columns": [
-                        {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                        {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
-                        {data: 'jenis_laporan', name: 'jenis_laporan'},
-                        {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
-                        {data: 'keterangan', name: 'keterangan'},
-                        {data: 'photo', name: 'photo'},
-                        {data: 'lat', name: 'lat'},
-                        {data: 'lng', name: 'lng'},
-                        {data: 'nama_lokasi', name: 'nama_lokasi'},
-                        {data: 'alamat', name: 'alamat'},
-                        {data: 'kelurahan', name: 'kelurahan'},
-                        {data: 'kecamatan', name: 'kecamatan'},
-                        {data: 'kota', name: 'kota'},
-                        {data: 'propinsi', name: 'propinsi'},
-                        {data: 'negara', name: 'negara'},
-                        {data: 'place_id', name: 'place_id'},
-                        {data: 'created_by', name: 'created_by'},
-                        {data: 'created_at', name: 'created_at'},
-                        {data: 'action',width:'10%',searchable:false}    
-                    ]
-                });
-                e.preventDefault();
+        $('#bulan').on('change',function (e){
+            var tahun = $('#tahun').val();
+            // console.log(tahun);
+            var bulan = $(this).val();
+            // e.preventDefault();
+        });
+
+
+         var table = $('#datatable').DataTable({
+                    "destroy": true,
+                    "processing": true,
+                    "serverSide": true,
+                    "responsive": true,
+                    "order": [[ 0, "asc" ]],
+                    "ajax":{
+                        cache:false,
+                        url:'{{route('laporan.index')}}',
+                        type : "GET",
+                        data: {bulan: bulan,tahun: tahun},
+                        dataType: 'json',
+                        error: function(data){
+                            console.log(data);
+                            }
+                    },
+                    "columns": [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
+                    {data: 'jenis_laporan', name: 'jenis_laporan'},
+                    {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
+                    {data: 'keterangan', name: 'keterangan'},
+                    {data: 'photo', name: 'photo'},
+                    {data: 'lat', name: 'lat'},
+                    {data: 'lng', name: 'lng'},
+                    {data: 'nama_lokasi', name: 'nama_lokasi'},
+                    {data: 'alamat', name: 'alamat'},
+                    {data: 'kelurahan', name: 'kelurahan'},
+                    {data: 'kecamatan', name: 'kecamatan'},
+                    {data: 'kota', name: 'kota'},
+                    {data: 'propinsi', name: 'propinsi'},
+                    {data: 'negara', name: 'negara'},
+                    {data: 'place_id', name: 'place_id'},
+                    {data: 'created_by', name: 'created_by'},
+                    {data: 'created_at', name: 'created_at'},
+                    {data: 'action',width:'10%',searchable:false}    
+                ]
             });
     });
 </script>

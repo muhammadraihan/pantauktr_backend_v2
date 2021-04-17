@@ -40,7 +40,7 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function() {
     Route::resource('operator', 'OperatorController');
     Route::resource('external_link', 'ExternalController');
     Route::get('chart', 'ChartController@index')->name('chart.index');
-    Route::post('chart', 'ChartController@store')->name('chart.store');    
+    Route::post('chart', 'ChartController@store')->name('chart.store');
     Route::get('bulans', 'LaporanController@bulans')->name('get.bulans');
     Route::get('bulan', 'ChartController@bulan')->name('get.bulan');
     Route::get('cetak-pdf-pelanggaran', 'LaporanController@cetakpelanggaran')->name('cetak.laporan_pelanggaran');

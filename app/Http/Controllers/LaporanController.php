@@ -123,7 +123,7 @@ class LaporanController extends Controller
     public function cetakpelanggaran(Request $request, User $uuid){
 
         $users = Auth::user($uuid);
-        if ($request->user()->hasRole('operator')){
+        if ($request->user()->hasRole('pemda')){
             $cetak = DB::table('laporans')
                 ->join('pelanggarans','pelanggarans.uuid','=','laporans.jenis_pelanggaran')
                 ->join('jenis_laporans', 'jenis_laporans.uuid', '=', 'laporans.jenis_laporan')
@@ -145,7 +145,7 @@ class LaporanController extends Controller
 
     public function cetakapresiasi(Request $request, User $uuid){
         $users = Auth::user($uuid);
-        if ($request->user()->hasRole('operator')){
+        if ($request->user()->hasRole('pemda')){
             $cetak = DB::table('laporans')
                 ->join('jenis_apresiasis','jenis_apresiasis.uuid','=','laporans.jenis_apresiasi')
                 ->join('jenis_laporans', 'jenis_laporans.uuid', '=', 'laporans.jenis_laporan')
