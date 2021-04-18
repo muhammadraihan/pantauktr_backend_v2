@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.6](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.5...v2.2.6) (2021-04-18)
+
+
+### Features
+
+* Adding deploy script for production ([510905b](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/510905b1962332999502790e6935f1881fd0bbcb))
+
 ### [2.2.5](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.4...v2.2.5) (2021-04-17)
 
 
