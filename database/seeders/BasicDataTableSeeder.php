@@ -17,22 +17,22 @@ class BasicDataTableSeeder extends Seeder
      */
     public function run()
     {
-        $user = User::where('name','=','superadmin')->first()->uuid;
+        $user = User::where('name', '=', 'superadmin')->first()->uuid;
 
         $laporans = [
-            ['name' => 'Pelanggaran','created_by' => $user],
-            ['name' => 'Apresiasi','created_by' => $user],
+            ['name' => 'Pelanggaran', 'created_by' => $user],
+            ['name' => 'Apresiasi', 'created_by' => $user],
         ];
-        
+
         $pelanggarans = [
-            ['name' => 'Kawasan Tanpa Rokok','keterangan' => 'Jenis pelanggaran di kawasan yang tidak diperbolehkan untuk merokok sesuai peraturan daerah yang berlaku','created_by' => $user],
-            ['name' => 'Point of Sale','keterangan' => 'Jenis pelanggaran berupa penjualan rokok ataupun pemberitahuan tentang adanya penjualan rokok sesuai peraturan daerah yang berlaku','created_by' => $user],
-            ['name' => 'TAPS Ban','keterangan' => 'Jenis pelanggaran berupa pelarangan iklan media luar ruang, promosi dan sponsor produk tembakau.','created_by' => $user],
+            ['name' => 'Kawasan Tanpa Rokok', 'keterangan' => 'Jenis pelanggaran di kawasan yang tidak diperbolehkan untuk merokok sesuai peraturan daerah yang berlaku', 'created_by' => $user],
+            ['name' => 'Point of Sale', 'keterangan' => 'Jenis pelanggaran berupa penjualan rokok ataupun pemberitahuan tentang adanya penjualan rokok sesuai peraturan daerah yang berlaku', 'created_by' => $user],
+            ['name' => 'TAPS Ban', 'keterangan' => 'Jenis pelanggaran berupa pelarangan iklan media luar ruang, promosi dan sponsor produk tembakau.', 'created_by' => $user],
         ];
 
         $apresiasi = [
             'Saran',
-            'Masukan',
+            'Apresiasi',
         ];
 
         if ($this->command->confirm('Seed data referensi jenis laporan? [y|N]', true)) {
@@ -56,17 +56,16 @@ class BasicDataTableSeeder extends Seeder
             $this->command->getOutput()->progressFinish();
             $this->command->info('Data referensi jenis pelanggaran inserted to database');
         }
-        
+
         if ($this->command->confirm('Seed data referensi apresiasi? [y|N]', true)) {
             $this->command->getOutput()->createProgressBar(count($apresiasi));
             $this->command->getOutput()->progressStart();
             foreach ($apresiasi as $apres) {
-                Jenis_apresiasi::firstOrCreate(['name' => $apres,'created_by' => $user]);
+                Jenis_apresiasi::firstOrCreate(['name' => $apres, 'created_by' => $user]);
                 $this->command->getOutput()->progressAdvance();
             }
             $this->command->getOutput()->progressFinish();
             $this->command->info('Data Apresiasi inserted to database');
         }
-
     }
 }

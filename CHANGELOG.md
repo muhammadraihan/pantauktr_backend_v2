@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.5](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.4...v2.2.5) (2021-04-17)
+
+
+### Bug Fixes
+
+* Order by latest link added ([64aa8e9](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/64aa8e913ffdde1bc8d0a4efaf2f5c76dd32b8ef))
+
 ### [2.2.4](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.3...v2.2.4) (2021-04-16)
 
 
