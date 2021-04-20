@@ -40,6 +40,9 @@
                     <input type="text" class="form-control js-bg-target" placeholder="Bulan"
                             id="bulan" name="bulan" autocomplete="off">
                 </div>
+                <div id="" class="form-group col-md-5 mb-3">
+                    <button type="button" name="filter" id="filter" class="btn btn-primary">Filter</button>
+                </div>
                 <div class="panel-content">
                 <a href="{{route('cetak.laporan_pelanggaran')}}" class="btn btn-primary" target="_blank">CETAK PELANGGARAN PDF</a>
                 <a href="{{route('cetak.laporan_apresiasi')}}" class="btn btn-primary" target="_blank">CETAK APRESIASI PDF</a>
@@ -155,54 +158,88 @@
             autoclose: true,
         });
 
-        $('#bulan').on('change',function (e){
+        $('#filter').click(function (e){
             var tahun = $('#tahun').val();
             // console.log(tahun);
-            var bulan = $(this).val();
-            load_data(tahun,bulan);
-            e.preventDefault();
+            var bulan = $('#bulan').val();
+            $('#datatable').DataTable({
+            "destroy": true,
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "order": [[ 0, "asc" ]],
+            "ajax":{
+                cache:false,
+                url:'{{route('get.filter')}}',
+                type : "GET",
+                data: {bulan: bulan,tahun: tahun},
+                dataType: 'json',
+                error: function(data){
+                    console.log(data);
+                    }
+                },
+                "columns": [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
+                {data: 'jenis_laporan', name: 'jenis_laporan'},
+                {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
+                {data: 'keterangan', name: 'keterangan'},
+                {data: 'photo', name: 'photo'},
+                {data: 'lat', name: 'lat'},
+                {data: 'lng', name: 'lng'},
+                {data: 'nama_lokasi', name: 'nama_lokasi'},
+                {data: 'alamat', name: 'alamat'},
+                {data: 'kelurahan', name: 'kelurahan'},
+                {data: 'kecamatan', name: 'kecamatan'},
+                {data: 'kota', name: 'kota'},
+                {data: 'propinsi', name: 'propinsi'},
+                {data: 'negara', name: 'negara'},
+                {data: 'place_id', name: 'place_id'},
+                {data: 'created_by', name: 'created_by'},
+                {data: 'created_at', name: 'created_at'},
+                {data: 'action',width:'10%',searchable:false}    
+            ]
+        });
+            
         });
 
-        function load_data(tahun, bulan) {
-            $('#datatable').DataTable({
-                    "destroy": true,
-                    "processing": true,
-                    "serverSide": true,
-                    "responsive": true,
-                    "order": [[ 0, "asc" ]],
-                    "ajax":{
-                        cache:false,
-                        url:'{{route('laporan.index')}}',
-                        type : "GET",
-                        data: {bulan: bulan,tahun: tahun},
-                        dataType: 'json',
-                        error: function(data){
-                            console.log(data);
-                            }
-                    },
-                    "columns": [
-                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                    {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
-                    {data: 'jenis_laporan', name: 'jenis_laporan'},
-                    {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
-                    {data: 'keterangan', name: 'keterangan'},
-                    {data: 'photo', name: 'photo'},
-                    {data: 'lat', name: 'lat'},
-                    {data: 'lng', name: 'lng'},
-                    {data: 'nama_lokasi', name: 'nama_lokasi'},
-                    {data: 'alamat', name: 'alamat'},
-                    {data: 'kelurahan', name: 'kelurahan'},
-                    {data: 'kecamatan', name: 'kecamatan'},
-                    {data: 'kota', name: 'kota'},
-                    {data: 'propinsi', name: 'propinsi'},
-                    {data: 'negara', name: 'negara'},
-                    {data: 'place_id', name: 'place_id'},
-                    {data: 'created_by', name: 'created_by'},
-                    {data: 'created_at', name: 'created_at'},
-                    {data: 'action',width:'10%',searchable:false}    
-                ]
-            });
-        }
+        $('#datatable').DataTable({
+            "destroy": true,
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "order": [[ 0, "asc" ]],
+            "ajax":{
+                cache:false,
+                url:'{{route('laporan.index')}}',
+                type : "GET",
+                dataType: 'json',
+                error: function(data){
+                    console.log(data);
+                    }
+                },
+                "columns": [
+                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
+                {data: 'jenis_laporan', name: 'jenis_laporan'},
+                {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
+                {data: 'keterangan', name: 'keterangan'},
+                {data: 'photo', name: 'photo'},
+                {data: 'lat', name: 'lat'},
+                {data: 'lng', name: 'lng'},
+                {data: 'nama_lokasi', name: 'nama_lokasi'},
+                {data: 'alamat', name: 'alamat'},
+                {data: 'kelurahan', name: 'kelurahan'},
+                {data: 'kecamatan', name: 'kecamatan'},
+                {data: 'kota', name: 'kota'},
+                {data: 'propinsi', name: 'propinsi'},
+                {data: 'negara', name: 'negara'},
+                {data: 'place_id', name: 'place_id'},
+                {data: 'created_by', name: 'created_by'},
+                {data: 'created_at', name: 'created_at'},
+                {data: 'action',width:'10%',searchable:false}    
+            ]
+        });
     });
 </script>
 @endsection

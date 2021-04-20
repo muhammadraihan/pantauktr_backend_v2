@@ -52,18 +52,14 @@ class LaporanController extends Controller
 
         if (request()->ajax()) {
                 DB::statement(DB::raw('set @rownum=0'));
-                if ($request->user()->hasRole('operator')){
+                if ($request->user()->hasRole('pemda')){
                     $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
                     'id','uuid','jenis_pelanggaran', 'jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
                     ->where('kota', 'like', $users->city->city_name)
-                    ->whereYear('created_at', (int)$request['tahun'])
-                    ->whereMonth('created_at', (int)$request['bulan'])
                     ->get();
                 }else{
                     $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
                     'id','uuid','jenis_pelanggaran','jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
-                    ->whereYear('created_at', $request['tahun'])
-                    ->whereMonth('created_at', $request['bulan'])
                     ->get();
                 }
             return Datatables::of($userss) 
@@ -101,19 +97,56 @@ class LaporanController extends Controller
         return view('laporan.index', compact('users','kota','year','month'));
     }
 
-    public function bulans(Request $request, User $uuid){
+    public function filter(Request $request, User $uuid){
         $users = Auth::user($uuid);
 
-        if ($request->user()->hasRole('operator')){
-            $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','jenis_pelanggaran', 'jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
-                ->where('kota', 'like', $users->city->city_name)
+        if (request()->ajax()) {
+            if ($request->user()->hasRole('pemda')){
+                $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                'id','uuid','jenis_pelanggaran', 'jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
+                    ->where('kota', 'like', $users->city->city_name)
+                    ->whereYear('created_at', (int)$request['tahun'])
+                    ->whereMonth('created_at', (int)$request['bulan'])
+                    ->get();
+            }else{
+                $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                'id','uuid','jenis_pelanggaran','jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
+                ->whereYear('created_at', $request['tahun'])
+                ->whereMonth('created_at', $request['bulan'])
                 ->get();
-          }else{
-            $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','jenis_pelanggaran','jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])->get();
-          }
-        return response()->json($userss);
+            }
+
+          return Datatables::of($userss) 
+                    ->addIndexColumn()
+                    ->editColumn('created_by',function($row){
+                        return $row->userCreate->name ?? null;
+                    })
+                    ->editColumn('jenis_pelanggaran',function($row){
+                        return $row->pelanggaran->name ?? null;
+                        
+                    })
+                    ->editColumn('jenis_apresiasi',function($row){
+                        return $row->japresiasi->name ?? null;
+                    })
+                    ->editColumn('jenis_laporan',function($row){
+                        return $row->jenislaporan->name ;
+                    })
+                    ->editColumn('photo', function($row){
+                        $url = asset('publiclampiran');
+                        return '<img style="width: 150px; height: 150px;"  src="'.$url.'/'.$row->created_by.'/'.$row->photo.'" alt="">';
+                    })
+                    ->editColumn('created_at',function($row){
+                        return Carbon::parse($row->created_at)->format('l\\, j F Y H:i:s');
+                    })
+                    ->addColumn('action', function($row){
+                        return '
+                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="'.route('tindaklanjut.index',$row->uuid).'"><i class="fal fa-edit"></i></a>';
+                 })
+            ->removeColumn('id')
+            ->removeColumn('uuid')
+            ->rawColumns(['photo','action'])
+            ->make(true);
+        }
     }
 
     public function cetakpelanggaran(Request $request, User $uuid){
