@@ -159,11 +159,12 @@
             var tahun = $('#tahun').val();
             // console.log(tahun);
             var bulan = $(this).val();
-            // e.preventDefault();
+            load_data(tahun,bulan);
+            e.preventDefault();
         });
 
-
-         var table = $('#datatable').DataTable({
+        function load_data(tahun, bulan) {
+            $('#datatable').DataTable({
                     "destroy": true,
                     "processing": true,
                     "serverSide": true,
@@ -201,6 +202,7 @@
                     {data: 'action',width:'10%',searchable:false}    
                 ]
             });
+        }
     });
 </script>
 @endsection

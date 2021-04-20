@@ -51,21 +51,21 @@ class LaporanController extends Controller
                     ->get();
 
         if (request()->ajax()) {
-          DB::statement(DB::raw('set @rownum=0'));
-          if ($request->user()->hasRole('operator')){
-            $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','jenis_pelanggaran', 'jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
-            ->where('kota', 'like', $users->city->city_name)
-            ->whereYear('created_at', (int)$request['tahun'])
-            ->whereMonth('created_at', (int)$request['bulan'])
-            ->get();
-          }else{
-            $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','jenis_pelanggaran','jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
-            ->whereYear('created_at', $request['tahun'])
-            ->whereMonth('created_at', $request['bulan'])
-            ->get();
-          }
+                DB::statement(DB::raw('set @rownum=0'));
+                if ($request->user()->hasRole('operator')){
+                    $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                    'id','uuid','jenis_pelanggaran', 'jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
+                    ->where('kota', 'like', $users->city->city_name)
+                    ->whereYear('created_at', (int)$request['tahun'])
+                    ->whereMonth('created_at', (int)$request['bulan'])
+                    ->get();
+                }else{
+                    $userss = Laporan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                    'id','uuid','jenis_pelanggaran','jenis_laporan', 'jenis_apresiasi', 'keterangan','photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by','created_at'])
+                    ->whereYear('created_at', $request['tahun'])
+                    ->whereMonth('created_at', $request['bulan'])
+                    ->get();
+                }
             return Datatables::of($userss) 
                     ->addIndexColumn()
                     ->editColumn('created_by',function($row){
@@ -96,10 +96,6 @@ class LaporanController extends Controller
             ->removeColumn('uuid')
             ->rawColumns(['photo','action'])
             ->make(true);
-        }
-
-        if(!empty($this->province)){
-            $this->kota = Kota::where('province_code', $this->province)->get();
         }
 
         return view('laporan.index', compact('users','kota','year','month'));
