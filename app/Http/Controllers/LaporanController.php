@@ -149,50 +149,6 @@ class LaporanController extends Controller
         }
     }
 
-    public function cetakpelanggaran(Request $request, User $uuid){
-
-        $users = Auth::user($uuid);
-        if ($request->user()->hasRole('pemda')){
-            $cetak = DB::table('laporans')
-                ->join('pelanggarans','pelanggarans.uuid','=','laporans.jenis_pelanggaran')
-                ->join('jenis_laporans', 'jenis_laporans.uuid', '=', 'laporans.jenis_laporan')
-                ->select('laporans.jenis_pelanggaran','pelanggarans.name as nama_pelanggaran', 'laporans.jenis_laporan', 'jenis_laporans.name as nama_laporan','laporans.keterangan', 'laporans.nama_lokasi', 'laporans.alamat', 'laporans.kota',
-                'laporans.propinsi', 'laporans.negara', 'laporans.place_id')
-                ->where('laporans.kota','like',$users->city->city_name)
-                ->get();
-        }else{
-            $cetak = DB::table('laporans')
-                ->join('pelanggarans','pelanggarans.uuid','=','laporans.jenis_pelanggaran')
-                ->join('jenis_laporans', 'jenis_laporans.uuid', '=', 'laporans.jenis_laporan')
-                ->select('laporans.jenis_pelanggaran','pelanggarans.name as nama_pelanggaran', 'laporans.jenis_laporan', 'jenis_laporans.name as nama_laporan','laporans.keterangan', 'laporans.nama_lokasi', 'laporans.alamat', 'laporans.kota',
-                'laporans.propinsi', 'laporans.negara', 'laporans.place_id')
-                ->get();
-        }
-        $pdf = PDF::loadview('laporan.laporan_pelanggaran_pdf', compact('cetak'))->setPaper('a4', 'landscape');
-        return $pdf->download('laporan-jenis-pelanggaran.pdf', compact('cetak'));
-    }
-
-    public function cetakapresiasi(Request $request, User $uuid){
-        $users = Auth::user($uuid);
-        if ($request->user()->hasRole('pemda')){
-            $cetak = DB::table('laporans')
-                ->join('jenis_apresiasis','jenis_apresiasis.uuid','=','laporans.jenis_apresiasi')
-                ->join('jenis_laporans', 'jenis_laporans.uuid', '=', 'laporans.jenis_laporan')
-                ->select('laporans.jenis_apresiasi','jenis_apresiasis.name as nama_apresiasi', 'laporans.jenis_laporan', 'jenis_laporans.name as nama_laporan','laporans.keterangan', 'laporans.nama_lokasi', 'laporans.alamat', 'laporans.kota',
-                'laporans.propinsi', 'laporans.negara', 'laporans.place_id')
-                ->where('laporans.kota','like',$users->city->city_name)
-                ->get();
-        }else{
-            $cetak = DB::table('laporans')
-                ->join('jenis_apresiasis','jenis_apresiasis.uuid','=','laporans.jenis_apresiasi')
-                ->join('jenis_laporans', 'jenis_laporans.uuid', '=', 'laporans.jenis_laporan')
-                ->select('laporans.jenis_apresiasi','jenis_apresiasis.name as nama_apresiasi', 'laporans.jenis_laporan', 'jenis_laporans.name as nama_laporan','laporans.keterangan', 'laporans.nama_lokasi', 'laporans.alamat', 'laporans.kota',
-                'laporans.propinsi', 'laporans.negara', 'laporans.place_id')
-                ->get();
-        }
-        $pdf = PDF::loadview('laporan.laporan_apresiasi_pdf', compact('cetak'))->setPaper('a4', 'landscape');
-        return $pdf->download('laporan-jenis-apresiasi.pdf', compact('cetak'));
-    }
 
     /**
      * Show the form for creating a new resource.
