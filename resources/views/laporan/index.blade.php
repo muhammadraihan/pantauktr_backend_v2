@@ -172,7 +172,10 @@
                 {
                     extend: 'pdfHtml5',
                     orientation: 'landscape',
-                    pageSize: 'LEGAL'
+                    pageSize: 'LEGAL',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3,4,8,9,10,11,12,13,14]
+                    }
                 }
             ],
             "destroy": true,
@@ -221,7 +224,10 @@
                 {
                     extend: 'pdfHtml5',
                     orientation: 'landscape',
-                    pageSize: 'LEGAL'
+                    pageSize: 'LEGAL',
+                    exportOptions: {
+                        columns: [ 0, 1, 2, 3,4,8,9,10,11,12,13,14]
+                    }
                 }
             ],
             "destroy": true,
