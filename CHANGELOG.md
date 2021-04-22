@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.2.7](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.6...v2.2.7) (2021-04-22)
+
+
+### Bug Fixes
+
+* Fix timezone in app ([f92021d](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/f92021df0257fd45d6afac665f02525da6392735))
+
 ### [2.2.6](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.5...v2.2.6) (2021-04-18)
 
 
