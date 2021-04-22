@@ -40,13 +40,11 @@ class ChartController extends Controller
                     ->groupBy('bulan')
                     ->get();
 
-        if ($request->user()->hasRole('operator'))
+        if ($request->user()->hasRole('pemda'))
         {
             $laporan_pelanggaran = DB::table('laporans')
                             ->join('pelanggarans','pelanggarans.uuid','=','laporans.jenis_pelanggaran')
                             ->select('laporans.jenis_pelanggaran','pelanggarans.name')
-                            ->whereYear('laporans.created_at', $request['tahun'])
-                            ->whereMonth('laporans.created_at', $request['bulan'])
                             ->where('laporans.kota','like',$users->city->city_name)
                             ->get();
 
@@ -59,8 +57,6 @@ class ChartController extends Controller
             $laporan_apresiasi = DB::table('laporans')
                             ->join('jenis_apresiasis','jenis_apresiasis.uuid','=','laporans.jenis_apresiasi')
                             ->select('laporans.jenis_apresiasi','jenis_apresiasis.name')
-                            ->whereYear('laporans.created_at', $request['tahun'])
-                            ->whereMonth('laporans.created_at', $request['bulan'])
                             ->where('laporans.kota','like',$users->city->city_name)
                             ->get();
 
@@ -73,8 +69,6 @@ class ChartController extends Controller
             $laporan_pelanggaran = DB::table('laporans')
                             ->join('pelanggarans','pelanggarans.uuid','=','laporans.jenis_pelanggaran')
                             ->select('laporans.jenis_pelanggaran','pelanggarans.name')
-                            ->whereYear('laporans.created_at', $request['tahun'])
-                            ->whereMonth('laporans.created_at', $request['bulan'])
                             ->get();
 
             $lapPelanggaran = $laporan_pelanggaran->groupBy('name');
@@ -87,8 +81,6 @@ class ChartController extends Controller
             $laporan_apresiasi = DB::table('laporans')
                             ->join('jenis_apresiasis','jenis_apresiasis.uuid','=','laporans.jenis_apresiasi')
                             ->select('laporans.jenis_apresiasi','jenis_apresiasis.name')
-                            ->whereYear('laporans.created_at', $request['tahun'])
-                            ->whereMonth('laporans.created_at', $request['bulan'])
                             ->get();
 
             $lapApresiasi = $laporan_apresiasi->groupBy('name');
@@ -118,78 +110,80 @@ class ChartController extends Controller
                     'data_pelanggaran','data_apresiasi','year', 'month'));
     }
 
-    public function bulan(Request $request, User $uuid){
+    public function filter(Request $request, User $uuid){
         $users = Auth::user($uuid);
-        if ($request->user()->hasRole('operator'))
-        {
-            $laporan_pelanggaran = DB::table('laporans')
+        if (request()->ajax()) {
+            if ($request->user()->hasRole('pemda'))
+            {
+                $laporan_pelanggaran = DB::table('laporans')
+                                    ->join('pelanggarans','pelanggarans.uuid','=','laporans.jenis_pelanggaran')
+                                    ->select('laporans.jenis_pelanggaran','pelanggarans.name')
+                                    ->whereYear('laporans.created_at', $request['tahun'])
+                                    ->whereMonth('laporans.created_at', $request['bulan'])
+                                    ->where('laporans.kota','like',$users->city->city_name)
+                                    ->get();
+
+                $lapPelanggaran = $laporan_pelanggaran->groupBy('name');
+                $arrPelanggaran = array();
+                foreach ($lapPelanggaran as $key => $value) {
+                $arrPelanggaran[$key] = count($value);
+                }
+
+                $laporan_apresiasi = DB::table('laporans')
+                                    ->join('jenis_apresiasis','jenis_apresiasis.uuid','=','laporans.jenis_apresiasi')
+                                    ->select('laporans.jenis_apresiasi','jenis_apresiasis.name')
+                                    ->whereYear('laporans.created_at', $request['tahun'])
+                                    ->whereMonth('laporans.created_at', $request['bulan'])
+                                    ->where('laporans.kota','like',$users->city->city_name)
+                                    ->get();
+
+                $lapApresiasi = $laporan_apresiasi->groupBy('name');
+                $arrApresiasi = array();
+                foreach ($lapApresiasi as $key => $value) {
+                $arrApresiasi[$key] = count($value);
+                }
+            }else{
+                $laporan_pelanggaran = DB::table('laporans')
                                 ->join('pelanggarans','pelanggarans.uuid','=','laporans.jenis_pelanggaran')
                                 ->select('laporans.jenis_pelanggaran','pelanggarans.name')
                                 ->whereYear('laporans.created_at', $request['tahun'])
                                 ->whereMonth('laporans.created_at', $request['bulan'])
-                                ->where('laporans.kota','like',$users->city->city_name)
                                 ->get();
+                $lapPelanggaran = $laporan_pelanggaran->groupBy('name');
+                $arrPelanggaran = array();
+                foreach ($lapPelanggaran as $key => $value) {
+                    $arrPelanggaran[$key] = count($value);
+                }
 
-            $lapPelanggaran = $laporan_pelanggaran->groupBy('name');
-            $arrPelanggaran = array();
-            foreach ($lapPelanggaran as $key => $value) {
-            $arrPelanggaran[$key] = count($value);
-            }
-
-            $laporan_apresiasi = DB::table('laporans')
+                $laporan_apresiasi = DB::table('laporans')
                                 ->join('jenis_apresiasis','jenis_apresiasis.uuid','=','laporans.jenis_apresiasi')
                                 ->select('laporans.jenis_apresiasi','jenis_apresiasis.name')
                                 ->whereYear('laporans.created_at', $request['tahun'])
                                 ->whereMonth('laporans.created_at', $request['bulan'])
-                                ->where('laporans.kota','like',$users->city->city_name)
                                 ->get();
 
-            $lapApresiasi = $laporan_apresiasi->groupBy('name');
-            $arrApresiasi = array();
-            foreach ($lapApresiasi as $key => $value) {
-            $arrApresiasi[$key] = count($value);
+                $lapApresiasi = $laporan_apresiasi->groupBy('name');
+                $arrApresiasi = array();
+                foreach ($lapApresiasi as $key => $value) {
+                    $arrApresiasi[$key] = count($value);
+                }
             }
-        }else{
-            $laporan_pelanggaran = DB::table('laporans')
-                            ->join('pelanggarans','pelanggarans.uuid','=','laporans.jenis_pelanggaran')
-                            ->select('laporans.jenis_pelanggaran','pelanggarans.name')
-                            ->whereYear('laporans.created_at', $request['tahun'])
-                            ->whereMonth('laporans.created_at', $request['bulan'])
-                            ->get();
-            $lapPelanggaran = $laporan_pelanggaran->groupBy('name');
-            $arrPelanggaran = array();
-            foreach ($lapPelanggaran as $key => $value) {
-                $arrPelanggaran[$key] = count($value);
-            }
+                                            
+                $jenis_pelanggaran = [];
+                $jenis_apresiasi = [];
+                $data_pelanggaran = [];
+                $data_apresiasi = [];
 
-            $laporan_apresiasi = DB::table('laporans')
-                            ->join('jenis_apresiasis','jenis_apresiasis.uuid','=','laporans.jenis_apresiasi')
-                            ->select('laporans.jenis_apresiasi','jenis_apresiasis.name')
-                            ->whereYear('laporans.created_at', $request['tahun'])
-                            ->whereMonth('laporans.created_at', $request['bulan'])
-                            ->get();
+                foreach($laporan_pelanggaran as $lp){
+                    $jenis_pelanggaran[] = $lp->name;
+                    $data_pelanggaran[] = $laporan_pelanggaran;
+                }
 
-            $lapApresiasi = $laporan_apresiasi->groupBy('name');
-            $arrApresiasi = array();
-            foreach ($lapApresiasi as $key => $value) {
-                $arrApresiasi[$key] = count($value);
+                foreach($laporan_apresiasi as $ls){
+                    $jenis_apresiasi[] = $ls->name;
+                    $data_apresiasi[] = $laporan_apresiasi;
+                }
             }
-        }
-                                        
-            $jenis_pelanggaran = [];
-            $jenis_apresiasi = [];
-            $data_pelanggaran = [];
-            $data_apresiasi = [];
-
-            foreach($laporan_pelanggaran as $lp){
-                $jenis_pelanggaran[] = $lp->name;
-                $data_pelanggaran[] = $laporan_pelanggaran;
-            }
-
-            foreach($laporan_apresiasi as $ls){
-                $jenis_apresiasi[] = $ls->name;
-                $data_apresiasi[] = $laporan_apresiasi;
-            }
-        return response()->json([$arrPelanggaran, $arrApresiasi]);
+            return response()->json([$arrPelanggaran, $arrApresiasi]);
     }
 }

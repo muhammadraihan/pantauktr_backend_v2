@@ -40,6 +40,9 @@
                     <input type="text" class="form-control js-bg-target" placeholder="Bulan"
                             id="bulan" name="bulan" autocomplete="off">
                 </div>
+                <div id="" class="form-group col-md-5 mb-3">
+                    <button type="button" name="filter" id="filter" class="btn btn-primary">Filter</button>
+                </div>
                 <div class="panel-content">
                     <div id="chartPelanggaran"></div>
                     <div id="chartApresiasi"></div>
@@ -76,13 +79,13 @@
             autoclose: true,
         });
 
-        $('#bulan').on('change',function (e){
+        $('#filter').click(function (e){
             var tahun = $('#tahun').val();
-            var bulan = $(this).val();
+            var bulan = $('#bulan').val();
             var formatbulan = moment(bulan, 'MM').format('MMMM');
 
         $.ajax({
-            url: "{{route('get.bulan')}}",
+            url: "{{route('get.filters')}}",
             type: 'GET',
             data: {bulan: bulan, tahun: tahun},
             success: function (response) {
@@ -147,6 +150,71 @@
             }
         });
     });
+        var data = {!!json_encode($arrPelanggaran)!!}
+            // console.log(data);
+            var series = [];
+            var values = [];
+            for (const [key, value] of Object.entries(data)) {
+                series.push(key);
+                values.push(value);
+            //   console.log(key, value);
+            }
+            // console.log(series,values);
+                Highcharts.chart('chartPelanggaran', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Chart Pelanggaran' 
+                    },
+                    xAxis: {
+                        categories: series,
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Jumlah Laporan'
+                        }
+                    },
+                    series: [{
+                        name: series,
+                        data: values
+                    }],
+
+                });
+                
+                var data = {!!json_encode($arrApresiasi)!!}
+                // console.log(data);
+                var apresiasi = [];
+                var laporan = [];
+                for (const [key, value] of Object.entries(data)) {
+                    apresiasi.push(key);
+                    laporan.push(value);
+                //   console.log(key, value);
+                }
+                Highcharts.chart('chartApresiasi', {
+                    chart: {
+                        type: 'column'
+                    },
+                    title: {
+                        text: 'Chart Apresiasi'
+                    },
+                    xAxis: {
+                        categories: apresiasi,
+                        crosshair: true
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Jumlah Laporan'
+                        }
+                    },
+                    series: [{
+                        name: apresiasi,
+                        data: laporan
+                    }]
+                });
 
 </script>
 @endsection

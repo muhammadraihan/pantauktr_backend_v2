@@ -28,6 +28,7 @@
 				<th style="vertical-align:middle;text-align:center;">Provinsi</th>
 				<th style="vertical-align:middle;text-align:center;">Negara</th>
 				<th style="vertical-align:middle;text-align:center;">Place ID</th>
+				<th style="vertical-align:middle;text-align:center;">Created At</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -44,6 +45,7 @@
 				<td>{{$p->propinsi}}</td>
 				<td>{{$p->negara}}</td>
 				<td>{{$p->place_id}}</td>
+				<td>{{$p->created_at}}</td>
 			</tr>
 			@endforeach
 		</tbody>
