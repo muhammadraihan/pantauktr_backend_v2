@@ -22,7 +22,7 @@ class PelaporTableSeeder extends Seeder
             'password' => Hash::make('password'),
             'provider' => 'Google',
             'avatar' => '',
-            'reward_point' => '',
+            // 'reward_point' => '',
             'last_login_ip' => '',
             'last_login_at' => ','
         ]);

@@ -37,12 +37,112 @@
             </a>
         </div>
         <ul id="js-nav-menu" class="nav-menu">
+            <li class="nav-title">Menu</li>
+
             <li>
                 <a href="{{route('backoffice.dashboard')}}" title="Dashboard" data-filter-tags="dashboard">
                     <i class="fal fa-desktop"></i>
                     <span class="nav-link-text">Dashboard</span>
                 </a>
             </li>
+            @hasanyrole('superadmin|pusaka')
+            <li class="">
+                <a href="{{route('external_link.index')}}" title="Theme Settings" data-filter-tags="theme settings">
+                    <i class="fal fa-external-link-square"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">External Link</span>
+                </a>
+            </li>
+            @endhasanyrole
+            @hasanyrole('superadmin|pusaka|kementrian|pemda')
+            <li class="">
+                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                    <i class="fal fa-clipboard-list"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">Laporan</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{route('laporan.index')}}" title="Laporan Management"
+                            data-filter-tags="laporan managements">
+                            <span class="nav-link-text" data-i18n="nav.users_managements">Laporan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('chart.index')}}" title="Chart Management"
+                            data-filter-tags="Chart managements">
+                            <span class="nav-link-text" data-i18n="nav.users_managements">Chart</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @endhasanyrole
+            @hasanyrole('superadmin|pusaka')
+            <li class="">
+                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                    <i class="fal fa-cogs"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">Operator</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{route('operator.index')}}" title="Operator Management"
+                            data-filter-tags="operators managements">
+                            <span class="nav-link-text" data-i18n="nav.operators_managements">Operator</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('operator_type.index')}}" title="Operator Type Management"
+                            data-filter-tags="operators type managements">
+                            <span class="nav-link-text" data-i18n="nav.operators_type_managements">Operator Type</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+            <li class="">
+                <a href="{{route('pelapor.index')}}" title="Theme Settings" data-filter-tags="theme settings">
+                    <i class="fal fa-users"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">Pelapor</span>
+                </a>
+            </li>
+
+            <li class="">
+                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                    <i class="fal fa-tasks"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">Referensi</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="{{route('pelanggaran.index')}}" title="Jenis Pelanggaran Management"
+                            data-filter-tags="users managements">
+                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Pelanggaran</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('jenis_laporan.index')}}" title="Jenis Laporan Management"
+                            data-filter-tags="users managements">
+                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Laporan</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('jenis_apresiasi.index')}}" title="Jenis Laporan Management"
+                            data-filter-tags="users managements">
+                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Apresiasi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('province.index')}}" title="Province Management"
+                            data-filter-tags="province managements">
+                            <span class="nav-link-text" data-i18n="nav.users_managements">Province</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('kota.index')}}" title="Kota Management"
+                            data-filter-tags="kota managements">
+                            <span class="nav-link-text" data-i18n="nav.users_managements">City</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            @endhasanyrole
             @hasanyrole('superadmin')
             <li class="nav-title">ACL & Settings</li>
             <li class="">
@@ -73,177 +173,7 @@
                     </li>
                 </ul>
             </li>
-            @endhasanyrole
-            @hasanyrole('superadmin')
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-atlas"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Jenis Pelanggaran</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('pelanggaran.index')}}" title="Jenis Pelanggaran Management"
-                            data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Pelanggaran</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @endhasanyrole
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Operator</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('operator.index')}}" title="Operator Management"
-                            data-filter-tags="operators managements">
-                            <span class="nav-link-text" data-i18n="nav.operators_managements">Operator</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @hasanyrole('superadmin')
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Operator Type</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('operator_type.index')}}" title="Operator Type Management"
-                            data-filter-tags="operators type managements">
-                            <span class="nav-link-text" data-i18n="nav.operators_type_managements">Operator Type</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @endhasanyrole
-            @hasanyrole('superadmin')
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Jenis Laporan</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('jenis_laporan.index')}}" title="Jenis Laporan Management"
-                            data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Laporan</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @endhasanyrole
-            @hasanyrole('superadmin')
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Jenis Apresiasi</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('jenis_apresiasi.index')}}" title="Jenis Laporan Management"
-                            data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Apresiasi</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @endhasanyrole
-            @hasanyrole('superadmin')
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">City</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('kota.index')}}" title="Kota Management"
-                            data-filter-tags="kota managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">City</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @endhasanyrole
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Pelapor</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('pelapor.index')}}" title="Pelapor Management"
-                            data-filter-tags="pelapor managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Pelapor</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @hasanyrole('superadmin')
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Province</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('province.index')}}" title="Province Management"
-                            data-filter-tags="province managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Province</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @endhasanyrole
-
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">External Link</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('external_link.index')}}" title="External Link Management"
-                            data-filter-tags="external link managements">
-                            <span class="nav-link-text" data-i18n="nav.operators_managements">External Link</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Laporan</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('laporan.index')}}" title="Laporan Management"
-                            data-filter-tags="laporan managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Laporan</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-
-            <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Chart</span>
-                </a>
-                <ul>
-                    <li>
-                        <a href="{{route('chart.index')}}" title="Chart Management"
-                            data-filter-tags="Chart managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Chart</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            @hasanyrole('superadmin')
+            
             <li class="">
                 <a href="{{route('logs')}}" title="System Log" data-filter-tags="System Log">
                     <i class="fal fa-shield-check"></i>
