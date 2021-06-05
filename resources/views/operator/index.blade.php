@@ -23,7 +23,7 @@
                     Operator <span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
-                    @can('add_users')
+                    @can('add_operator')
                     <a class="nav-link active" href="{{route('operator.create')}}"><i class="fal fa-plus-circle">
                         </i>
                         <span class="nav-link-text">Add New</span>
@@ -41,7 +41,6 @@
                             <tr>
                                 <th>#</th>
                                 <th>Username</th>
-                                <th>Role</th>
                                 <th>City</th>
                                 <th>Operator Type</th>
                                 <th>Last Login</th>
@@ -105,7 +104,6 @@
             "columns": [
                 {data:'rownum',width:'*',searchable:false},
                 {data: 'email',width:'*'},
-                {data: 'role',width:'*'},
                 {data: 'city_id', width: '*'},
                 {data: 'operator_id', width: '*'},
                 {data: 'last_login_at',width:'*'},

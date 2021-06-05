@@ -5,8 +5,8 @@
 @section('css')
 <link rel="stylesheet" media="screen, print" href="{{asset('css/formplugins/select2/select2.bundle.css')}}">
 <link rel="stylesheet" media="screen, print" href="{{asset('css/datagrid/datatables/datatables.bundle.css')}}">
-<link rel="stylesheet" media="screen, print" href="{{asset('css/formplugins/bootstrap-datepicker/bootstrap-datepicker.css')}}">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css">
+<link rel="stylesheet" media="screen, print"
+    href="{{asset('css/formplugins/bootstrap-datepicker/bootstrap-datepicker.css')}}">
 @endsection
 
 @section('content')
@@ -14,7 +14,7 @@
     <h1 class="subheader-title">
         <i class='subheader-icon fal fa-users'></i> Module: <span class='fw-300'>Laporan</span>
         <small>
-            Module for manage user access.
+            Module for manage laporan.
         </small>
     </h1>
 </div>
@@ -22,7 +22,7 @@
     <div class="col-xl-12">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>
+                <h2>
                     Laporan <span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
@@ -31,18 +31,20 @@
                 </div>
             </div>
             <div class="panel-container show">
-            <div class="form-group col-md-5 mb-3">
+                <div class="form-group col-md-5 mb-3">
                     <label>Tahun</label>
-                    <input type="text" class="form-control js-bg-target" placeholder="Tahun"
-                            id="tahun" name="tahun" autocomplete="off">
+                    <input type="text" class="form-control js-bg-target" placeholder="Tahun" id="tahun" name="tahun"
+                        autocomplete="off">
                 </div>
                 <div id="" class="form-group col-md-5 mb-3">
                     <label>Bulan</label>
-                    <input type="text" class="form-control js-bg-target" placeholder="Bulan"
-                            id="bulan" name="bulan" autocomplete="off">
+                    <input type="text" class="form-control js-bg-target" placeholder="Bulan" id="bulan" name="bulan"
+                        autocomplete="off">
                 </div>
                 <div id="" class="form-group col-md-5 mb-3">
                     <button type="button" name="filter" id="filter" class="btn btn-primary">Filter</button>
+                    <button type="button" name="resetFilter" id="resetFilter" class="btn btn-primary">Reset
+                        Filter</button>
                 </div>
                 <div class="panel-content">
                     <!-- datatable start -->
@@ -50,14 +52,15 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Jenis Pelanggaran</th>
                                 <th>Jenis Laporan</th>
+                                <th>Jenis Pelanggaran</th>
                                 <th>Jenis Apresiasi</th>
                                 <th>Keterangan</th>
                                 <th>Photo</th>
+                                <th>Nama Lokasi</th>
+                                <th>Tanggal</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
-                                <th>Nama Lokasi</th>
                                 <th>Alamat</th>
                                 <th>Kelurahan</th>
                                 <th>Kecamatan</th>
@@ -65,11 +68,9 @@
                                 <th>Provinsi</th>
                                 <th>Negara</th>
                                 <th>Place ID</th>
-                                <th>Created By</th>
-                                <th>Created At</th>
                                 <th>Tindak lanjut</th>
-                                </tr>
-                            </thead>
+                            </tr>
+                        </thead>
                     </table>
                 </div>
             </div>
@@ -80,69 +81,20 @@
 
 @section('js')
 <script src="{{asset('js/datagrid/datatables/datatables.bundle.js')}}"></script>
+<script src="{{asset('js/datagrid/datatables/datatables.export.js')}}"></script>
 <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
 <script src="{{asset('js/formplugins/bootstrap-datepicker/bootstrap-datepicker.js')}}"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+{{-- <script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script> --}}
 
-<script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script>
+{{-- <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script> --}}
 <script>
-   // Your web app's Firebase configuration
-//    var firebaseConfig = {
-
-//         apiKey: "AIzaSyC50URuPt2twB2PPnVL9EnNfmTutnfzRz8",
-//         authDomain: "beaming-inn-300511.firebaseapp.com",
-//         projectId: "beaming-inn-300511",
-//         storageBucket: "beaming-inn-300511.appspot.com",
-//         messagingSenderId: "1026419611530",
-//         appId: "1:1026419611530:web:0d434f6cc08fae077f9a73",
-//         measurementId: "G-4S57JLB9YP"
-//     };
-//     // Initialize Firebase
-//     firebase.initializeApp(firebaseConfig);
-//     //firebase.analytics();
-//     const messaging = firebase.messaging();
-    // messaging
-    // .requestPermission()
-    // .then(function () {
-    // //MsgElem.innerHTML = "Notification permission granted." 
-    // console.log("Notification permission granted.");
-
-    // // get the token in the form of promise
-    // return messaging.getToken()
-    // })
-    // .then(function(token) {
-    // // print the token on the HTML page     
-    // console.log('token',token);
-
-
-
-    // })
-    // .catch(function (err) {
-    // console.log(err);
-    // });
-
-    // messaging.onMessage(function(payload) {
-    // console.log(payload);
-    // var notify;
-    // notify = new Notification(payload.notification.title,{
-    //     body: payload.notification.body,
-    //     icon: payload.notification.icon,
-    //     tag: "Dummy"
-    // });
-    // console.log(payload.notification);
-    // });
-
-    // self.addEventListener('notificationclick', function(event) {       
-    // event.notification.close();
-    // });
-
-   $(document).ready(function(){
+    $(document).ready(function(){
 
         $('#tahun').datepicker({
             orientation: "bottom left",
@@ -162,29 +114,79 @@
             autoclose: true,
         });
 
-        $('#filter').click(function (e){
-            var tahun = $('#tahun').val();
-            // console.log(tahun);
-            var bulan = $('#bulan').val();
-            $('#datatable').DataTable({
-            "dom": 'Bfrtip',
+        $('#datatable').DataTable({
+            "processing": true,
+            "serverSide": true,
+            "responsive": true,
+            "lengthChange": false,
+            "order": [[ 0, "asc" ]],
+            "ajax":{
+                url:'{{route('laporan.index')}}',
+                type : "GET",
+                dataType: 'json',
+                error: function(data){
+                    console.log(data);
+                    }
+                },
+            "dom": "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-6 d-flex align-items-center justify-content-end'lB>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
             "buttons": [
                 {
-                    extend: 'pdfHtml5',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL',
-                    exportOptions: {
-                        columns: [ 0, 1, 2, 3,4,8,9,10,11,12,13,14]
-                    }
-                }
+                            extend: 'pdfHtml5',
+                            text: 'Export PDF',
+                            orientation: 'landscape',
+                            pageSize: 'LEGAL',
+                            titleAttr: 'Generate PDF',
+                            className: 'btn-outline-danger btn-sm mr-1',
+                            exportOptions:{
+                                columns:[0, 1, 2, 3,4,6,7,10,11,12,13,14,15]
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            text: 'Print',
+                            orientation: 'landscape',
+                            pageSize: 'LEGAL',
+                            titleAttr: 'Print Table',
+                            className: 'btn-outline-primary btn-sm',
+                            exportOptions:{
+                                columns:[0, 1, 2, 3,4,6,7,10,11,12,13,14,15]
+                            }
+                        }
             ],
+                "columns": [
+                {data: 'rownum', name: 'rownum'},
+                {data: 'jenis_laporan', name: 'jenis_laporan'},
+                {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
+                {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
+                {data: 'keterangan', name: 'keterangan'},
+                {data: 'photo', name: 'photo'},
+                {data: 'nama_lokasi', name: 'nama_lokasi'},
+                {data: 'created_at', name: 'created_at'},
+                {data: 'lat', name: 'lat'},
+                {data: 'lng', name: 'lng'},
+                {data: 'alamat', name: 'alamat'},
+                {data: 'kelurahan', name: 'kelurahan'},
+                {data: 'kecamatan', name: 'kecamatan'},
+                {data: 'kota', name: 'kota'},
+                {data: 'propinsi', name: 'propinsi'},
+                {data: 'negara', name: 'negara'},
+                {data: 'place_id', name: 'place_id'},
+                {data: 'action',width:'10%',searchable:false}    
+            ]
+        });
+
+        $('#filter').click(function (e){
+            var tahun = $('#tahun').val();
+            var bulan = $('#bulan').val();
+           $('#datatable').DataTable({
             "destroy": true,
             "processing": true,
             "serverSide": true,
             "responsive": true,
             "order": [[ 0, "asc" ]],
             "ajax":{
-                cache:false,
                 url:'{{route('get.filter')}}',
                 type : "GET",
                 data: {bulan: bulan,tahun: tahun},
@@ -193,16 +195,44 @@
                     console.log(data);
                     }
                 },
+                "dom": "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-6 d-flex align-items-center justify-content-end'lB>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            "buttons": [
+                {
+                            extend: 'pdfHtml5',
+                            text: 'Export PDF',
+                            orientation: 'landscape',
+                            pageSize: 'LEGAL',
+                            titleAttr: 'Generate PDF',
+                            className: 'btn-outline-danger btn-sm mr-1',
+                            exportOptions:{
+                                columns:[0, 1, 2, 3,4,6,7,10,11,12,13,14,15]
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            text: 'Print',
+                            orientation: 'landscape',
+                            pageSize: 'LEGAL',
+                            titleAttr: 'Print Table',
+                            className: 'btn-outline-primary btn-sm',
+                            exportOptions:{
+                                columns:[0, 1, 2, 3,4,6,7,10,11,12,13,14,15]
+                            }
+                        }
+            ],
                 "columns": [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
+                {data: 'rownum', name: 'rownum'},
                 {data: 'jenis_laporan', name: 'jenis_laporan'},
+                {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
                 {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
                 {data: 'keterangan', name: 'keterangan'},
                 {data: 'photo', name: 'photo'},
+                {data: 'nama_lokasi', name: 'nama_lokasi'},
+                {data: 'created_at', name: 'created_at'},
                 {data: 'lat', name: 'lat'},
                 {data: 'lng', name: 'lng'},
-                {data: 'nama_lokasi', name: 'nama_lokasi'},
                 {data: 'alamat', name: 'alamat'},
                 {data: 'kelurahan', name: 'kelurahan'},
                 {data: 'kecamatan', name: 'kecamatan'},
@@ -210,33 +240,23 @@
                 {data: 'propinsi', name: 'propinsi'},
                 {data: 'negara', name: 'negara'},
                 {data: 'place_id', name: 'place_id'},
-                {data: 'created_by', name: 'created_by'},
-                {data: 'created_at', name: 'created_at'},
                 {data: 'action',width:'10%',searchable:false}    
             ]
+         });
         });
-            
-        });
-
-        $('#datatable').DataTable({
-            "dom": 'Bfrtip',
-            "buttons": [
-                {
-                    extend: 'pdfHtml5',
-                    orientation: 'landscape',
-                    pageSize: 'LEGAL',
-                    exportOptions: {
-                        columns: [ 0, 1, 2, 3,4,8,9,10,11,12,13,14]
-                    }
-                }
-            ],
+        
+        // clear filter dataTables
+        $('#resetFilter').click(function(e){
+            $('#bulan').val("").trigger('change');
+            $('#tahun').val("").trigger('change');
+            $('#datatable').DataTable({
             "destroy": true,
             "processing": true,
             "serverSide": true,
             "responsive": true,
+            "lengthChange": false,
             "order": [[ 0, "asc" ]],
             "ajax":{
-                cache:false,
                 url:'{{route('laporan.index')}}',
                 type : "GET",
                 dataType: 'json',
@@ -244,16 +264,44 @@
                     console.log(data);
                     }
                 },
+            "dom": "<'row mb-3'<'col-sm-12 col-md-6 d-flex align-items-center justify-content-start'f><'col-sm-12 col-md-6 d-flex align-items-center justify-content-end'lB>>" +
+                        "<'row'<'col-sm-12'tr>>" +
+                        "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            "buttons": [
+                {
+                            extend: 'pdfHtml5',
+                            text: 'Export PDF',
+                            orientation: 'landscape',
+                            pageSize: 'LEGAL',
+                            titleAttr: 'Generate PDF',
+                            className: 'btn-outline-danger btn-sm mr-1',
+                            exportOptions:{
+                                columns:[0, 1, 2, 3,4,6,7,10,11,12,13,14,15]
+                            }
+                        },
+                        {
+                            extend: 'print',
+                            text: 'Print',
+                            orientation: 'landscape',
+                            pageSize: 'LEGAL',
+                            titleAttr: 'Print Table',
+                            className: 'btn-outline-primary btn-sm',
+                            exportOptions:{
+                                columns:[0, 1, 2, 3,4,6,7,10,11,12,13,14,15]
+                            }
+                        }
+            ],
                 "columns": [
-                {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-                {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
+                {data: 'rownum', name: 'rownum'},
                 {data: 'jenis_laporan', name: 'jenis_laporan'},
+                {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
                 {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
                 {data: 'keterangan', name: 'keterangan'},
                 {data: 'photo', name: 'photo'},
+                {data: 'nama_lokasi', name: 'nama_lokasi'},
+                {data: 'created_at', name: 'created_at'},
                 {data: 'lat', name: 'lat'},
                 {data: 'lng', name: 'lng'},
-                {data: 'nama_lokasi', name: 'nama_lokasi'},
                 {data: 'alamat', name: 'alamat'},
                 {data: 'kelurahan', name: 'kelurahan'},
                 {data: 'kecamatan', name: 'kecamatan'},
@@ -261,10 +309,9 @@
                 {data: 'propinsi', name: 'propinsi'},
                 {data: 'negara', name: 'negara'},
                 {data: 'place_id', name: 'place_id'},
-                {data: 'created_by', name: 'created_by'},
-                {data: 'created_at', name: 'created_at'},
                 {data: 'action',width:'10%',searchable:false}    
             ]
+            });
         });
     });
 </script>

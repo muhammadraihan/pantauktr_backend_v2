@@ -53,7 +53,7 @@
                 </a>
             </li>
             @endhasanyrole
-            @hasanyrole('superadmin|pusaka|kementrian|pemda')
+            @hasanyrole('superadmin|pusaka|kementrian|pemda|who')
             <li class="">
                 <a href="#" title="Theme Settings" data-filter-tags="theme settings">
                     <i class="fal fa-clipboard-list"></i>
@@ -96,13 +96,14 @@
                     </li>
                 </ul>
             </li>
-
+            @hasanyrole('superadmin')
             <li class="">
                 <a href="{{route('pelapor.index')}}" title="Theme Settings" data-filter-tags="theme settings">
                     <i class="fal fa-users"></i>
                     <span class="nav-link-text" data-i18n="nav.theme_settings">Pelapor</span>
                 </a>
             </li>
+            @endhasanyrole
 
             <li class="">
                 <a href="#" title="Theme Settings" data-filter-tags="theme settings">
@@ -135,8 +136,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('kota.index')}}" title="Kota Management"
-                            data-filter-tags="kota managements">
+                        <a href="{{route('kota.index')}}" title="Kota Management" data-filter-tags="kota managements">
                             <span class="nav-link-text" data-i18n="nav.users_managements">City</span>
                         </a>
                     </li>
@@ -173,7 +173,7 @@
                     </li>
                 </ul>
             </li>
-            
+
             <li class="">
                 <a href="{{route('logs')}}" title="System Log" data-filter-tags="System Log">
                     <i class="fal fa-shield-check"></i>

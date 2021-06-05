@@ -5,18 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\Models\Operator_type;
+use App\Traits\Authorizable;
 
-use Auth;
 use DataTables;
-use DB;
-use File;
-use Hash;
-use Image;
-use Response;
 use URL;
 
 class Operator_typeController extends Controller
 {
+    use Authorizable;
     /**
      * Display a listing of the resource.
      *
@@ -29,16 +25,16 @@ class Operator_typeController extends Controller
             $data = Operator_type::latest()->get();
 
             return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->addColumn('action', function($row){
-                        return '
-                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="'.route('operator_type.edit',$row->uuid).'"><i class="fal fa-edit"></i></a>
-                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="'.URL::route('operator_type.destroy',$row->uuid).'" data-id="'.$row->uuid.'" data-token="'.csrf_token().'" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
-                 })
-            ->removeColumn('id')
-            ->removeColumn('uuid')
-            ->rawColumns(['action'])
-            ->make(true);
+                ->addIndexColumn()
+                ->addColumn('action', function ($row) {
+                    return '
+                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('operator_type.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>
+                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="' . URL::route('operator_type.destroy', $row->uuid) . '" data-id="' . $row->uuid . '" data-token="' . csrf_token() . '" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
+                })
+                ->removeColumn('id')
+                ->removeColumn('uuid')
+                ->rawColumns(['action'])
+                ->make(true);
         }
 
         return view('operator_type.index');
@@ -75,10 +71,10 @@ class Operator_typeController extends Controller
         $operator = new Operator_type();
         $operator->name = $request->name;
 
-        $operator->save();        
+        $operator->save();
 
-        
-        toastr()->success('New Operator Added','Success');
+
+        toastr()->success('New Operator Added', 'Success');
         return redirect()->route('operator_type.index');
     }
 
@@ -123,14 +119,14 @@ class Operator_typeController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-          // Saving data
-          $operator = Operator_type::uuid($id);
-          $operator->name = $request->name;
-    
-          $operator->save();
-    
-          toastr()->success('Operator Edited','Success');
-          return redirect()->route('operator_type.index');
+        // Saving data
+        $operator = Operator_type::uuid($id);
+        $operator->name = $request->name;
+
+        $operator->save();
+
+        toastr()->success('Operator Edited', 'Success');
+        return redirect()->route('operator_type.index');
     }
 
     /**
@@ -143,7 +139,7 @@ class Operator_typeController extends Controller
     {
         $operator = Operator_type::uuid($id);
         $operator->delete();
-        toastr()->success('Operator Deleted','Success');
+        toastr()->success('Operator Deleted', 'Success');
         return redirect()->route('operator_type.index');
     }
 }

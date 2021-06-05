@@ -4,18 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Province;
+use App\Traits\Authorizable;
 
-use Auth;
 use DataTables;
-use DB;
-use File;
-use Hash;
-use Image;
-use Response;
-use URL;
 
 class ProvinceController extends Controller
 {
+    use Authorizable;
     /**
      * Display a listing of the resource.
      *
@@ -27,10 +22,10 @@ class ProvinceController extends Controller
         if (request()->ajax()) {
             $data = Province::latest()->get();
             return Datatables::of($data)
-                    ->addIndexColumn()
-            ->removeColumn('id')
-            ->removeColumn('uuid')
-            ->make(true);
+                ->addIndexColumn()
+                ->removeColumn('id')
+                ->removeColumn('uuid')
+                ->make(true);
         }
 
         return view('province.index');
@@ -54,7 +49,6 @@ class ProvinceController extends Controller
      */
     public function store(Request $request)
     {
-    
     }
 
     /**

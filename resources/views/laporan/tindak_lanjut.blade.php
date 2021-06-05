@@ -30,18 +30,19 @@
                     'needs-validation','novalidate']) !!}
                     <input type="hidden" name="laporan_id" value="{{$idlaporan->uuid}}">
                     <div class="form-group col-md-4 mb-3">
-                        {{ Form::label('keterangan','Keterangan',['class' => 'required form-label'])}}
-                        {{ Form::text('keterangan',null,['placeholder' => 'Keterangan','class' => 'form-control '.($errors->has('keterangan') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
-                        @if ($errors->has('keterangan'))
-                        <div class="invalid-feedback">{{ $errors->first('keterangan') }}</div>
-                        @endif
-                    </div>
-                    <div class="form-group col-md-4 mb-3">
                         {!! Form::label('status', 'Status', ['class' => 'required form-label']) !!}
-                        {!! Form::select('status', array('1' => 'Tindak Lanjut', '2' => 'Selesai'), '', ['class' => 'select2 form-control'.($errors->has('status') ? 'is-invalid':''), 'required'
+                        {!! Form::select('status', array('1' => 'Ditindaklanjuti', '2' => 'Selesai'), '', ['class' =>
+                        'select2 form-control'.($errors->has('status') ? 'is-invalid':''), 'required'
                         => '', 'placeholder' => 'Select status ...']) !!}
                         @if ($errors->has('status'))
                         <div class="help-block text-danger">{{ $errors->first('status') }}</div>
+                        @endif
+                    </div>
+                    <div class="form-group col-md-4 mb-3">
+                        {{ Form::label('keterangan','Keterangan',['class' => 'required form-label'])}}
+                        {{ Form::textarea('keterangan',null,['placeholder' => 'Keterangan','class' => 'form-control '.($errors->has('keterangan') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                        @if ($errors->has('keterangan'))
+                        <div class="invalid-feedback">{{ $errors->first('keterangan') }}</div>
                         @endif
                     </div>
                 </div>
@@ -60,10 +61,6 @@
 <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
 
 <script>
-
-    
-
-
     $(document).ready(function(){
         $('.select2').select2();
         

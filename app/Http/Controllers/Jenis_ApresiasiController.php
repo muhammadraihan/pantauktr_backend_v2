@@ -3,20 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Traits\Authorizable;
+
 use App\Models\Jenis_apresiasi;
-use App\Models\Operator_type;
 
 use Auth;
 use DataTables;
-use DB;
-use File;
-use Hash;
-use Image;
-use Response;
 use URL;
 
 class Jenis_ApresiasiController extends Controller
 {
+
+    use Authorizable;
+
     /**
      * Display a listing of the resource.
      *
@@ -29,26 +28,26 @@ class Jenis_ApresiasiController extends Controller
             $data = Jenis_apresiasi::latest()->get();
 
             return Datatables::of($data)
-                    ->addIndexColumn()
-                    ->editColumn('created_by',function($row){
-                        return $row->userCreate->name;
-                    })
-                    ->editColumn('edited_by',function($row){
-                        if($row->edited_by != null){
+                ->addIndexColumn()
+                ->editColumn('created_by', function ($row) {
+                    return $row->userCreate->name;
+                })
+                ->editColumn('edited_by', function ($row) {
+                    if ($row->edited_by != null) {
                         return $row->userEdit->name;
-                        }else{
-                            return null;
-                        }
-                    })
-                    ->addColumn('action', function($row){
-                        return '
-                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="'.route('jenis_apresiasi.edit',$row->uuid).'"><i class="fal fa-edit"></i></a>
-                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="'.URL::route('jenis_apresiasi.destroy',$row->uuid).'" data-id="'.$row->uuid.'" data-token="'.csrf_token().'" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
-                 })
-            ->removeColumn('id')
-            ->removeColumn('uuid')
-            ->rawColumns(['action'])
-            ->make(true);
+                    } else {
+                        return null;
+                    }
+                })
+                ->addColumn('action', function ($row) {
+                    return '
+                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('jenis_apresiasi.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>
+                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="' . URL::route('jenis_apresiasi.destroy', $row->uuid) . '" data-id="' . $row->uuid . '" data-token="' . csrf_token() . '" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
+                })
+                ->removeColumn('id')
+                ->removeColumn('uuid')
+                ->rawColumns(['action'])
+                ->make(true);
         }
 
         return view('jenis_apresiasi.index');
@@ -87,10 +86,10 @@ class Jenis_ApresiasiController extends Controller
         $jenis_apresiasi->name = $request->name;
         $jenis_apresiasi->created_by = Auth::user()->uuid;
 
-        $jenis_apresiasi->save();        
+        $jenis_apresiasi->save();
 
-        
-        toastr()->success('New Jenis Apresiasi Added','Success');
+
+        toastr()->success('New Jenis Apresiasi Added', 'Success');
         return redirect()->route('jenis_apresiasi.index');
     }
 
@@ -135,15 +134,15 @@ class Jenis_ApresiasiController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-          // Saving data
-          $jenis_apresiasi = Jenis_apresiasi::uuid($id);
-          $jenis_apresiasi->name = $request->name;
-          $jenis_apresiasi->edited_by = Auth::user()->uuid;
-    
-          $jenis_apresiasi->save();
-    
-          toastr()->success('Jenis Apresiasi Edited','Success');
-          return redirect()->route('jenis_apresiasi.index');
+        // Saving data
+        $jenis_apresiasi = Jenis_apresiasi::uuid($id);
+        $jenis_apresiasi->name = $request->name;
+        $jenis_apresiasi->edited_by = Auth::user()->uuid;
+
+        $jenis_apresiasi->save();
+
+        toastr()->success('Jenis Apresiasi Edited', 'Success');
+        return redirect()->route('jenis_apresiasi.index');
     }
 
     /**
@@ -156,7 +155,7 @@ class Jenis_ApresiasiController extends Controller
     {
         $jenis_apresiasi = Jenis_apresiasi::uuid($id);
         $jenis_apresiasi->delete();
-        toastr()->success('Jenis Apresiasi Deleted','Success');
+        toastr()->success('Jenis Apresiasi Deleted', 'Success');
         return redirect()->route('jenis_apresiasi.index');
     }
 }
