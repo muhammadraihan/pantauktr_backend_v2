@@ -19,7 +19,7 @@
     <div class="col-xl-12">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>
+                <h2>
                     Operator Type<span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
@@ -35,12 +35,12 @@
                 <div class="panel-content">
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th width="120px">Action</th>
-                </tr>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th width="120px">Action</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
