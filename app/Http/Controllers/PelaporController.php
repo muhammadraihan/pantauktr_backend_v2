@@ -3,19 +3,16 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Traits\Authorizable;
 use App\Models\Pelapor;
 
-use Auth;
 use DataTables;
 use DB;
-use File;
-use Hash;
-use Image;
-use Response;
-use URL;
+
 
 class PelaporController extends Controller
 {
+    use Authorizable;
     /**
      * Display a listing of the resource.
      *
@@ -25,13 +22,15 @@ class PelaporController extends Controller
     {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            $pelapor = Pelapor::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','firstname','lastname','email','provider', 'avatar', 'reward_point', 'last_login_at','last_login_ip'])->get();
+            $pelapor = Pelapor::select([
+                DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                'id', 'uuid', 'firstname', 'lastname', 'email', 'provider', 'avatar', 'reward_point', 'last_login_at', 'last_login_ip'
+            ])->get();
             return Datatables::of($pelapor)
-                    ->addIndexColumn()
-            ->removeColumn('id')
-            ->removeColumn('uuid')
-            ->make(true);
+                ->addIndexColumn()
+                ->removeColumn('id')
+                ->removeColumn('uuid')
+                ->make(true);
         }
 
         return view('pelapor.index');
@@ -44,7 +43,6 @@ class PelaporController extends Controller
      */
     public function create()
     {
-        
     }
 
     /**

@@ -57,20 +57,12 @@
                     </div>
                     <div class="form-group col-md-4 mb-3">
                         {!! Form::label('role', 'Role', ['class' => 'required form-label']) !!}
-                        {!! Form::select('role', $roles, '', ['class' => 'select2 form-control'.($errors->has('role') ?
+                        {!! Form::select('role', $roles, '', ['id' => 'role','class' => 'select2
+                        form-control'.($errors->has('role') ?
                         'is-invalid':''), 'required'
                         => '', 'placeholder' => 'Select a role ...']) !!}
                         @if ($errors->has('role'))
                         <div class="help-block text-danger">{{ $errors->first('role') }}</div>
-                        @endif
-                    </div>
-                    <div class="form-group col-md-4 mb-3">
-                        {!! Form::label('city_id', 'City', ['class' => 'required form-label']) !!}
-                        {!! Form::select('city_id', $city_id, '', ['class' => 'select2
-                        form-control'.($errors->has('city_id') ? 'is-invalid':''), 'required'
-                        => '', 'placeholder' => 'Select city ...']) !!}
-                        @if ($errors->has('city_id'))
-                        <div class="help-block text-danger">{{ $errors->first('city_id') }}</div>
                         @endif
                     </div>
                     <div class="form-group col-md-4 mb-3">
@@ -80,6 +72,15 @@
                         => '', 'placeholder' => 'Select Operator ...']) !!}
                         @if ($errors->has('operator_id'))
                         <div class="help-block text-danger">{{ $errors->first('operator_id') }}</div>
+                        @endif
+                    </div>
+                    <div id="city" class="form-group col-md-4 mb-3" style="display:none">
+                        {!! Form::label('city_id', 'City', ['class' => 'required form-label']) !!}
+                        {!! Form::select('city_id', $city_id, '', ['class' => 'select2
+                        form-control'.($errors->has('city_id') ? 'is-invalid':''), 'required'
+                        => '', 'placeholder' => 'Select city ...']) !!}
+                        @if ($errors->has('city_id'))
+                        <div class="help-block text-danger">{{ $errors->first('city_id') }}</div>
                         @endif
                     </div>
                 </div>
@@ -117,6 +118,16 @@
             var field = $('#password').closest('div').find('input[name="password"]');
             field.val(randString(field));
         });
+        //show city options for pemda only
+        $('#role').change(function (){
+            if ($(this).val() == 'pemda'){
+                $('#city').show();
+            }
+            else{
+                $('#city').hide();
+            }
+        });
+        $("#role").trigger("change");
     });
 </script>
 @endsection

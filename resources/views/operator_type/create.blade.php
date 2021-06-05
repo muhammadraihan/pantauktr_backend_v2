@@ -35,21 +35,21 @@
                         <div class="invalid-feedback">{{ $errors->first('name') }}</div>
                         @endif
                     </div>
-                <div
-                    class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
-                    <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    <div
+                        class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
+                        <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
-                {!! Form::close() !!}
             </div>
         </div>
     </div>
-</div>
-@endsection
+    @endsection
 
-@section('js')
-<script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
-<script>
-    $(document).ready(function(){
+    @section('js')
+    <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
+    <script>
+        $(document).ready(function(){
         $('.select2').select2();
         
         // Generate a password string
@@ -70,5 +70,5 @@
             field.val(randString(field));
         });
     });
-</script>
-@endsection
+    </script>
+    @endsection
