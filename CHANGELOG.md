@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.3.0](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.8...v2.3.0) (2021-06-05)
+
+
+### Features
+
+* Add some additional permission for seedin ([6e3ce79](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/6e3ce79590484f943a9cd6fe833d71ea25817ed2))
+* Adding additional permission data seeder ([102a66d](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/102a66d66f397fbaef0b9e1f824f32264ac2c301))
+* Adding operator type data seeder ([7704275](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/7704275be8d363b0264be7fa686489ed11cf6289))
+
+
+### Bug Fixes
+
+* Fixing action permission ([b468336](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/b46833682edec6a606251f0be476f32f8a98d4ec))
+* Fixing permission issue ([6a676b6](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/6a676b6272ac12ae2970cbd0f26bf5d884f6ecaa))
+* Fixing permission issue ([b01e271](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/b01e271379b20910adc6ba0a4c9c27c0a002e23f))
+* Fixing permission issue ([4daa57f](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/4daa57f764039636d10ad0554d1c80e94d4a696a))
+* Fixing permission issue ([8cdf0e6](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/8cdf0e639b55db7e4360fd4effbe3c551ea20dc1))
+* Fixing permission, change date format to id, and [hoto url to google storage ([22bc056](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/22bc056cb8ba678942f68d7850090b62536f5735))
+* Hide admin role in create ([b49990f](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/b49990f10daea6c89ac7b2a0e631f793326066cd))
+* Option city only show for pemda role only ([85971ae](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/85971ae7c120f25447869955457bbd467bf46efd))
+* Reset filter bug and change pdf export to builtin themes datatable button ([3cd56c1](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/3cd56c1e3bc4b65b93c836fd9357ab5dbb3be4bc))
+
 ### [2.2.8](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.2.7...v2.2.8) (2021-04-22)
 
 
