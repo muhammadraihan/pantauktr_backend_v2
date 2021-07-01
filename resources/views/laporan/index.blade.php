@@ -156,7 +156,7 @@
                         }
             ],
                 "columns": [
-                {data: 'rownum', name: 'rownum'},
+                {data: 'rownum',searchable:false},
                 {data: 'jenis_laporan', name: 'jenis_laporan'},
                 {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
                 {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},

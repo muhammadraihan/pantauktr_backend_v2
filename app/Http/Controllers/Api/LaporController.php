@@ -62,18 +62,15 @@ class LaporController extends Controller
         $response = $geocoder->getAddressForCoordinates($lat, $lng);
         $address = $response['address_components'];
 
-        $folder = public_path() . '/lampiran' . '/';
-        if (!File::exists($folder)) {
-            File::makeDirectory($folder, 0775, true, true);
-        }
         // request image files and uploading to google cloud storage
         $image = $request->file('photo');
         $filename = $pelapor->uuid . uniqid(mt_rand(), true) . '.' . $image->getClientOriginalExtension();
+        // resizing image to upload
         $resizeImage = Image::make($image);
         $resizeImage->resize(800, 600, function ($constraint) {
             $constraint->aspectRatio();
         })->encode();
-
+        // upload resized image to gcs
         $googleContent = 'lampiran' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
