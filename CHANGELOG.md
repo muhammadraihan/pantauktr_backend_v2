@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.3.2](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.3.1...v2.3.2) (2021-07-24)
+
+
+### Bug Fixes
+
+* Fix remote deploy webhook ([247c1fd](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/247c1fd9716224a063c5dd4209116f1f23dedea7))
+
 ### [2.3.1](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.3.0...v2.3.1) (2021-07-01)
 
 
