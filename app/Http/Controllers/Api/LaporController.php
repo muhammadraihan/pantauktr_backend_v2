@@ -18,6 +18,7 @@ use Exception;
 use File;
 use Hash;
 use Helper;
+use Illuminate\Support\Facades\Log;
 use Image;
 use Validator;
 use Storage;
@@ -42,8 +43,7 @@ class LaporController extends Controller
         $validator = Validator::make($request->all(), [
             'jenis_laporan' => 'required',
             'keterangan' => 'required',
-            'photo' => 'required',
-            'photo' => 'image|mimes:jpeg,png,jpg,gif,svg',
+            'photo' => 'required|image',
         ]);
 
         if ($validator->fails()) {
@@ -123,10 +123,12 @@ class LaporController extends Controller
         } catch (Exception $e) {
             // catch error and rollback data saving if fails
             DB::rollback();
+            // log message to local an slack
+            Log::stack(['stack', 'slack'])->error($e->getMessage());
             // catch error message
             return response()->json([
                 'success' => false,
-                'messages' => $e->getMessage(),
+                'message' => $e->getMessage(),
             ], 500);
         }
         // if no error commit data saving
@@ -134,7 +136,7 @@ class LaporController extends Controller
         // return response
         return response()->json([
             'success' => true,
-            'messages' => 'Laporan terkirim',
+            'message' => 'Laporan terkirim',
         ], 200);
     }
 
