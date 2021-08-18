@@ -83,10 +83,13 @@ class LaporController extends Controller
             $laporan->nomor_laporan = 'KTR' . '-' . $uniqueCode;
             $laporan->jenis_laporan = $request->jenis_laporan;
             if (!empty($request->jenis_pelanggaran)) {
+                $laporan->bentuk_pelanggaran = $request->bentuk_pelanggaran;
                 $laporan->jenis_pelanggaran = $request->jenis_pelanggaran;
             } else {
+                $laporan->bentuk_apresiasi = $request->bentuk_apresiasi;
                 $laporan->jenis_apresiasi = $request->jenis_apresiasi;
             }
+            $laporan->kawasan = $request->kawasan;
             $laporan->keterangan = $request->keterangan;
             $laporan->photo = $fileUrl;
             $laporan->lat = $lat;
@@ -150,7 +153,7 @@ class LaporController extends Controller
         // get pelapor details based on auth token
         $pelapor = Helper::pelapor();
         // select laporan based on user auth
-        $list = Laporan::select('uuid', 'jenis_laporan', 'jenis_pelanggaran', 'jenis_apresiasi', 'nama_lokasi', 'created_at')
+        $list = Laporan::select('uuid', 'jenis_laporan', 'jenis_pelanggaran','bentuk_pelanggaran','jenis_apresiasi','bentuk_apresiasi','kawasan','nama_lokasi', 'created_at')
             ->where('created_by', $pelapor->uuid)->orderByDesc('created_at')->get();
         // form response
         for ($i = 0; $i < count($list); $i++) {
@@ -161,7 +164,10 @@ class LaporController extends Controller
             $response['data'][$i]['jenis_laporan_kode'] = (int)$list[$i]->jenis_laporan;
             $response['data'][$i]['jenis_laporan'] = $list[$i]->JenisLaporan->name;
             $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->jenis_pelanggaran == null ? "" : $list[$i]->pelanggaran->name;
+            $response['data'][$i]['bentuk_pelanggaran'] = $list[$i]->bentuk_pelanggaran == null ? "" : $list[$i]->BentukPelanggaran->bentuk_pelanggaran;
             $response['data'][$i]['jenis_apresiasi'] = $list[$i]->jenis_apresiasi == null ? "" : $list[$i]->japresiasi->name;
+            $response['data'][$i]['bentuk_apresiasi'] = $list[$i]->bentuk_apresiasi == null ? "" : $list[$i]->BentukApresiasi->bentuk_apresiasi;
+            $response['data'][$i]['kawasan'] = $list[$i]->kawasan == null ? "" : $list[$i]->Kawasan->kawasan;
             $response['data'][$i]['lokasi'] = $list[$i]->nama_lokasi;
             $response['data'][$i]['tanggal_laporan'] = $tanggalBuat;
         }
@@ -173,7 +179,7 @@ class LaporController extends Controller
     {
         // get pelapor details based on auth token
         $pelapor = Helper::pelapor();
-        $detailLaporan = Laporan::select('uuid', 'nomor_laporan', 'jenis_laporan', 'jenis_pelanggaran', 'jenis_apresiasi', 'keterangan', 'photo', 'nama_lokasi', 'detail_lokasi', 'status', 'created_at', 'updated_at')
+        $detailLaporan = Laporan::select('uuid', 'nomor_laporan', 'jenis_laporan', 'jenis_pelanggaran','bentuk_pelanggaran','jenis_apresiasi','bentuk_apresiasi','kawasan','keterangan', 'photo', 'nama_lokasi', 'detail_lokasi', 'status', 'created_at', 'updated_at')
             ->where('created_by', $pelapor->uuid)
             ->where('uuid', $id)
             ->first();
@@ -205,7 +211,10 @@ class LaporController extends Controller
                 'jenis_laporan_kode' => (int)$detailLaporan->jenis_laporan,
                 'jenis_laporan' => $detailLaporan->jenisLaporan->name,
                 'jenis_pelanggaran' => $detailLaporan->jenis_pelanggaran == null ? "" : $detailLaporan->pelanggaran->name,
+                'bentuk_pelanggaran' => $detailLaporan->bentuk_pelanggaran == null ? "" : $detailLaporan->BentukPelanggaran->bentuk_pelanggaran,
                 'jenis_apresiasi' => $detailLaporan->jenis_apresiasi == null ? "" : $detailLaporan->japresiasi->name,
+                'bentuk_apresiasi' => $detailLaporan->bentuk_apresiasi == null ? "" : $detailLaporan->BentukApresiasi->bentuk_apresiasi,
+                'kawasan' => $detailLaporan->kawasan == null ? "" : $detailLaporan->Kawasan->kawasan,
                 'lokasi' => $detailLaporan->nama_lokasi,
                 'detail_lokasi' => $detailLaporan->detail_lokasi,
                 'keterangan' => $detailLaporan->keterangan,
