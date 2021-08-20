@@ -40,6 +40,9 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function () {
     Route::resource('operator', 'OperatorController');
     Route::resource('external_link', 'ExternalController');
     Route::resource('chart', 'ChartController');
+    Route::resource('bentuk_pelanggaran','BentukPelanggaranController');
+    Route::resource('bentuk_apresiasi','BentukApresiasiController');
+    Route::resource('kawasan','KawasanController');
     Route::get('filters', 'ChartController@filter')->name('get.filters');
     Route::get('filter', 'LaporanController@filter')->name('get.filter');
     Route::get('cetak-pdf-pelanggaran', 'LaporanController@cetakpelanggaran')->name('cetak.laporan_pelanggaran');

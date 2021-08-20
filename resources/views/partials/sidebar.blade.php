@@ -130,6 +130,24 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{route('bentuk_apresiasi.index')}}" title="Bentuk Apresiasi Management"
+                            data-filter-tags="bentuk_apresiasi managements">
+                            <span class="nav-link-text" data-i18n="nav.bentuk_apresiasi">Bentuk Apresiasi</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('bentuk_pelanggaran.index')}}" title="Bentuk Pelanggaran Management"
+                            data-filter-tags="bentuk_pelanggaran managements">
+                            <span class="nav-link-text" data-i18n="nav.bentuk_pelanggaran">Bentuk Pelanggaran</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('kawasan.index')}}" title="Kawasan Management"
+                            data-filter-tags="kawasan managements">
+                            <span class="nav-link-text" data-i18n="nav.kawasan">Kawasan</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{route('province.index')}}" title="Province Management"
                             data-filter-tags="province managements">
                             <span class="nav-link-text" data-i18n="nav.users_managements">Province</span>

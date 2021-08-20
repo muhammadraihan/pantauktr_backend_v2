@@ -12,7 +12,7 @@ class Laporan extends Model
     use Uuid;
 
     protected $fillable = [
-        'nomor_laporan', 'jenis_pelanggaran', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'jenis_laporan', 'jenis_apresiasi', 'created_by'
+        'nomor_laporan', 'jenis_pelanggaran', 'bentuk_pelanggaran','bentuk_apresiasi','kawasan','keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'jenis_laporan', 'jenis_apresiasi', 'created_by'
     ];
 
     public function userCreate()
@@ -33,5 +33,20 @@ class Laporan extends Model
     public function japresiasi()
     {
         return $this->belongsTo(Jenis_apresiasi::class, 'jenis_apresiasi', 'uuid');
+    }
+
+    public function BentukPelanggaran()
+    {
+        return $this->belongsTo(BentukPelanggaran::class,'bentuk_pelanggaran','uuid');
+    }
+
+    public function BentukApresiasi()
+    {
+        return $this->belongsTo(BentukApresiasi::class,'bentuk_apresiasi','uuid');
+    }
+
+    public function Kawasan()
+    {
+        return $this->belongsTo(Kawasan::class,'kawasan','uuid');
     }
 }
