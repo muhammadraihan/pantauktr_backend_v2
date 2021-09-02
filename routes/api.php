@@ -36,6 +36,10 @@ Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function () {
     Route::get('jenis-pelanggaran', 'Api\ReferensiController@getJenisPelanggaran');
     Route::get('jenis-apresiasi', 'Api\ReferensiController@getJenisApresiasi');
 
+    Route::get('bentuk-apresiasi', 'Api\ReferensiController@getBentukApresiasi');
+    Route::get('bentuk-pelanggaran', 'Api\ReferensiController@getBentukPelanggaran');
+    Route::get('kawasan', 'Api\ReferensiController@getKawasan');
+
     Route::post('lapor', 'Api\LaporController@lapor');
     Route::get('laporan', 'Api\LaporController@listLaporan');
     Route::get('laporan/{id}', 'Api\LaporController@detailLaporan');
