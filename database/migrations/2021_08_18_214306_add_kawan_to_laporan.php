@@ -13,10 +13,9 @@ class AddKawanToLaporan extends Migration
      */
     public function up()
     {
-        Schema::table('laporans', function (Blueprint $table){
+        Schema::table('laporans', function (Blueprint $table) {
             $table->string('bentuk_pelanggaran')->nullable()->after('jenis_pelanggaran');
-            $table->string('bentuk_apresiasi')->nullable()->after('bentuk_pelanggaran');
-            $table->string('kawasan')->nullable()->after('bentuk_apresiasi');
+            $table->string('kawasan')->nullable()->after('photo');
         });
     }
 
@@ -27,6 +26,8 @@ class AddKawanToLaporan extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('laporans');
+        Schema::table('laporans', function (Blueprint $table) {
+            $table->dropColumn(['bentuk_pelanggaran', 'kawasan']);
+        });
     }
 }
