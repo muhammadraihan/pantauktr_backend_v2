@@ -16,7 +16,8 @@ class CreateBentukPelanggaransTable extends Migration
         Schema::create('bentuk_pelanggarans', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
-            $table->string('bentuk_pelanggaran');
+            $table->string('bentuk_pelanggaran')->nullable();
+            $table->text('keterangan')->nullable();
             $table->string('created_by')->nullable();
             $table->string('edited_by')->nullable();
             $table->timestamps();
