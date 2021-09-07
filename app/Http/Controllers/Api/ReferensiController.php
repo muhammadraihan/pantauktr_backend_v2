@@ -15,52 +15,46 @@ class ReferensiController extends Controller
 {
     public function getJenisLaporan(Request $request)
     {
-        $jenisLaporan = Jenis_laporan::select('id','uuid','name')->get();
+        $jenisLaporan = Jenis_laporan::select('id', 'uuid', 'name')->get();
         return response()->json([
             'success' => true,
             'data' => $jenisLaporan,
-        ],200);
+        ], 200);
     }
 
     public function getJenisPelanggaran(Request $request)
     {
-        $jenisPelanggaran = Pelanggaran::select('id','uuid','name')->get();
+        $jenisPelanggaran = Pelanggaran::select('id', 'uuid', 'name', 'keterangan')->get();
         return response()->json([
             'success' => true,
             'data' => $jenisPelanggaran,
-        ],200);
+        ], 200);
     }
 
     public function getJenisApresiasi(Request $request)
     {
-        $jenisApresiasi = Jenis_apresiasi::select('id','uuid','name')->get();
+        $jenisApresiasi = Jenis_apresiasi::select('id', 'uuid', 'name')->get();
         return response()->json([
             'success' => true,
             'data' => $jenisApresiasi,
-        ],200);
+        ], 200);
     }
 
-    public function getBentukPelanggaran(Request $request){
-        $bentuk_pelanggaran = BentukPelanggaran::select('id','uuid','bentuk_pelanggaran')->get();
+    public function getBentukPelanggaran(Request $request)
+    {
+        $bentuk_pelanggaran = BentukPelanggaran::select('id', 'uuid', 'bentuk_pelanggaran', 'keterangan')->get();
         return response()->json([
-            'succes'=>true,
+            'success' => true,
             'data' => $bentuk_pelanggaran,
-        ],200);
+        ], 200);
     }
 
-    public function getBentukApresiasi(Request $request){
-        $bentuk_apresiasi = BentukApresiasi::select('id','uuid','bentuk_apresiasi')->get();
+    public function getKawasan(Request $request)
+    {
+        $kawasan = Kawasan::select('id', 'uuid', 'kawasan', 'keterangan')->get();
         return response()->json([
-            'succes'=>true,
-            'data' => $bentuk_apresiasi,
-        ],200);
-    }
-
-    public function getKawasan(Request $request){
-        $kawasan = Kawasan::select('id','uuid','kawasan')->get();
-        return response()->json([
-            'succes'=>true,
+            'success' => true,
             'data' => $kawasan,
-        ],200);
+        ], 200);
     }
 }
