@@ -15,7 +15,6 @@ use Illuminate\Http\Request;
 
 Route::group(['prefix' => 'v2'], function () {
     Route::get('logout', 'Api\AuthController@logout');
-    Route::get('login/{provider}', 'Api\AuthController@RedirectLogin');
     Route::post('deploy', 'DeployController@DeployApps');
     Route::post('register', 'Api\AuthController@RegisterPelapor');
     Route::post('login', 'Api\AuthController@LoginPelapor');
@@ -31,6 +30,7 @@ Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function () {
     Route::get('profile/pelapor', 'Api\AuthController@pelapor');
     Route::post('profile/update/name', 'Api\AuthController@UpdateName');
     Route::post('profile/update/password', 'Api\AuthController@UpdatePassword');
+    Route::get('profile/delete', 'Api\AuthController@DeletePelapor');
 
     Route::get('jenis-laporan', 'Api\ReferensiController@getJenisLaporan');
     Route::get('jenis-pelanggaran', 'Api\ReferensiController@getJenisPelanggaran');
