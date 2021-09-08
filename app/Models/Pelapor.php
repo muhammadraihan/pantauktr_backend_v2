@@ -8,7 +8,6 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-
 use App\Traits\Uuid;
 
 class Pelapor extends Authenticatable implements JWTSubject, CanResetPassword
@@ -17,7 +16,7 @@ class Pelapor extends Authenticatable implements JWTSubject, CanResetPassword
     use Notifiable;
     use Uuid;
     use LogsActivity;
-    
+
     protected $fillable = [
         'firstname', 'lastname', 'email', 'password', 'provider', 'avatar', 'reward_point', 'last_login_ip', 'last_login_at'
     ];
@@ -36,7 +35,7 @@ class Pelapor extends Authenticatable implements JWTSubject, CanResetPassword
      *
      * @var array
      */
-    protected static $logAttributes = ['firstname', 'lastname','name', 'email','password','avatar'];
+    protected static $logAttributes = ['firstname', 'lastname', 'name', 'email', 'password', 'avatar'];
 
     /**
      * Logging name
@@ -85,5 +84,4 @@ class Pelapor extends Authenticatable implements JWTSubject, CanResetPassword
     {
         return [];
     }
-
 }
