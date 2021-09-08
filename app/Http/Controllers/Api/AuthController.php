@@ -112,12 +112,12 @@ class AuthController extends Controller
           'message' => 'Failed to generate token',
         ]);
       }
-    } catch (Exception $th) {
+    } catch (Exception $e) {
       // begin transaction
       DB::rollback();
       return response()->json([
         'success' => false,
-        'message' => 'Server failed to retrieve request',
+        'message' => $e->getMessage(),
       ]);
     }
     // if no error commit data saving
@@ -165,7 +165,7 @@ class AuthController extends Controller
       // Check if Email or Password match
       return response()->json([
         'success' => false,
-        'message' => 'Failed to login',
+        'message' => $e->getMessage(),
       ]);
     }
 
@@ -222,12 +222,12 @@ class AuthController extends Controller
           'last_login_ip' => $request->getClientIp(),
         ]);
         $token = JWTAuth::fromUser($pelapor);
-      } catch (Exception $th) {
+      } catch (Exception $e) {
         // begin transaction
         DB::rollback();
         return response()->json([
           'success' => false,
-          'message' => 'Server failed to retrieve request',
+          'message' => $e->getMessage(),
         ]);
       }
       // if no error commit data saving
@@ -399,10 +399,10 @@ class AuthController extends Controller
         "success" => $verify->status,
         "message" => $verify->message,
       ]);
-    } catch (Exception $th) {
+    } catch (Exception $e) {
       return response()->json([
-        "success" => false,
-        "message" => 'Server error, please try again later',
+        'success' => false,
+        'message' => $e->getMessage(),
       ]);
     }
   }
@@ -421,10 +421,10 @@ class AuthController extends Controller
     }
     try {
       $update_pelapor->save();
-    } catch (Exception $th) {
+    } catch (Exception $e) {
       return response()->json([
         'success' => false,
-        'message' => 'Server failed to retrieve request',
+        'message' => $e->getMessage(),
       ]);
     }
     return response()->json([
@@ -486,7 +486,7 @@ class AuthController extends Controller
     } catch (Exception $e) {
       return response()->json([
         'success' => false,
-        'message' => $e,
+        'message' => $e->getMessage(),
       ]);
     }
     return response()->json([
@@ -502,14 +502,37 @@ class AuthController extends Controller
       JWTAuth::invalidate(JWTAuth::getToken());
       return response()->json([
         'success' => true,
-        'message' => "Logged out.",
+        'message' => "Logged out",
       ]);
     } catch (JWTException $e) {
       // something went wrong whilst attempting to encode the token
       return response()->json([
         'success' => false,
-        'message' => 'Logout failed, Token is expired',
+        'message' => $e->getMessage(),
       ]);
     }
+  }
+
+  public function DeletePelapor()
+  {
+    DB::beginTransaction();
+    try {
+      // get pelapor details based on auth token
+      $pelapor = Helper::pelapor();
+      $deletePelapor = Pelapor::uuid($pelapor->uuid);
+      // soft delete pelapor
+      $deletePelapor->delete();
+    } catch (Exception $e) {
+      DB::rollback();
+      return response()->json([
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+    DB::commit();
+    return response()->json([
+      'success' => true,
+      'message' => "Account Deleted",
+    ]);
   }
 }
