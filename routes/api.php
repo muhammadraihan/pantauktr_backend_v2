@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,7 +11,14 @@ use Illuminate\Http\Request;
 |
 */
 
+/**
+ * old v2 routes
+ */
 Route::group(['prefix' => 'v2'], function () {
+    Route::match(['get', 'post'], '{any}', 'Api\ReferensiController@OldAPI')->where('any', '.*');
+});
+
+Route::group(['prefix' => 'v3'], function () {
     Route::get('logout', 'Api\AuthController@logout');
     Route::post('deploy', 'DeployController@DeployApps');
     Route::post('register', 'Api\AuthController@RegisterPelapor');
@@ -25,7 +30,7 @@ Route::group(['prefix' => 'v2'], function () {
     Route::post('pelapor/update-password', 'Api\AuthController@UpdateForgotPassword');
 });
 
-Route::group(['prefix' => 'v2', 'middleware' => ['jwt']], function () {
+Route::group(['prefix' => 'v3', 'middleware' => ['jwt']], function () {
     Route::get('checktoken', 'Api\AuthController@checkToken');
     Route::get('profile/pelapor', 'Api\AuthController@pelapor');
     Route::post('profile/update/name', 'Api\AuthController@UpdateName');
