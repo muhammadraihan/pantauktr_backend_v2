@@ -13,6 +13,19 @@ use App\Models\Kawasan;
 
 class ReferensiController extends Controller
 {
+    /**
+     * Method for v2 api routes
+     *
+     * @return json
+     */
+    public function OldAPI()
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Harap update aplikasi untuk dapat melanjutkan penggunaan aplikasi',
+        ]);
+    }
+
     public function getJenisLaporan(Request $request)
     {
         $jenisLaporan = Jenis_laporan::select('id', 'uuid', 'name')->get();
