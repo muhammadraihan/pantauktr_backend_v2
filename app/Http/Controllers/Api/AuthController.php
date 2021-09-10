@@ -18,8 +18,6 @@ use DB;
 use Exception;
 use Hash;
 use Helper;
-use JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 use Socialite;
 use Validator;
 
