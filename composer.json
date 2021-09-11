@@ -19,6 +19,7 @@
         "laravel/framework": "^8.12",
         "laravel/helpers": "^1.1",
         "laravel/legacy-factories": "^1.1",
+        "laravel/passport": "^10.1",
         "laravel/socialite": "^5.1",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.0",
