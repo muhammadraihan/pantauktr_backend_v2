@@ -30,7 +30,7 @@ Route::group(['prefix' => 'v3'], function () {
     Route::post('pelapor/update-password', 'Api\AuthController@UpdateForgotPassword');
 });
 
-Route::group(['prefix' => 'v3', 'middleware' => ['jwt']], function () {
+Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function () {
     Route::get('checktoken', 'Api\AuthController@checkToken');
     Route::get('profile/pelapor', 'Api\AuthController@pelapor');
     Route::post('profile/update/name', 'Api\AuthController@UpdateName');
