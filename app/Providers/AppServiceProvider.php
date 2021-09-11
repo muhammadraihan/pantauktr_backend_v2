@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Laravel\Passport\Passport;
 use URL;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,8 +30,15 @@ class AppServiceProvider extends ServiceProvider
         // fix mysql string length error
         Schema::defaultStringLength(191);
         // force apps to use secure protocol
-        if($this->app->environment('production')){
+        if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }
+        // passport routes
+        if (!$this->app->routesAreCached()) {
+            Passport::routes();
+        }
+        // passport token lifetimes
+        Passport::tokensExpireIn(Carbon::now()->addDays(env('PASSPORT_ACCESS_TOKEN_EXPIRES')));
+        Passport::refreshTokensExpireIn(Carbon::now()->addDays(env('PASSPORT_REFRESH_TOKEN_EXPIRES')));
     }
 }
