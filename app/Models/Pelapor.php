@@ -7,15 +7,16 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Contracts\Auth\CanResetPassword;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Notifications\Notifiable;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Traits\Uuid;
+use Laravel\Passport\HasApiTokens;
 
-class Pelapor extends Authenticatable implements JWTSubject, CanResetPassword
+class Pelapor extends Authenticatable implements CanResetPassword
 {
     use HasFactory;
     use Notifiable;
     use Uuid;
     use LogsActivity;
+    use HasApiTokens;
 
     protected $fillable = [
         'firstname', 'lastname', 'email', 'password', 'provider', 'avatar', 'reward_point', 'last_login_ip', 'last_login_at'
@@ -67,21 +68,5 @@ class Pelapor extends Authenticatable implements JWTSubject, CanResetPassword
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Data has been {$eventName}";
-    }
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     * @return mixed
-     */
-    public function getJWTIdentifier()
-    {
-        return $this->getKey();
-    }
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
     }
 }
