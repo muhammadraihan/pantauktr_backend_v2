@@ -34,70 +34,89 @@ class AuthController extends Controller
    * @param Request $request
    * @return json
    */
-  // public function RegisterPelapor(Request $request)
-  // {
-  //   $rules = [
-  //     'email' => 'bail|required|email|unique:pelapors',
-  //     'password' => 'required|min:8',
-  //   ];
+  public function RegisterPelapor(Request $request)
+  {
+    $rules = [
+      'email' => 'bail|required|email|unique:pelapors',
+      'password' => 'required|min:8',
+    ];
 
-  //   $messages = [
-  //     '*.required' => 'Tidak boleh kosong',
-  //     '*.email' => 'Format email salah,mohon gunakan alamat email',
-  //     '*.unique' => 'Email sudah digunakan,harap gunakan alamat email yang lain',
-  //     '*.min' => 'Password minimal 8 karakter',
-  //   ];
-  //   $validator = Validator::make($request->all(), $rules, $messages);
+    $messages = [
+      '*.required' => 'Tidak boleh kosong',
+      '*.email' => 'Format email salah,mohon gunakan alamat email',
+      '*.unique' => 'Email sudah digunakan,harap gunakan alamat email yang lain',
+      '*.min' => 'Password minimal 8 karakter',
+    ];
+    $validator = Validator::make($request->all(), $rules, $messages);
 
-  //   if ($validator->fails()) {
-  //     return response()->json([
-  //       'message' => $validator->messages()
-  //     ]);
-  //   }
+    if ($validator->fails()) {
+      return response()->json([
+        'success' => false,
+        'message' => $validator->messages()
+      ]);
+    }
 
-  //   // retrieve password
-  //   $password = trim($request->password);
-  //   // retrive firstname from email username
-  //   $extract_username = explode("@", $request->email);
-  //   $firstname = $extract_username[0];
-  //   // begin transaction
-  //   DB::beginTransaction();
-  //   try {
-  //     // saving pelapor
-  //     $pelapor = Pelapor::create([
-  //       'firstname' => $firstname,
-  //       'email' => $request->email,
-  //       'password' => Hash::make($password),
-  //       'provider' => 'manual',
-  //       'last_login_at' => Carbon::now()->toDateTimeString(),
-  //       'last_login_ip' => $request->getClientIp(),
-  //     ]);
-  //     try {
-  //       $token = JWTAuth::fromUser($pelapor);
-  //     } catch (JWTException $th) {
-  //       return response()->json([
-  //         'success' => false,
-  //         'message' => 'Failed to generate token',
-  //       ]);
-  //     }
-  //   } catch (Exception $e) {
-  //     // begin transaction
-  //     DB::rollback();
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => $e->getMessage(),
-  //     ]);
-  //   }
-  //   // if no error commit data saving
-  //   DB::commit();
-  //   return response()->json([
-  //     'success' => true,
-  //     'token' => [
-  //       'access_token' => $token,
-  //       'expires_in' => JWTAuth::factory()->getTTL() . ' minutes',
-  //     ]
-  //   ]);
-  // }
+    // retrieve password
+    $password = trim($request->password);
+    // retrive firstname from email username
+    $extract_username = explode("@", $request->email);
+    $firstname = $extract_username[0];
+
+    /**
+     * Setup auth provider instance
+     * This will treat "pelapors-api" guard as session
+     * To fix multiple auth guard for using passport.
+     */
+    config(['auth.guards.pelapors-api.driver' => 'session']);
+    // begin transaction
+    DB::beginTransaction();
+    try {
+      // saving pelapor
+      $pelapor = new Pelapor;
+      $pelapor->firstname = $firstname;
+      $pelapor->email = $request->email;
+      $pelapor->password = Hash::make($password);
+      $pelapor->provider = 'manual';
+      $pelapor->device = $request->header('User-Agent');
+      $pelapor->last_login_ip = $request->getClientIp();
+      $pelapor->last_login_at = Carbon::now()->toDateTimeString();
+      $pelapor->save();
+      // logging in pelapor
+      Auth::guard('pelapors-api')->login($pelapor);
+      // get oauth clients
+      $client = DB::table('oauth_clients')->where('provider', 'pelapors')->first();
+      $data = [
+        'grant_type' => 'password',
+        'client_id' => $client->id,
+        'client_secret' => $client->secret,
+        'username' => $request->email,
+        'password' => $request->password,
+      ];
+      // requesting token
+      $request_token = Request::create('/oauth/token', 'POST', $data);
+      $content = json_decode(app()->handle($request_token)->getContent());
+    } catch (Exception $e) {
+      // begin transaction
+      DB::rollback();
+      return response()->json([
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+    // if no error commit data saving
+    DB::commit();
+    // All good give 'em token
+    return response()->json([
+      'success' => true,
+      'user' => $pelapor,
+      'token' => [
+        'token_type' => $content->token_type,
+        'expires_in' => $content->expires_in,
+        'access_token' => $content->access_token,
+        'refresh_token' => $content->refresh_token,
+      ]
+    ]);
+  }
 
   public function LoginPelapor(Request $request)
   {
@@ -140,12 +159,11 @@ class AuthController extends Controller
           'username' => $request->email,
           'password' => $request->password,
         ];
-
+        // requesting token
         $request_token = Request::create('/oauth/token', 'POST', $data);
         $content = json_decode(app()->handle($request_token)->getContent());
         // get last login for tracking purpose
         $loggedInPelapor = Auth::guard('pelapors-api')->user();
-        // dd($loggedInPelapor);
         $pelapor = Pelapor::uuid($loggedInPelapor->uuid);
         $pelapor->device = $request->header('User-Agent');
         $pelapor->last_login_at = Carbon::now()->toDateTimeString();
@@ -207,11 +225,6 @@ class AuthController extends Controller
       'message' => $content
     ]);
   }
-
-  // public function RedirectLogin($provider)
-  // {
-  //   return Socialite::driver($provider)->stateless()->redirect();
-  // }
 
   // public function CreateTokenForSocialLogin($provider, Request $request)
   // {
@@ -275,265 +288,279 @@ class AuthController extends Controller
   //   }
   // }
 
-  // /**
-  //  * Get pelapor data
-  //  * @param  Request $request [description]
-  //  * @return [type]           [description]
-  //  */
-  // public function Pelapor(Request $request)
-  // {
-  //   $pelapor = Helper::pelapor();
-  //   $jumlah_laporan =  Laporan::where('created_by', $pelapor->uuid)->count();
-  //   return response()->json([
-  //     'success' => true,
-  //     'pelapor' => [
-  //       'uuid' => $pelapor->uuid,
-  //       'email' => $pelapor->email,
-  //       'provider' => $pelapor->provider,
-  //       'firstname' => $pelapor->firstname,
-  //       'lastname' => $pelapor->lastname,
-  //       'avatar' => $pelapor->avatar,
-  //       'jumlah_laporan' => $jumlah_laporan,
-  //       'reward_point' => $pelapor->reward_point,
-  //       'last_login' => $pelapor->last_login_at,
-  //     ],
-  //   ]);
-  // }
+  /**
+   * Get pelapor data
+   * @param  Request $request [description]
+   * @return [type]           [description]
+   */
+  public function Pelapor(Request $request)
+  {
+    try {
+      $pelapor = Helper::pelapor();
+      $jumlah_laporan =  Laporan::where('created_by', $pelapor->uuid)->count();
+    } catch (Exception $e) {
+      return response()->json([
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+    return response()->json([
+      'success' => true,
+      'pelapor' => [
+        'uuid' => $pelapor->uuid,
+        'email' => $pelapor->email,
+        'provider' => $pelapor->provider,
+        'firstname' => $pelapor->firstname,
+        'lastname' => $pelapor->lastname,
+        'avatar' => $pelapor->avatar,
+        'jumlah_laporan' => $jumlah_laporan,
+        'reward_point' => $pelapor->reward_point,
+        'last_login' => $pelapor->last_login_at,
+      ],
+    ]);
+  }
 
-  // public function ResetPasswordOTP(Request $request)
-  // {
-  //   // get email
-  //   $credentials = $request->only('email');
-  //   // Validation rules
-  //   $rules = [
-  //     'email' => 'required|email',
-  //   ];
-  //   // validation
-  //   $validator = Validator::make($credentials, $rules);
-  //   if ($validator->fails()) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => $validator->messages(),
-  //     ], 400);
-  //   }
-  //   // select pelapor
-  //   $pelapor = Pelapor::where('email', $request->email)->first();
-  //   // if not found throw error
-  //   if (!$pelapor) {
-  //     return response()->json([
-  //       "success" => false,
-  //       "message" => 'Email tidak terdapat dalam sistem, harap masukkan email yang terdaftar !',
-  //     ]);
-  //   }
-  //   // try to send OTP to email
-  //   try {
-  //     // generate OTP
-  //     $OTP =  Otp::generate($request->email);
-  //     // prepare email parameter
-  //     $details = [
-  //       'email' => $pelapor->email,
-  //       'otp' => $OTP->token,
-  //       'expiry' => env('OTP_VALIDITY_TIME')
-  //     ];
-  //     // send email
-  //     $pelapor->notify(new SendOTPNotification($details));
-  //     return response()->json([
-  //       "success" => true,
-  //       "message" => 'Instruksi perubahan password sudah terkirim ke email terdaftar',
-  //     ]);
-  //   } catch (Exception $e) {
-  //     return response()->json([
-  //       "success" => false,
-  //       "message" => 'Gagal mengirim ke email, silahkan coba beberapa saat lagi',
-  //     ]);
-  //   }
-  // }
+  public function ResetPasswordOTP(Request $request)
+  {
+    // get email
+    $credentials = $request->only('email');
+    // Validation rules
+    $rules = [
+      'email' => 'required|email',
+    ];
+    // validation
+    $validator = Validator::make($credentials, $rules);
+    if ($validator->fails()) {
+      return response()->json([
+        'success' => false,
+        'message' => $validator->messages(),
+      ], 400);
+    }
+    // select pelapor
+    $pelapor = Pelapor::where('email', $request->email)->first();
+    // if not found throw error
+    if (!$pelapor) {
+      return response()->json([
+        "success" => false,
+        "message" => 'Email tidak terdaftar di dalam sistem, harap masukkan email yang terdaftar',
+      ]);
+    }
+    // try to send OTP to email
+    try {
+      // generate OTP
+      $OTP =  Otp::generate($request->email);
+      // prepare email parameter
+      $details = [
+        'email' => $pelapor->email,
+        'otp' => $OTP->token,
+        'expiry' => env('OTP_VALIDITY_TIME')
+      ];
+      // send email
+      $pelapor->notify(new SendOTPNotification($details));
+    } catch (Exception $e) {
+      return response()->json([
+        "success" => false,
+        "message" => $e->getMessage(),
+      ]);
+    }
+    return response()->json([
+      "success" => true,
+      "message" => 'Instruksi perubahan password sudah terkirim ke email terdaftar',
+    ]);
+  }
 
-  // private function VerifyOtp($identifier, $otp)
-  // {
-  //   return Otp::validate($identifier, $otp);
-  // }
+  private function VerifyOtp($identifier, $otp)
+  {
+    return Otp::validate($identifier, $otp);
+  }
 
-  // public function UpdateForgotPassword(Request $request)
-  // {
-  //   $rules = [
-  //     'otp' => 'required',
-  //     'new-password' => 'required|string|min:8',
-  //     'confirm-password' => 'required|same:new-password',
-  //   ];
-  //   $messages = [
-  //     '*.required' => 'Tidak boleh kosong',
-  //     '*.min' => 'Password minimal 8 karakter',
-  //     '*.same' => 'Password tidak sama'
-  //   ];
+  public function UpdateForgotPassword(Request $request)
+  {
+    $rules = [
+      'otp' => 'required',
+      'new-password' => 'required|string|min:8',
+      'confirm-password' => 'required|same:new-password',
+    ];
+    $messages = [
+      '*.required' => 'Tidak boleh kosong',
+      '*.min' => 'Password minimal 8 karakter',
+      '*.same' => 'Password tidak sama'
+    ];
 
-  //   // validation
-  //   $validator = Validator::make($request->all(), $rules, $messages);
-  //   if ($validator->fails()) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => $validator->messages(),
-  //     ], 400);
-  //   }
+    // validation
+    $validator = Validator::make($request->all(), $rules, $messages);
+    if ($validator->fails()) {
+      return response()->json([
+        'success' => false,
+        'message' => $validator->messages(),
+      ]);
+    }
+    // check if new password is match with confirmation password
+    if (strcmp($request->get('new-password'), $request->get('confirm-password')) !== 0) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Password tidak cocok dengan konfirmasi',
+      ]);
+    }
+    try {
+      $OtpModel = OtpModel::where('token', $request->otp)->where('expired', false)->first();
+      $verify = $this->VerifyOtp($OtpModel->identifier, $request->otp);
+      if ($verify->status == true) {
+        $pelapor = Pelapor::where('email', $OtpModel->identifier)->first();
+        $pelapor->password = Hash::make($request->get('confirm-password'));
+        $pelapor->save();
+      }
+      return response()->json([
+        "success" => $verify->status,
+        "message" => $verify->message,
+      ]);
+    } catch (Exception $e) {
+      return response()->json([
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+    return response()->json([
+      "success" => true,
+      "message" => 'Password berhasil diubah, silahkan login',
+    ]);
+  }
 
-  //   // check if new password is match with confirmation password
-  //   if (strcmp($request->get('new-password'), $request->get('confirm-password')) !== 0) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => 'Password tidak cocok dengan konfirmasi',
-  //     ]);
-  //   }
+  public function UpdateName(Request $request)
+  {
+    $pelapor = Helper::pelapor();
+    $update_pelapor = Pelapor::uuid($pelapor->uuid);
+    if ($request->get('firstname')) {
+      $update_pelapor->firstname = $request->firstname;
+    }
 
-  //   try {
-  //     $OtpModel = OtpModel::where('token', $request->otp)->where('expired', false)->first();
-  //     $verify = $this->VerifyOtp($OtpModel->identifier, $request->otp);
-  //     if ($verify->status == true) {
-  //       $pelapor = Pelapor::where('email', $OtpModel->identifier)->first();
-  //       $pelapor->password = Hash::make($request->get('confirm-password'));
-  //       $pelapor->save();
-  //       return response()->json([
-  //         "success" => true,
-  //         "message" => 'Password berhasil diubah, silahkan login',
-  //       ]);
-  //     }
-  //     return response()->json([
-  //       "success" => $verify->status,
-  //       "message" => $verify->message,
-  //     ]);
-  //   } catch (Exception $e) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => $e->getMessage(),
-  //     ]);
-  //   }
-  // }
+    if ($request->get('lastname')) {
+      $update_pelapor->lastname = $request->lastname;
+    }
+    try {
+      $update_pelapor->save();
+    } catch (Exception $e) {
+      return response()->json([
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+    return response()->json([
+      'success' => true,
+      'message' => 'Nama berhasil diubah',
+    ]);
+  }
 
-  // public function UpdateName(Request $request)
-  // {
-  //   $pelapor = Helper::pelapor();
-  //   $update_pelapor = Pelapor::uuid($pelapor->uuid);
+  public function UpdatePassword(Request $request)
+  {
+    $pelapor = Helper::pelapor();
+    $rules = [
+      'old-password' => 'required',
+      'new-password' => 'required|string|min:8',
+      'confirm-password' => 'required',
+    ];
 
-  //   if ($request->get('firstname')) {
-  //     $update_pelapor->firstname = $request->firstname;
-  //   }
+    $messages = [
+      '*.required' => 'This field can not be empty',
+      'new-password.min' => 'New Password must be at least 8 characters'
+    ];
+    $validator = Validator::make($request->all(), $rules, $messages);
+    if ($validator->fails()) {
+      return response()->json([
+        'success' => false,
+        'message' => $validator->messages(),
+      ]);
+    }
+    // check user current password if match
+    if (!Hash::check($request->get('old-password'), $pelapor->password)) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Password lama anda tidak cocok',
+      ]);
+    }
+    // check if user using same fucking password for the new password
+    if (strcmp($request->get('old-password'), $request->get('new-password')) == 0) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Password baru anda sama dengan password lama, harap gunakan password yang berbeda',
+      ]);
+    }
+    // check if new password is match with confirmation password
+    if (strcmp($request->get('new-password'), $request->get('confirm-password')) !== 0) {
+      return response()->json([
+        'success' => false,
+        'message' => 'Password baru anda tidak cocok',
+      ]);
+    }
+    try {
+      $update_pelapor = Pelapor::uuid($pelapor->uuid);
+      $update_pelapor->password = Hash::make($request->get('confirm-password'));
+      $update_pelapor->save();
+    } catch (Exception $e) {
+      return response()->json([
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+    return response()->json([
+      'success' => true,
+      'message' => 'Password berhasil diubah',
+    ]);
+  }
 
-  //   if ($request->get('lastname')) {
-  //     $update_pelapor->lastname = $request->lastname;
-  //   }
-  //   try {
-  //     $update_pelapor->save();
-  //   } catch (Exception $e) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => $e->getMessage(),
-  //     ]);
-  //   }
-  //   return response()->json([
-  //     'success' => true,
-  //     'message' => 'Nama berhasil diubah',
-  //   ]);
-  // }
+  public function Logout(Request $request)
+  {
+    $tokenRepository = app(TokenRepository::class);
+    $refreshTokenRepository = app(RefreshTokenRepository::class);
+    try {
+      // Get token
+      $accessToken = Helper::pelapor()->token();
+      // Revoke all of the token's refresh tokens...
+      $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($accessToken->id);
+      // Revoke an access token...
+      $tokenRepository->revokeAccessToken($accessToken->id);
+    } catch (Exception $e) {
+      // something went wrong whilst attempting to encode the token
+      return response()->json([
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+    return response()->json([
+      'success' => true,
+      'message' => "Logged out",
+    ]);
+  }
 
-  // public function UpdatePassword(Request $request)
-  // {
-  //   $pelapor = Helper::pelapor();
+  public function DeletePelapor()
+  {
+    $tokenRepository = app(TokenRepository::class);
+    $refreshTokenRepository = app(RefreshTokenRepository::class);
 
-  //   $rules = [
-  //     'old-password' => 'required',
-  //     'new-password' => 'required|string|min:8',
-  //     'confirm-password' => 'required',
-  //   ];
-
-  //   $messages = [
-  //     '*.required' => 'This field can not be empty',
-  //     'new-password.min' => 'New Password must be at least 8 characters'
-  //   ];
-
-  //   $validator = Validator::make($request->all(), $rules, $messages);
-  //   if ($validator->fails()) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => $validator->messages(),
-  //     ]);
-  //   }
-
-  //   // check user current password if match
-  //   if (!Hash::check($request->get('old-password'), $pelapor->password)) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => 'Password lama anda tidak cocok',
-  //     ]);
-  //   }
-
-  //   // check if user using same fucking password for the new password
-  //   if (strcmp($request->get('old-password'), $request->get('new-password')) == 0) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => 'Password baru anda sama dengan password lama, harap gunakan password yang berbeda',
-  //     ]);
-  //   }
-
-  //   // check if new password is match with confirmation password
-  //   if (strcmp($request->get('new-password'), $request->get('confirm-password')) !== 0) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => 'Password baru anda tidak cocok',
-  //     ]);
-  //   }
-  //   try {
-  //     $update_pelapor = Pelapor::uuid($pelapor->uuid);
-  //     $update_pelapor->password = Hash::make($request->get('confirm-password'));
-  //     $update_pelapor->save();
-  //   } catch (Exception $e) {
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => $e->getMessage(),
-  //     ]);
-  //   }
-  //   return response()->json([
-  //     'success' => true,
-  //     'message' => 'Password berhasil diubah',
-  //   ]);
-  // }
-
-  // public function Logout(Request $request)
-  // {
-  //   // Invalidate the token
-  //   try {
-  //     JWTAuth::invalidate(JWTAuth::getToken());
-  //     return response()->json([
-  //       'success' => true,
-  //       'message' => "Logged out",
-  //     ]);
-  //   } catch (JWTException $e) {
-  //     // something went wrong whilst attempting to encode the token
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => $e->getMessage(),
-  //     ]);
-  //   }
-  // }
-
-  // public function DeletePelapor()
-  // {
-  //   DB::beginTransaction();
-  //   try {
-  //     // get pelapor details based on auth token
-  //     $pelapor = Helper::pelapor();
-  //     $deletePelapor = Pelapor::uuid($pelapor->uuid);
-  //     // soft delete pelapor
-  //     $deletePelapor->delete();
-  //   } catch (Exception $e) {
-  //     DB::rollback();
-  //     return response()->json([
-  //       'success' => false,
-  //       'message' => $e->getMessage(),
-  //     ]);
-  //   }
-  //   DB::commit();
-  //   return response()->json([
-  //     'success' => true,
-  //     'message' => "Account Deleted",
-  //   ]);
-  // }
+    DB::beginTransaction();
+    try {
+      // get pelapor details based on auth token
+      $pelapor = Helper::pelapor();
+      // get access token
+      $accessToken = $pelapor->token();
+      // Revoke all of the token's refresh tokens...
+      $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($accessToken->id);
+      // Revoke an access token...
+      $tokenRepository->revokeAccessToken($accessToken->id);
+      $deletePelapor = Pelapor::uuid($pelapor->uuid);
+      // delete pelapor
+      $deletePelapor->delete();
+    } catch (Exception $e) {
+      DB::rollback();
+      return response()->json([
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+    DB::commit();
+    return response()->json([
+      'success' => true,
+      'message' => "Account Deleted, all access revoked",
+    ]);
+  }
 }
