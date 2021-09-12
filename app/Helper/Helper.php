@@ -3,6 +3,7 @@
 namespace App\Helper;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class Helper
 {
@@ -21,6 +22,11 @@ class Helper
       return 'Selamat Siang';
     }
     return 'Selamat Malam';
+  }
+
+  public static function pelapor()
+  {
+    return Auth::guard('pelapors-api')->user();
   }
 
   public static function GenerateReportNumber($length = 20)
