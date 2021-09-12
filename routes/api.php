@@ -11,45 +11,58 @@
 |
 */
 
-/**
- * old v2 routes
- */
+// old routes version
 Route::group(['prefix' => 'v2'], function () {
     Route::match(['get', 'post'], '{any}', 'Api\ReferensiController@OldAPI')->where('any', '.*');
 });
 
+// open routes
 Route::group(['prefix' => 'v3'], function () {
-    Route::get('logout', 'Api\AuthController@logout');
     Route::post('deploy', 'DeployController@DeployApps');
-    Route::post('register', 'Api\AuthController@RegisterPelapor');
-    Route::post('login', 'Api\AuthController@LoginPelapor');
-    Route::post('refresh-token', 'Api\AuthController@RefreshToken');
-    Route::get('login/{provider}', 'Api\AuthController@RedirectLogin');
-    Route::post('login/{provider}/token', 'Api\AuthController@CreateTokenForSocialLogin');
-    Route::post('pelapor/forgot-password', 'Api\AuthController@ResetPasswordOTP');
-    Route::post('pelapor/update-password', 'Api\AuthController@UpdateForgotPassword');
+    // auth
+    Route::group(['prefix' => 'auth'], function () {
+        Route::post('register', 'Api\AuthController@RegisterPelapor');
+        Route::post('login', 'Api\AuthController@LoginPelapor');
+        Route::post('refresh-token', 'Api\AuthController@RefreshToken');
+        Route::post('logout', 'Api\AuthController@logout');
+        Route::post('provider/{provider}/token', 'Api\AuthController@CreateTokenForSocialLogin');
+    });
+    // account
+    Route::group(['prefix' => 'account'], function () {
+        Route::post('forgot-password', 'Api\AuthController@ResetPasswordOTP');
+        Route::post('update-password', 'Api\AuthController@UpdateForgotPassword');
+    });
 });
 
+// secured routes
 Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function () {
-    Route::get('checktoken', 'Api\AuthController@checkToken');
-    Route::get('profile/pelapor', 'Api\AuthController@pelapor');
-    Route::post('profile/update/name', 'Api\AuthController@UpdateName');
-    Route::post('profile/update/password', 'Api\AuthController@UpdatePassword');
-    Route::get('profile/delete', 'Api\AuthController@DeletePelapor');
-
-    Route::get('jenis-laporan', 'Api\ReferensiController@getJenisLaporan');
-    Route::get('jenis-pelanggaran', 'Api\ReferensiController@getJenisPelanggaran');
-    Route::get('jenis-apresiasi', 'Api\ReferensiController@getJenisApresiasi');
-
-    Route::get('bentuk-pelanggaran', 'Api\ReferensiController@getBentukPelanggaran');
-    Route::get('kawasan', 'Api\ReferensiController@getKawasan');
-
-    Route::post('lapor', 'Api\LaporController@lapor');
-    Route::get('laporan', 'Api\LaporController@listLaporan');
-    Route::get('laporan/{id}', 'Api\LaporController@detailLaporan');
-    Route::get('notif-laporan/{id}', 'Api\LaporController@notifLaporan');
-
-    Route::get('blog-list', 'Api\ExternalLinkController@listLink');
-    Route::get('blog-list/{id}', 'Api\ExternalLinkController@getOneBlog');
+    // account
+    Route::group(['prefix' => 'account'], function () {
+        Route::get('profile', 'Api\AuthController@pelapor');
+        Route::post('update/name', 'Api\AuthController@UpdateName');
+        Route::post('update/password', 'Api\AuthController@UpdatePassword');
+        Route::post('delete', 'Api\AuthController@DeletePelapor');
+    });
+    // reference
+    Route::group(['prefix' => 'reference'], function () {
+        Route::get('jenis-laporan', 'Api\ReferensiController@getJenisLaporan');
+        Route::get('jenis-pelanggaran', 'Api\ReferensiController@getJenisPelanggaran');
+        Route::get('jenis-apresiasi', 'Api\ReferensiController@getJenisApresiasi');
+        Route::get('bentuk-pelanggaran', 'Api\ReferensiController@getBentukPelanggaran');
+        Route::get('kawasan', 'Api\ReferensiController@getKawasan');
+    });
+    // report
+    Route::group(['prefix' => 'report'], function () {
+        Route::get('list', 'Api\LaporController@listLaporan');
+        Route::get('detail/{id}', 'Api\LaporController@detailLaporan');
+        Route::get('notification/{id}', 'Api\LaporController@notifLaporan');
+        Route::post('send', 'Api\LaporController@lapor');
+    });
+    // link
+    Route::group(['prefix' => 'link'], function () {
+        Route::get('list', 'Api\ExternalLinkController@listLink');
+        Route::get('detail/{id}', 'Api\ExternalLinkController@getOneBlog');
+    });
+    // other
     Route::get('notif', 'Api\PushNotificationController@notification');
 });
