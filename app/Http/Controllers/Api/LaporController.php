@@ -11,7 +11,6 @@ use Carbon\Carbon;
 use App\Models\Laporan;
 use App\Models\Pelapor;
 
-use Config;
 use DB;
 use Exception;
 use Helper;
@@ -22,17 +21,6 @@ use Storage;
 
 class LaporController extends Controller
 {
-    public function __construct()
-    {
-        Config::set('jwt.user', Pelapor::class);
-        Config::set('auth.providers', [
-            'users' => [
-                'driver' => 'eloquent',
-                'model' => Pelapor::class,
-            ]
-        ]);
-    }
-
     public function lapor(Request $request)
     {
         $pelapor = Helper::pelapor();
@@ -184,7 +172,7 @@ class LaporController extends Controller
                 break;
         }
         // parsing carbon to locale config
-        $tanggalBuat = Carbon::parse($detailLaporan->created_at)->translatedFormat('l\\, j F Y H:i:s');
+        $tanggalBuat = Carbon::parse($detailLaporan->created_at)->translatedFormat('j F Y');
         $tanggalUbah = Carbon::parse($detailLaporan->updated_at)->translatedFormat('l\\, j F Y H:i:s');
         // return response
         return response()->json([
