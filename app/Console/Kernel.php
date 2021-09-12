@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        // prune expired or revoked token
+        $schedule->command('passport:purge')->daily();
     }
 
     /**
