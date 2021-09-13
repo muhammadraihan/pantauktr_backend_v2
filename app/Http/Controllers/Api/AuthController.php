@@ -55,13 +55,11 @@ class AuthController extends Controller
         'message' => $validator->messages()
       ]);
     }
-
     // retrieve password
     $password = trim($request->password);
     // retrive firstname from email username
     $extract_username = explode("@", $request->email);
     $firstname = $extract_username[0];
-
     /**
      * Setup auth provider instance
      * This will treat "pelapors-api" guard as session
@@ -108,13 +106,8 @@ class AuthController extends Controller
     // All good give 'em token
     return response()->json([
       'success' => true,
-      'user' => $pelapor,
-      'token' => [
-        'token_type' => $content->token_type,
-        'expires_in' => $content->expires_in,
-        'access_token' => $content->access_token,
-        'refresh_token' => $content->refresh_token,
-      ]
+      'token' => $content,
+      'pelapor' => $pelapor,
     ]);
   }
 
@@ -139,7 +132,6 @@ class AuthController extends Controller
         'message' => $validator->messages(),
       ]);
     }
-
     /**
      * Setup auth provider instance
      * This will treat "pelapors-api" guard as session
@@ -186,12 +178,50 @@ class AuthController extends Controller
     // All good give 'em token
     return response()->json([
       'success' => true,
-      'token' => [
-        'token_type' => $content->token_type,
-        'expires_in' => $content->expires_in,
-        'access_token' => $content->access_token,
-        'refresh_token' => $content->refresh_token,
-      ]
+      'token' => $content,
+    ]);
+  }
+
+  public function CreateTokenForSocialLogin($provider, Request $request)
+  {
+    $service_token = $request->get('service-token');
+    DB::beginTransaction();
+    try {
+      // get oauth clients
+      $client = DB::table('oauth_clients')->where('provider', 'pelapors')->first();
+      $data = [
+        'grant_type' => 'social',
+        'client_id' => $client->id,
+        'client_secret' => $client->secret,
+        'provider' => $provider,
+        'access_token' => $service_token,
+      ];
+      // requesting token
+      $request_token = Request::create('/oauth/token', 'POST', $data);
+      $content = json_decode(app()->handle($request_token)->getContent());
+      // get last login for tracking purpose
+      $loggedInPelapor = Auth::guard('pelapors-api')->user();
+      // dd($loggedInPelapor);
+      $pelapor = Pelapor::uuid($loggedInPelapor->uuid);
+      $pelapor->device = $request->header('User-Agent');
+      $pelapor->last_login_at = Carbon::now()->toDateTimeString();
+      $pelapor->last_login_ip = $request->getClientIp();
+      $pelapor->save();
+    } catch (Exception $e) {
+      // begin transaction
+      DB::rollback();
+      return response()->json([
+        'success' => false,
+        'message' => $e->getMessage(),
+      ]);
+    }
+    // if no error commit data saving
+    DB::commit();
+    // All good give 'em token
+    return response()->json([
+      'success' => true,
+      'token' => $content,
+      'pelapor' => $pelapor,
     ]);
   }
 
@@ -225,68 +255,6 @@ class AuthController extends Controller
       'message' => $content
     ]);
   }
-
-  // public function CreateTokenForSocialLogin($provider, Request $request)
-  // {
-  //   $service_token = $request->get('service-token');
-  //   $auth_pelapor = Socialite::driver($provider)->userFromToken($service_token);
-  //   // split name to be first and last name
-  //   $name = $auth_pelapor->user['name'];
-  //   $parts = explode(" ", $name);
-  //   if (count($parts) > 1) {
-  //     $lastname = array_pop($parts);
-  //     $firstname = implode(" ", $parts);
-  //   } else {
-  //     $firstname = $name;
-  //     $lastname = " ";
-  //   }
-  //   // Check if a user exists with email response
-  //   $pelapor = Pelapor::where('email', $auth_pelapor->email)->first();
-  //   // if not exists create new account and return token
-  //   if (!$pelapor) {
-  //     // begin transaction
-  //     DB::beginTransaction();
-  //     try {
-  //       $pelapor = Pelapor::create([
-  //         'firstname' => $firstname,
-  //         'lastname' => $lastname,
-  //         'email'    => !empty($auth_pelapor->user['email']) ? $auth_pelapor->user['email'] : '',
-  //         'provider' => $provider,
-  //         'avatar' => $auth_pelapor->avatar,
-  //         'last_login_at' => Carbon::now()->toDateTimeString(),
-  //         'last_login_ip' => $request->getClientIp(),
-  //       ]);
-  //       $token = JWTAuth::fromUser($pelapor);
-  //     } catch (Exception $e) {
-  //       // begin transaction
-  //       DB::rollback();
-  //       return response()->json([
-  //         'success' => false,
-  //         'message' => $e->getMessage(),
-  //       ]);
-  //     }
-  //     // if no error commit data saving
-  //     DB::commit();
-  //     return response()->json([
-  //       'success' => true,
-  //       'token' => [
-  //         'access_token' => $token,
-  //         'expires_in' => JWTAuth::factory()->getTTL(),
-  //       ],
-  //     ]);
-  //   }
-  //   // if exists return token
-  //   else {
-  //     $token = JWTAuth::fromUser($pelapor);
-  //     return response()->json([
-  //       'success' => true,
-  //       'token' => [
-  //         'access_token' => $token,
-  //         'expires_in' => JWTAuth::factory()->getTTL(),
-  //       ]
-  //     ]);
-  //   }
-  // }
 
   /**
    * Get pelapor data
