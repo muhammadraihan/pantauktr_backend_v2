@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Services\SocialUserResolver;
 use Carbon\Carbon;
+use Coderello\SocialGrant\Resolvers\SocialUserResolverInterface;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Passport\Passport;
@@ -10,6 +12,16 @@ use URL;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * All of the container bindings that should be registered.
+     *
+     * @var array
+     */
+    public $bindings = [
+        // binding social grant resolver interface to social resolver
+        SocialUserResolverInterface::class => SocialUserResolver::class,
+    ];
+
     /**
      * Register any application services.
      *
