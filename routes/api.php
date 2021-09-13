@@ -25,7 +25,7 @@ Route::group(['prefix' => 'v3'], function () {
         Route::post('login', 'Api\AuthController@LoginPelapor');
         Route::post('refresh-token', 'Api\AuthController@RefreshToken');
         Route::post('logout', 'Api\AuthController@logout');
-        Route::post('provider/{provider}/token', 'Api\AuthController@CreateTokenForSocialLogin');
+        Route::post('provider/{provider}', 'Api\AuthController@CreateTokenForSocialLogin');
     });
     // account
     Route::group(['prefix' => 'account'], function () {
