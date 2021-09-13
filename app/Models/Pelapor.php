@@ -69,4 +69,9 @@ class Pelapor extends Authenticatable implements CanResetPassword
     {
         return "Data has been {$eventName}";
     }
+
+    public function LinkedSocialAccounts()
+    {
+        return $this->hasMany(LinkedSocialAccount::class, 'pelapor_uuid', 'uuid');
+    }
 }
