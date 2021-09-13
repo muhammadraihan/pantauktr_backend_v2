@@ -16,7 +16,8 @@ class CreateKawasansTable extends Migration
         Schema::create('kawasans', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
-            $table->string('kawasan');
+            $table->string('kawasan')->nullable();
+            $table->text('keterangan')->nullable();
             $table->string('created_by')->nullable();
             $table->string('edited_by')->nullable();
             $table->timestamps();

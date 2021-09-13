@@ -3,8 +3,7 @@
 namespace App\Helper;
 
 use Carbon\Carbon;
-use Exception;
-use JWTAuth;
+use Illuminate\Support\Facades\Auth;
 
 class Helper
 {
@@ -27,20 +26,7 @@ class Helper
 
   public static function pelapor()
   {
-    try {
-      if (!$pelapor = JWTAuth::parseToken()->authenticate()) {
-        return response()->json(['status' => 'ACCOUNT_NOT_FOUND'], 404);
-      }
-    } catch (Exception $e) {
-      if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException) {
-        return response()->json(['status' => 'TOKEN_IS_INVALID'], 500);
-      } else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException) {
-        return response()->json(['status' => 'TOKEN_IS_EXPIRED'], 500);
-      } else {
-        return response()->json(['status' => 'TOKEN_NOT_FOUND'], 500);
-      }
-    }
-    return $pelapor;
+    return Auth::guard('pelapors-api')->user();
   }
 
   public static function GenerateReportNumber($length = 20)

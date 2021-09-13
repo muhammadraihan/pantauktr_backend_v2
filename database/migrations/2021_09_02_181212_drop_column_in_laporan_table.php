@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddKawanToLaporan extends Migration
+class DropColumnInLaporanTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,10 @@ class AddKawanToLaporan extends Migration
     public function up()
     {
         Schema::table('laporans', function (Blueprint $table) {
-            $table->string('bentuk_pelanggaran')->nullable()->after('jenis_pelanggaran');
-            $table->string('kawasan')->nullable()->after('photo');
+            // drop column jenis laporan
+            $table->dropColumn('jenis_laporan');
+            // drop column jenis apresiasi
+            $table->dropColumn('jenis_apresiasi');
         });
     }
 
@@ -27,7 +29,7 @@ class AddKawanToLaporan extends Migration
     public function down()
     {
         Schema::table('laporans', function (Blueprint $table) {
-            $table->dropColumn(['bentuk_pelanggaran', 'kawasan']);
+            //
         });
     }
 }

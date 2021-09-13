@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBentukApresiasisTable extends Migration
+class CreateLinkedSocialAccountsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateBentukApresiasisTable extends Migration
      */
     public function up()
     {
-        Schema::create('bentuk_apresiasis', function (Blueprint $table) {
+        Schema::create('linked_social_accounts', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique();
-            $table->string('bentuk_apresiasi');
-            $table->string('created_by')->nullable();
-            $table->string('edited_by')->nullable();
+            $table->string('provider_id')->nullable();
+            $table->string('provider_name')->nullable();
+            $table->string('pelapor_uuid')->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateBentukApresiasisTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bentuk_apresiasis');
+        Schema::dropIfExists('linked_social_accounts');
     }
 }

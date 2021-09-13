@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Throwable;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -35,11 +36,11 @@ class Handler extends ExceptionHandler
      */
     private function unauthorized($request, Throwable $exception)
     {
-      if ($request->expectsJson()) {
-        return response()->json(['error' => $exception->getMessage()], 403);
-      }
-      toastr()->warning($exception->getMessage(),'Warning');
-      return redirect()->back();
+        if ($request->expectsJson()) {
+            return response()->json(['error' => $exception->getMessage()], 403);
+        }
+        toastr()->warning($exception->getMessage(), 'Warning');
+        return redirect()->back();
     }
 
     /**
@@ -62,6 +63,14 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if ($request->is('api/*')) {
+            if ($exception instanceof AuthenticationException) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $exception->getMessage(),
+                ]);
+            }
+        }
         // Check Authorization for callAction in contoller
         if ($exception instanceof AuthorizationException) {
             return $this->unauthorized($request, $exception);

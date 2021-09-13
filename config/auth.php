@@ -41,11 +41,15 @@ return [
             'provider' => 'users',
         ],
 
-        'api' => [
-            'driver' => 'token',
-            'provider' => 'users',
-            'hash' => false,
+        'pelapors-api' => [
+            'driver' => 'passport',
+            'provider' => 'pelapors',
         ],
+        // 'api' => [
+        //     'driver' => 'token',
+        //     'provider' => 'users',
+        //     'hash' => false,
+        // ],
     ],
 
     /*
@@ -69,6 +73,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'pelapors' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Pelapor::class,
         ],
 
         // 'users' => [
