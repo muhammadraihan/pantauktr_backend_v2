@@ -63,6 +63,10 @@ Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function
         Route::get('list', 'Api\ExternalLinkController@listLink');
         Route::get('detail/{id}', 'Api\ExternalLinkController@getOneBlog');
     });
+    // content
+    Route::group(['prefix' => 'content'], function () {
+        Route::get('banners','Api\ContentController@getBanner');
+    });
     // other
     Route::get('notif', 'Api\PushNotificationController@notification');
 });
