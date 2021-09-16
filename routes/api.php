@@ -65,7 +65,8 @@ Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function
     });
     // content
     Route::group(['prefix' => 'content'], function () {
-        Route::get('banners','Api\ContentController@getBanner');
+        Route::get('banner','Api\ContentController@getBanner');
+        Route::get('dynamic-menu','Api\ContentController@getDynamicMenu');
     });
     // other
     Route::get('notif', 'Api\PushNotificationController@notification');
