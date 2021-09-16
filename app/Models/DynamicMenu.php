@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\Uuid;
 
-class Banner extends Model
+class DynamicMenu extends Model
 {
     use HasFactory;
     use Uuid;
 
     protected $fillable = [
-        'photo','status','created_by', 'edited_by'
+        'icon','judul','status','created_by', 'edited_by'
     ];
 
     protected static $logAttributes = ['*'];
@@ -22,7 +22,7 @@ class Banner extends Model
      *
      * @var string
      */
-    protected static $logName = 'Banner';
+    protected static $logName = 'DynamicMenu';
 
     /**
      * Logging only the changed attributes

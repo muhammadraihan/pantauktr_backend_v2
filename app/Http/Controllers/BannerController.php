@@ -140,6 +140,7 @@ class BannerController extends Controller
      */
     public function update(Request $request, $uuid)
     {
+        $banner = Banner::uuid($uuid);
         if ($request->hasfile('photo')) {
             $rules = [
                 'photo' => 'required|mimes:jpeg,jpg,png|max:5000',
@@ -163,10 +164,8 @@ class BannerController extends Controller
             $disk = Storage::disk('gcs');
             $disk->put($googleContent, (string) $resizeImage);
             $fileUrl = $disk->url(env('GOOGLE_CLOUD_STORAGE_BUCKET') . '/' . $googleContent);
+            $banner->photo = $fileUrl;
         }
-
-        $banner = Banner::uuid($uuid);
-        $banner->photo = $fileUrl;
         $banner->status = $request->status;
         $banner->edited_by = Auth::user()->uuid;
         $banner->save();
