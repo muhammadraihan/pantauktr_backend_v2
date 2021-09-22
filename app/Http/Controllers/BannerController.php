@@ -89,7 +89,7 @@ class BannerController extends Controller
         $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
         // resizing image to upload
         $resizeImage = Image::make($image);
-        $resizeImage->resize(800, 600, function ($constraint) {
+        $resizeImage->resize(800, 800, function ($constraint) {
             $constraint->aspectRatio();
         })->encode();
         // upload resized image to gcs
@@ -156,7 +156,7 @@ class BannerController extends Controller
             $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
             // resizing image to upload
             $resizeImage = Image::make($image);
-            $resizeImage->resize(800, 600, function ($constraint) {
+            $resizeImage->resize(800, 800, function ($constraint) {
                 $constraint->aspectRatio();
             })->encode();
             // upload resized image to gcs
