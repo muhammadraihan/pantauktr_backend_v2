@@ -11,6 +11,11 @@ use App\Models\Website;
 
 class ContentController extends Controller
 {
+    /**
+     * Get Banner for Tata Cara
+     *
+     * @return json
+     */
     public function getBanner()
     {
         $banner = Banner::select('id', 'uuid', 'photo')->where('status',1)->get();
@@ -19,16 +24,11 @@ class ContentController extends Controller
             'data' => $banner,
         ], 200);
     }
-
-    public function getDynamicMenu()
-    {
-        $dynamic_menu = DynamicMenu::select('id','uuid','icon','judul')->where('status',1)->get();
-        return response()->json([
-            'success' => true,
-            'data' => $dynamic_menu,
-        ], 200);
-    }
-
+    /**
+     * Get Website Content
+     *
+     * @return json
+     */
     public function getWebsiteContent()
     {
         $website = Website::select('id','uuid','title','slug','photo','description')->get();
@@ -37,7 +37,12 @@ class ContentController extends Controller
             'data' => $website,
         ],200);
     }
-
+    /**
+     * Get Detail Website Content
+     *
+     * @param [type] $id
+     * @return json
+     */
     public function getWebsiteContentDetail($id)
     {
         $website = Website::select('id','uuid','title','slug','photo','description')->where('uuid',$id)->first();
