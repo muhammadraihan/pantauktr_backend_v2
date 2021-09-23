@@ -104,6 +104,10 @@ class BannerController extends Controller
         $banner->created_by = Auth::user()->uuid;
         $banner->save();
 
+        if ($banner->status == 1) {
+            $checkBanner = Banner::where('id','!=',$banner->id)->update(['status'=>0]);
+        }
+
         toastr()->success('New Banner Added', 'Success');
         return redirect()->route('banner.index');
     }
@@ -169,6 +173,9 @@ class BannerController extends Controller
         $banner->status = $request->status;
         $banner->edited_by = Auth::user()->uuid;
         $banner->save();
+        if ($banner->status == 1) {
+            $checkBanner = Banner::where('id','!=',$banner->id)->update(['status'=>0]);
+        }
         toastr()->success('Banner Edited', 'Success');
         return redirect()->route('banner.index');
     }
