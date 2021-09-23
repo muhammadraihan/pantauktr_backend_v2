@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Banner;
 use App\Models\DynamicMenu;
 use App\Models\Website;
+use App\Models\Instagram;
 
 
 class ContentController extends Controller
@@ -18,7 +19,7 @@ class ContentController extends Controller
      */
     public function getBanner()
     {
-        $banner = Banner::select('id', 'uuid', 'photo')->where('status',1)->get();
+        $banner = Banner::select('id', 'uuid', 'photo')->where('status',1)->first();
         return response()->json([
             'success' => true,
             'data' => $banner,
@@ -49,6 +50,15 @@ class ContentController extends Controller
         return response()->json([
             'success' => true,
             'data' => $website,
+        ],200);
+    }
+
+    public function getInstagramContent()
+    {
+        $instagram = Instagram::select('id','uuid','photo','caption')->get();
+        return response()->json([
+            'success' => true,
+            'data' => $instagram,
         ],200);
     }
 }
