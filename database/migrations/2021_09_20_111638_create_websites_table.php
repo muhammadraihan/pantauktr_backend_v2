@@ -18,7 +18,7 @@ class CreateWebsitesTable extends Migration
             $table->string('uuid')->unique();
             $table->string('title');
             $table->string('slug')->unique();
-            $table->string('photo');
+            $table->string('photo')->nullable();
             $table->longText('description');
             $table->string('created_by')->nullable();
             $table->string('edited_by')->nullable();
