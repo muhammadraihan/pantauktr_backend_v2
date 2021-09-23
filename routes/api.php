@@ -63,6 +63,13 @@ Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function
         Route::get('list', 'Api\ExternalLinkController@listLink');
         Route::get('detail/{id}', 'Api\ExternalLinkController@getOneBlog');
     });
+    // content
+    Route::group(['prefix' => 'content'], function () {
+        Route::get('banner','Api\ContentController@getBanner');
+        Route::get('instagram','Api\ContentController@getInstagramContent');
+        Route::get('website-content','Api\ContentController@getWebsiteContent');
+        Route::get('website-content/{id}','Api\ContentController@getWebsiteContentDetail');
+    });
     // other
     Route::get('notif', 'Api\PushNotificationController@notification');
 });
