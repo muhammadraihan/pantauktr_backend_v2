@@ -16,13 +16,11 @@ use Laravel\Passport\RefreshTokenRepository;
 
 
 use Auth;
-use Carbon\CarbonInterval;
-use Config;
 use DB;
+use Defuse\Crypto\Crypto;
 use Exception;
 use Hash;
 use Helper;
-use Socialite;
 use Validator;
 
 class AuthController extends Controller
@@ -93,6 +91,15 @@ class AuthController extends Controller
       // requesting token
       $request_token = Request::create('/oauth/token', 'POST', $data);
       $content = json_decode(app()->handle($request_token)->getContent());
+      /**
+       * Decrypt refresh token to get expired time
+       * this step is important to pass refresh token expires time to app
+       * so data will be use to define app state
+       */
+      $app_key = env('APP_KEY');
+      $enc_key = base64_decode(substr($app_key, 7));
+      $crypto = Crypto::decryptWithPassword($content->refresh_token, $enc_key);
+      $decode = json_decode($crypto, true);
     } catch (Exception $e) {
       // begin transaction
       DB::rollback();
@@ -106,8 +113,14 @@ class AuthController extends Controller
     // All good give 'em token
     return response()->json([
       'success' => true,
-      'token' => $content,
       'pelapor' => $pelapor,
+      'token' => [
+        'token_type' => $content->token_type,
+        'expires_in' => $content->expires_in,
+        'access_token' => $content->access_token,
+        'refresh_token' => $content->refresh_token,
+        'refresh_expired' => $decode['expire_time'],
+      ],
     ]);
   }
 
@@ -154,6 +167,15 @@ class AuthController extends Controller
         // requesting token
         $request_token = Request::create('/oauth/token', 'POST', $data);
         $content = json_decode(app()->handle($request_token)->getContent());
+        /**
+         * Decrypt refresh token to get expired time
+         * this step is important to pass refresh token expires time to app
+         * so data will be use to define app state
+         */
+        $app_key = env('APP_KEY');
+        $enc_key = base64_decode(substr($app_key, 7));
+        $crypto = Crypto::decryptWithPassword($content->refresh_token, $enc_key);
+        $decode = json_decode($crypto, true);
         // get last login for tracking purpose
         $loggedInPelapor = Auth::guard('pelapors-api')->user();
         $pelapor = Pelapor::uuid($loggedInPelapor->uuid);
@@ -178,7 +200,13 @@ class AuthController extends Controller
     // All good give 'em token
     return response()->json([
       'success' => true,
-      'token' => $content,
+      'token' => [
+        'token_type' => $content->token_type,
+        'expires_in' => $content->expires_in,
+        'access_token' => $content->access_token,
+        'refresh_token' => $content->refresh_token,
+        'refresh_expired' => $decode['expire_time'],
+      ],
     ]);
   }
 
@@ -199,6 +227,17 @@ class AuthController extends Controller
       // requesting token
       $request_token = Request::create('/oauth/token', 'POST', $data);
       $content = json_decode(app()->handle($request_token)->getContent());
+
+      /**
+       * Decrypt refresh token to get expired time
+       * this step is important to pass refresh token expires token to app
+       * so data will use to define app state
+       */
+      $app_key = env('APP_KEY');
+      $enc_key = base64_decode(substr($app_key, 7));
+      $crypto = Crypto::decryptWithPassword($content->refresh_token, $enc_key);
+      $decode = json_decode($crypto, true);
+
       // get last login for tracking purpose
       $loggedInPelapor = Auth::guard('pelapors-api')->user();
       // dd($loggedInPelapor);
@@ -220,8 +259,14 @@ class AuthController extends Controller
     // All good give 'em token
     return response()->json([
       'success' => true,
-      'token' => $content,
       'pelapor' => $pelapor,
+      'token' => [
+        'token_type' => $content->token_type,
+        'expires_in' => $content->expires_in,
+        'access_token' => $content->access_token,
+        'refresh_token' => $content->refresh_token,
+        'refresh_expired' => $decode['expire_time'],
+      ],
     ]);
   }
 
@@ -237,6 +282,16 @@ class AuthController extends Controller
       ];
       $request_token = Request::create('/oauth/token', 'POST', $data);
       $content = json_decode(app()->handle($request_token)->getContent());
+      /**
+       * Decrypt refresh token to get expired time
+       * this step is important to pass refresh token expires token to app
+       * so data will use to define app state
+       */
+      $app_key = env('APP_KEY');
+      $enc_key = base64_decode(substr($app_key, 7));
+      $crypto = Crypto::decryptWithPassword($request->refresh_token, $enc_key);
+      $decode = json_decode($crypto, true);
+
       // throw error message if content contains error
       if (isset($content->error)) {
         return response()->json([
@@ -252,16 +307,21 @@ class AuthController extends Controller
     }
     return response()->json([
       'success' => true,
-      'message' => $content
+      'token' => [
+        'token_type' => $content->token_type,
+        'expires_in' => $content->expires_in,
+        'access_token' => $content->access_token,
+        'refresh_token' => $content->refresh_token,
+        'refresh_expired' => $decode['expire_time'],
+      ],
     ]);
   }
 
   /**
    * Get pelapor data
-   * @param  Request $request [description]
-   * @return [type]           [description]
+   * @return json
    */
-  public function Pelapor(Request $request)
+  public function Pelapor()
   {
     try {
       $pelapor = Helper::pelapor();
@@ -476,13 +536,21 @@ class AuthController extends Controller
     ]);
   }
 
-  public function Logout(Request $request)
+  public function logout()
   {
     $tokenRepository = app(TokenRepository::class);
     $refreshTokenRepository = app(RefreshTokenRepository::class);
     try {
+      // Get pelapor token
+      $pelapor = Helper::pelapor();
+      if (is_null($pelapor)) {
+        return response()->json([
+          'success' => false,
+          'message' => 'Unauthenticated',
+        ]);
+      }
       // Get token
-      $accessToken = Helper::pelapor()->token();
+      $accessToken = $pelapor->token();
       // Revoke all of the token's refresh tokens...
       $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($accessToken->id);
       // Revoke an access token...
