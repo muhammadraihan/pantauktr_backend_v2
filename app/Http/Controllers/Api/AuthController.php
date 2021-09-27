@@ -227,7 +227,6 @@ class AuthController extends Controller
       // requesting token
       $request_token = Request::create('/oauth/token', 'POST', $data);
       $content = json_decode(app()->handle($request_token)->getContent());
-
       /**
        * Decrypt refresh token to get expired time
        * this step is important to pass refresh token expires token to app
@@ -393,7 +392,7 @@ class AuthController extends Controller
     }
     return response()->json([
       "success" => true,
-      "message" => 'Instruksi perubahan password sudah terkirim ke email terdaftar',
+      "message" => 'Kode untuk perubahan password sudah dikirim ke email anda',
     ]);
   }
 
