@@ -20,18 +20,23 @@ class SocialUserResolver implements SocialUserResolverInterface
     {
         $providerUser = null;
         try {
+            // validate social token from provider
             $providerUser = Socialite::driver($provider)->userFromToken($accessToken);
-            // dd($providerUser);
         } catch (Exception $e) {
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
             ]);
         }
+        /**
+         * check if access token from social provider is valid
+         * check user is exists otherwise create new user
+         * form social account service
+         */
         if ($providerUser) {
             return (new SocialAccountService())->findOrCreate($providerUser, $provider);
         }
-
+        // if access token not valid return error message
         return response()->json([
             'success' => false,
             'message' => 'Something wrong, login attempt failed',
