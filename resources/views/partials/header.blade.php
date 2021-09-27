@@ -3,7 +3,8 @@
     <div class="page-logo">
         <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative"
             data-toggle="modal" data-target="#modal-shortcut">
-            <img src="{{asset('img/logo.png')}}" alt="{{env('APP_NAME','')}}" aria-roledescription="logo">
+            <img src="{{asset('img/logo-gray.png')}}" class="rounded-circle" alt="{{env('APP_NAME','')}}"
+                aria-roledescription="logo">
             <span class="page-logo-text mr-1">{{env('APP_NAME','')}}</span>
             <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
             <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
