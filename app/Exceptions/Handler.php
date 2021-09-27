@@ -68,7 +68,7 @@ class Handler extends ExceptionHandler
                 return response()->json([
                     'success' => false,
                     'message' => $exception->getMessage(),
-                ]);
+                ], 401);
             }
         }
         // Check Authorization for callAction in contoller

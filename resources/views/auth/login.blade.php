@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Login
+Login
 @endsection
 
 @section('themes_css')
@@ -10,10 +10,11 @@
 
 @section('body')
 <div class="blankpage-form-field">
-    <div class="page-logo m-0 w-100 align-items-center justify-content-center rounded border-bottom-left-radius-0 border-bottom-right-radius-0 px-4">
+    <div
+        class="page-logo m-0 w-100 align-items-center justify-content-center rounded border-bottom-left-radius-0 border-bottom-right-radius-0 px-4">
         <a href="javascript:void(0)" class="page-logo-link press-scale-down d-flex align-items-center">
-            <img src="{{asset('img/logo.png')}}" alt="App logo" aria-roledescription="logo">
-        <span class="page-logo-text mr-1">Secure Login</span>
+            <img src="{{asset('img/logo-gray.png')}}" class="rounded-circle" alt="App logo" aria-roledescription="logo">
+            <span class="page-logo-text mr-1">Secure Login</span>
             <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
         </a>
     </div>
@@ -22,7 +23,8 @@
             @csrf
             <div class="form-group">
                 <label class="form-label" for="email">Email</label>
-                <input type="email" id="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" placeholder="email">
+                <input type="email" id="email" class="form-control @error('email') is-invalid @enderror" name="email"
+                    value="{{ old('email') }}" required autocomplete="email" placeholder="email">
                 <span class="help-block">
                     Your registered email to app
                 </span>
@@ -34,7 +36,8 @@
             </div>
             <div class="form-group">
                 <label class="form-label" for="password">Password</label>
-                <input type="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="password" name="password" required autocomplete="current-password">
+                <input type="password" id="password" class="form-control @error('password') is-invalid @enderror"
+                    placeholder="password" name="password" required autocomplete="current-password">
                 <span class="help-block">
                     Your password
                 </span>
@@ -47,7 +50,8 @@
             </div>
             <div class="form-group text-left">
                 <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="remember" id="rememberme" {{ old('remember') ? 'checked' : '' }}>
+                    <input type="checkbox" class="custom-control-input" name="remember" id="rememberme"
+                        {{ old('remember') ? 'checked' : '' }}>
                     <label class="custom-control-label" for="rememberme"> Remember me</label>
                 </div>
             </div>
@@ -56,7 +60,7 @@
     </div>
     <div class="blankpage-footer text-center">
         @if (Route::has('password.reset'))
-        <a href="{{ route('password.request') }}"><strong>Forgot Password ?</strong></a>    
+        <a href="{{ route('password.request') }}"><strong>Forgot Password ?</strong></a>
         @endif
     </div>
 </div>
