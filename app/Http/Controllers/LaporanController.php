@@ -7,6 +7,9 @@ use App\Traits\Authorizable;
 use App\Models\Laporan;
 use App\Models\TindakLanjut;
 use App\Models\User;
+use App\Models\Pelanggaran;
+use App\Models\BentukPelanggaran;
+use App\Models\Kawasan;
 use Carbon\Carbon;
 
 use Auth;
@@ -16,7 +19,7 @@ use DB;
 
 class LaporanController extends Controller
 {
-    use Authorizable;
+    // use Authorizable;
     /**
      * Display a listing of the resource.
      *
@@ -34,31 +37,34 @@ class LaporanController extends Controller
             ->select(DB::raw("DATE_FORMAT(created_at, '%m') bulan"))
             ->groupBy('bulan')
             ->get();
+        $pelanggaran = Pelanggaran::select('uuid','name','keterangan')->get();
+        $bentuk_pelanggaran = BentukPelanggaran::select('uuid','bentuk_pelanggaran','keterangan')->get();
+        $kawasan = Kawasan::select('uuid','kawasan','keterangan')->get();
 
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
             if ($request->user()->hasRole('pemda')) {
                 $userss = Laporan::select([
                     DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-                    'id', 'uuid', 'jenis_laporan', 'jenis_pelanggaran', 'jenis_apresiasi', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by', 'created_at'
+                    'id', 'uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran','keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'kawasan', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by', 'created_at'
                 ])
                     ->where('kota', 'like', $users->city->city_name);
             } else {
                 $userss = Laporan::select([
                     DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-                    'id', 'uuid', 'jenis_laporan', 'jenis_pelanggaran', 'jenis_apresiasi', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_at'
+                    'id', 'uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'kawasan','alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_at'
                 ]);
             }
             return Datatables::of($userss)
                 ->addIndexColumn()
-                ->editColumn('jenis_laporan', function ($row) {
-                    return $row->jenislaporan->name;
-                })
                 ->editColumn('jenis_pelanggaran', function ($row) {
                     return $row->pelanggaran->name ?? null;
                 })
-                ->editColumn('jenis_apresiasi', function ($row) {
-                    return $row->japresiasi->name ?? null;
+                ->editColumn('bentuk_pelanggaran', function ($row){
+                    return $row->BentukPelanggaran->bentuk_pelanggaran ?? null;
+                })
+                ->editColumn('kawasan', function ($row){
+                    return $row->Kawasan->kawasan ?? null;
                 })
                 ->editColumn('photo', function ($row) {
                     return $row->photo ? '<img style="width: 150px; height: 150px;"  src="' . $row->photo . '" alt="">' : '<span class="badge badge-secondary badge-pill">Foto tidak terlampir</span>';
@@ -76,7 +82,7 @@ class LaporanController extends Controller
                 ->make();
         }
 
-        return view('laporan.index', compact('users', 'kota', 'year', 'month'));
+        return view('laporan.index', compact('users', 'kota', 'year', 'month','pelanggaran','bentuk_pelanggaran','kawasan'));
     }
 
     public function filter(Request $request, User $uuid)
@@ -88,30 +94,35 @@ class LaporanController extends Controller
             if ($request->user()->hasRole('pemda')) {
                 $userss = Laporan::select([
                     DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-                    'id', 'uuid', 'jenis_pelanggaran', 'jenis_laporan', 'jenis_apresiasi', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by', 'created_at'
+                    'id', 'uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran','keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'kawasan', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by', 'created_at'
                 ])
+                    ->where('jenis_pelanggaran','=',$request['pelanggaran'])
+                    ->where('bentuk_pelanggaran','=',$request['bentuk_pelanggaran'])
+                    ->where('kawasan','=',$request['kawasan'])
                     ->where('kota', 'like', $users->city->city_name)
                     ->whereYear('created_at', (int)$request['tahun'])
                     ->whereMonth('created_at', (int)$request['bulan']);
             } else {
                 $userss = Laporan::select([
                     DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-                    'id', 'uuid', 'jenis_pelanggaran', 'jenis_laporan', 'jenis_apresiasi', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by', 'created_at'
+                    'id', 'uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran','keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'kawasan', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by', 'created_at'
                 ])
+                    ->where('jenis_pelanggaran','=',$request['pelanggaran'])
+                    ->where('bentuk_pelanggaran','=',$request['bentuk_pelanggaran'])
+                    ->where('kawasan','=',$request['kawasan'])
                     ->whereYear('created_at', $request['tahun'])
                     ->whereMonth('created_at', $request['bulan']);
             }
-
             return Datatables::of($userss)
                 ->addIndexColumn()
                 ->editColumn('jenis_pelanggaran', function ($row) {
                     return $row->pelanggaran->name ?? null;
                 })
-                ->editColumn('jenis_apresiasi', function ($row) {
-                    return $row->japresiasi->name ?? null;
+                ->editColumn('bentuk_pelanggaran', function ($row){
+                    return $row->BentukPelanggaran->bentuk_pelanggaran ?? null;
                 })
-                ->editColumn('jenis_laporan', function ($row) {
-                    return $row->jenislaporan->name;
+                ->editColumn('kawasan', function ($row){
+                    return $row->Kawasan->kawasan ?? null;
                 })
                 ->editColumn('photo', function ($row) {
                     return $row->photo ? '<img style="width: 150px; height: 150px;"  src="' . $row->photo . '" alt="">' : '<span class="badge badge-secondary badge-pill">Foto tidak terlampir</span>';

@@ -32,6 +32,33 @@
             </div>
             <div class="panel-container show">
                 <div class="form-group col-md-5 mb-3">
+                    <label>Jenis Pelanggaran</label>
+                    <select class="js-bg-color custom-select pelanggaran" name="pelanggaran">
+                        <option value="">Jenis Pelanggaran</option>
+                        @foreach($pelanggaran as $p)
+                        <option value="{{$p->uuid}}"> {{$p->name}} </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-5 mb-3">
+                    <label>Bentuk Pelanggaran</label>
+                    <select class="js-bg-color custom-select bp" name="bp">
+                        @foreach($bentuk_pelanggaran as $bp)
+                        <option value="">Bentuk Pelanggaran</option>
+                        <option value="{{$bp->uuid}}"> {{$bp->bentuk_pelanggaran}} </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-5 mb-3">
+                    <label>Kawasan</label>
+                    <select class="js-bg-color custom-select kawasan" name="kawasan">
+                        @foreach($kawasan as $k)
+                        <option value="">Kawasan</option>
+                        <option value="{{$k->uuid}}"> {{$k->kawasan}} </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="form-group col-md-5 mb-3">
                     <label>Tahun</label>
                     <input type="text" class="form-control js-bg-target" placeholder="Tahun" id="tahun" name="tahun"
                         autocomplete="off">
@@ -52,12 +79,12 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>Jenis Laporan</th>
                                 <th>Jenis Pelanggaran</th>
-                                <th>Jenis Apresiasi</th>
+                                <th>Bentuk Pelanggaran</th>
                                 <th>Keterangan</th>
                                 <th>Photo</th>
                                 <th>Nama Lokasi</th>
+                                <th>Kawasan</th>
                                 <th>Tanggal</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
@@ -95,6 +122,11 @@
 {{-- <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script> --}}
 <script>
     $(document).ready(function(){
+        $('.pelanggaran').select2();
+        
+        $('.bp').select2();
+        
+        $('.kawasan').select2();
 
         $('#tahun').datepicker({
             orientation: "bottom left",
@@ -157,12 +189,12 @@
             ],
                 "columns": [
                 {data: 'rownum',searchable:false},
-                {data: 'jenis_laporan', name: 'jenis_laporan'},
                 {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
-                {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
+                {data: 'bentuk_pelanggaran', name: 'bentuk_pelanggaran'},
                 {data: 'keterangan', name: 'keterangan'},
                 {data: 'photo', name: 'photo'},
                 {data: 'nama_lokasi', name: 'nama_lokasi'},
+                {data: 'kawasan', name: 'kawasan'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'lat', name: 'lat'},
                 {data: 'lng', name: 'lng'},
@@ -178,8 +210,13 @@
         });
 
         $('#filter').click(function (e){
+            var pelanggarans = $('.pelanggaran').val();
+            var bentukPelanggaran = $('.bp').val();
+            var kawasans = $('.kawasan').val();
+            // console.log(pelanggarans,bentukPelanggaran,kawasans);
             var tahun = $('#tahun').val();
             var bulan = $('#bulan').val();
+            
            $('#datatable').DataTable({
             "destroy": true,
             "processing": true,
@@ -189,7 +226,7 @@
             "ajax":{
                 url:'{{route('get.filter')}}',
                 type : "GET",
-                data: {bulan: bulan,tahun: tahun},
+                data: {pelanggaran: pelanggarans,bentuk_pelanggaran: bentukPelanggaran,kawasan: kawasans,bulan: bulan,tahun: tahun},
                 dataType: 'json',
                 error: function(data){
                     console.log(data);
@@ -223,13 +260,13 @@
                         }
             ],
                 "columns": [
-                {data: 'rownum', name: 'rownum'},
-                {data: 'jenis_laporan', name: 'jenis_laporan'},
+                {data: 'rownum',searchable:false},
                 {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
-                {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
+                {data: 'bentuk_pelanggaran', name: 'bentuk_pelanggaran'},
                 {data: 'keterangan', name: 'keterangan'},
                 {data: 'photo', name: 'photo'},
                 {data: 'nama_lokasi', name: 'nama_lokasi'},
+                {data: 'kawasan', name: 'kawasan'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'lat', name: 'lat'},
                 {data: 'lng', name: 'lng'},
