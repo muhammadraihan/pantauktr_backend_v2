@@ -19,7 +19,7 @@ use DB;
 
 class LaporanController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
     /**
      * Display a listing of the resource.
      *
@@ -130,7 +130,6 @@ class LaporanController extends Controller
                 })
                 ->get();
         }
-        // dd($laporan);
         return Datatables::of($laporan)
             ->addIndexColumn()
             ->editColumn('jenis_pelanggaran', function ($row) {
@@ -168,7 +167,6 @@ class LaporanController extends Controller
     public function tindaklanjut($id)
     {
         $idlaporan = Laporan::uuid($id);
-        // dd($idlaporan);
         return view('laporan.tindak_lanjut', compact('idlaporan'));
     }
 

@@ -90,8 +90,8 @@
                 type: 'GET',
                 data: {bulan: bulan, tahun: tahun},
                 success: function (response) {
-                    var month = moment().month(bulan).format('MMMM');
-                    var year = moment().year(tahun).format('YYYY');
+                    // var month = moment().month(bulan).format('MMMM');
+                    var month = moment(bulan, 'MM').format('MMMM');
                     // filter chart pelanggaran
                     var series = [];
                     var values = [];
@@ -107,7 +107,7 @@
                             type: 'column'
                         },
                         title: {
-                            text: 'Chart Pelanggaran'+' '+month+' '+year
+                            text: 'Chart Pelanggaran'+' '+month+' '+tahun
                         },
                         xAxis: {
                             categories: series,
@@ -137,7 +137,7 @@
                             type: 'column'
                         },
                         title: {
-                            text: 'Chart Bentuk Pelanggaran'+' '+month+' '+year
+                            text: 'Chart Bentuk Pelanggaran'+' '+month+' '+tahun
                         },
                         xAxis: {
                             categories: seriesBp,
@@ -167,7 +167,7 @@
                             type: 'column'
                         },
                         title: {
-                            text: 'Chart Kawasan'+' '+month+' '+year
+                            text: 'Chart Kawasan'+' '+month+' '+tahun
                         },
                         xAxis: {
                             categories: seriesKawasan,
