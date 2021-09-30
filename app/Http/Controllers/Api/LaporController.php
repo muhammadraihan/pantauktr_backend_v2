@@ -14,7 +14,7 @@ use App\Models\Pelapor;
 use DB;
 use Exception;
 use Helper;
-use Log;
+use Illuminate\Support\Facades\Log;
 use Image;
 use Validator;
 use Storage;
@@ -103,11 +103,7 @@ class LaporController extends Controller
             // catch error and rollback data saving if fails
             DB::rollback();
             // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error post laporan', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'error' => $e->getMessage(),
-            ]);
+            Log::stack(['stack', 'slack'])->error($e->getMessage());
             // catch error message
             return response()->json([
                 'success' => false,
@@ -120,92 +116,64 @@ class LaporController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Laporan terkirim',
-        ]);
+        ], 200);
     }
 
-    public function listLaporan(Request $request)
+    public function listLaporan()
     {
         // form response structure
         $response = array(
             'success' => true,
             'data' => array(),
         );
-        try {
-            // get pelapor details based on auth token
-            $pelapor = Helper::pelapor();
-            // select laporan based on user auth
-            $list = Laporan::select('uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'kawasan', 'nama_lokasi', 'created_at')
-                ->where('created_by', $pelapor->uuid)->orderByDesc('created_at')->get();
-            // form response
-            for ($i = 0; $i < count($list); $i++) {
-                // parsing carbon to locale config
-                $tanggalBuat = Carbon::parse($list[$i]->created_at)->translatedFormat('j F Y');
-                $response['data'][$i] = array();
-                $response['data'][$i]['uuid'] = $list[$i]->uuid;
-                $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->jenis_pelanggaran == null ? "" : $list[$i]->pelanggaran->name;
-                $response['data'][$i]['bentuk_pelanggaran'] = $list[$i]->bentuk_pelanggaran == null ? "" : $list[$i]->BentukPelanggaran->bentuk_pelanggaran;
-                $response['data'][$i]['kawasan'] = $list[$i]->kawasan == null ? "" : $list[$i]->Kawasan->kawasan;
-                $response['data'][$i]['lokasi'] = $list[$i]->nama_lokasi;
-                $response['data'][$i]['tanggal_laporan'] = $tanggalBuat;
-            }
-        } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get list laporan', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'error' => $e->getMessage(),
-            ]);
-            // catch error message
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+        // get pelapor details based on auth token
+        $pelapor = Helper::pelapor();
+        // select laporan based on user auth
+        $list = Laporan::select('uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'kawasan', 'nama_lokasi', 'created_at')
+            ->where('created_by', $pelapor->uuid)->orderByDesc('created_at')->get();
+        // form response
+        for ($i = 0; $i < count($list); $i++) {
+            // parsing carbon to locale config
+            $tanggalBuat = Carbon::parse($list[$i]->created_at)->translatedFormat('j F Y');
+            $response['data'][$i] = array();
+            $response['data'][$i]['uuid'] = $list[$i]->uuid;
+            $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->jenis_pelanggaran == null ? "" : $list[$i]->pelanggaran->name;
+            $response['data'][$i]['bentuk_pelanggaran'] = $list[$i]->bentuk_pelanggaran == null ? "" : $list[$i]->BentukPelanggaran->bentuk_pelanggaran;
+            $response['data'][$i]['kawasan'] = $list[$i]->kawasan == null ? "" : $list[$i]->Kawasan->kawasan;
+            $response['data'][$i]['lokasi'] = $list[$i]->nama_lokasi;
+            $response['data'][$i]['tanggal_laporan'] = $tanggalBuat;
         }
         // return response
         return response()->json($response, 200);
     }
 
-    public function detailLaporan(Request $request, $id)
+    public function detailLaporan($id)
     {
-        try {
-            // get pelapor details based on auth token
-            $pelapor = Helper::pelapor();
-            $detailLaporan = Laporan::select('uuid', 'nomor_laporan', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'kawasan', 'photo', 'nama_lokasi', 'detail_lokasi', 'status', 'created_at', 'updated_at')
-                ->where('created_by', $pelapor->uuid)
-                ->where('uuid', $id)
-                ->first();
-            // change status code to human readable for good sake
-            $status = '';
-            switch ($detailLaporan->status) {
-                case 0:
-                    $status = 'Diterima';
-                    break;
-                case 1:
-                    $status = 'Ditindaklanjuti';
-                    break;
-                case 2:
-                    $status = 'Selesai';
-                    break;
-                default:
-                    $status = 'Diterima';
-                    break;
-            }
-            // parsing carbon to locale config
-            $tanggalBuat = Carbon::parse($detailLaporan->created_at)->translatedFormat('j F Y');
-            $tanggalUbah = Carbon::parse($detailLaporan->updated_at)->translatedFormat('l\\, j F Y H:i:s');
-        } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get detail laporan', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'error' => $e->getMessage(),
-            ]);
-            // catch error message
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 500);
+        // get pelapor details based on auth token
+        $pelapor = Helper::pelapor();
+        $detailLaporan = Laporan::select('uuid', 'nomor_laporan', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'kawasan', 'photo', 'nama_lokasi', 'detail_lokasi', 'status', 'created_at', 'updated_at')
+            ->where('created_by', $pelapor->uuid)
+            ->where('uuid', $id)
+            ->first();
+        // change status code to human readable for good sake
+        $status = '';
+        switch ($detailLaporan->status) {
+            case 0:
+                $status = 'Diterima';
+                break;
+            case 1:
+                $status = 'Ditindaklanjuti';
+                break;
+            case 2:
+                $status = 'Selesai';
+                break;
+            default:
+                $status = 'Diterima';
+                break;
         }
+        // parsing carbon to locale config
+        $tanggalBuat = Carbon::parse($detailLaporan->created_at)->translatedFormat('j F Y');
+        $tanggalUbah = Carbon::parse($detailLaporan->updated_at)->translatedFormat('l\\, j F Y H:i:s');
         // return response
         return response()->json([
             'success' => true,

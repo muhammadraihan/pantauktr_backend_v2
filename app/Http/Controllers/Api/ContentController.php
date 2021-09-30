@@ -5,12 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Banner;
+use App\Models\DynamicMenu;
 use App\Models\Website;
 use App\Models\Instagram;
-
-use Exception;
-use Helper;
-use Log;
 
 
 class ContentController extends Controller
@@ -20,23 +17,9 @@ class ContentController extends Controller
      *
      * @return json
      */
-    public function getBanner(Request $request)
+    public function getBanner()
     {
-        $pelapor = Helper::pelapor();
-        try {
-            $banner = Banner::select('id', 'uuid', 'photo')->where('status', 1)->first();
-        } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get active banner', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'error' => $e->getMessage(),
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
+        $banner = Banner::select('id', 'uuid', 'photo')->where('status',1)->first();
         return response()->json([
             'success' => true,
             'data' => $banner,
@@ -47,27 +30,13 @@ class ContentController extends Controller
      *
      * @return json
      */
-    public function getWebsiteContent(Request $request)
+    public function getWebsiteContent()
     {
-        $pelapor = Helper::pelapor();
-        try {
-            $website = Website::select('id', 'uuid', 'title', 'slug', 'photo', 'description')->get();
-        } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get website content list', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'error' => $e->getMessage(),
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
+        $website = Website::select('id','uuid','title','slug','photo','description')->get();
         return response()->json([
             'success' => true,
             'data' => $website,
-        ], 200);
+        ],200);
     }
     /**
      * Get Detail Website Content
@@ -75,49 +44,21 @@ class ContentController extends Controller
      * @param [type] $id
      * @return json
      */
-    public function getWebsiteContentDetail(Request $request, $id)
+    public function getWebsiteContentDetail($id)
     {
-        $pelapor = Helper::pelapor();
-        try {
-            $website = Website::select('id', 'uuid', 'title', 'slug', 'photo', 'description')->where('uuid', $id)->first();
-        } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get website content detail', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'error' => $e->getMessage(),
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
+        $website = Website::select('id','uuid','title','slug','photo','description')->where('uuid',$id)->first();
         return response()->json([
             'success' => true,
             'data' => $website,
-        ], 200);
+        ],200);
     }
 
-    public function getInstagramContent(Request $request)
+    public function getInstagramContent()
     {
-        $pelapor = Helper::pelapor();
-        try {
-            $instagram = Instagram::select('id', 'uuid', 'photo', 'caption')->get();
-        } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get instagram post', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'error' => $e->getMessage(),
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
+        $instagram = Instagram::select('id','uuid','photo','caption')->get();
         return response()->json([
             'success' => true,
             'data' => $instagram,
-        ], 200);
+        ],200);
     }
 }

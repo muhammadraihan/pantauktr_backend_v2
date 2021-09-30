@@ -32,6 +32,16 @@
             </div>
             <div class="panel-container show">
                 <div class="form-group col-md-5 mb-3">
+                    <label>Tahun</label>
+                    <input type="text" class="form-control js-bg-target" placeholder="Tahun" id="tahun" name="tahun"
+                        autocomplete="off">
+                </div>
+                <div id="" class="form-group col-md-5 mb-3">
+                    <label>Bulan</label>
+                    <input type="text" class="form-control js-bg-target" placeholder="Bulan" id="bulan" name="bulan"
+                        autocomplete="off">
+                </div>
+                <div class="form-group col-md-5 mb-3">
                     <label>Jenis Pelanggaran</label>
                     <select class="js-bg-color custom-select pelanggaran" name="pelanggaran">
                         <option value="">Jenis Pelanggaran</option>
@@ -43,8 +53,8 @@
                 <div class="form-group col-md-5 mb-3">
                     <label>Bentuk Pelanggaran</label>
                     <select class="js-bg-color custom-select bp" name="bp">
+                        <option value="">Bentuk Pelanggaran</option>    
                         @foreach($bentuk_pelanggaran as $bp)
-                        <option value="">Bentuk Pelanggaran</option>
                         <option value="{{$bp->uuid}}"> {{$bp->bentuk_pelanggaran}} </option>
                         @endforeach
                     </select>
@@ -52,22 +62,13 @@
                 <div class="form-group col-md-5 mb-3">
                     <label>Kawasan</label>
                     <select class="js-bg-color custom-select kawasan" name="kawasan">
+                        <option value="">Kawasan</option>    
                         @foreach($kawasan as $k)
-                        <option value="">Kawasan</option>
                         <option value="{{$k->uuid}}"> {{$k->kawasan}} </option>
                         @endforeach
                     </select>
                 </div>
-                <div class="form-group col-md-5 mb-3">
-                    <label>Tahun</label>
-                    <input type="text" class="form-control js-bg-target" placeholder="Tahun" id="tahun" name="tahun"
-                        autocomplete="off">
-                </div>
-                <div id="" class="form-group col-md-5 mb-3">
-                    <label>Bulan</label>
-                    <input type="text" class="form-control js-bg-target" placeholder="Bulan" id="bulan" name="bulan"
-                        autocomplete="off">
-                </div>
+                
                 <div id="" class="form-group col-md-5 mb-3">
                     <button type="button" name="filter" id="filter" class="btn btn-primary">Filter</button>
                     <button type="button" name="resetFilter" id="resetFilter" class="btn btn-primary">Reset
@@ -150,7 +151,6 @@
             "processing": true,
             "serverSide": true,
             "responsive": true,
-            "lengthChange": false,
             "order": [[ 0, "asc" ]],
             "ajax":{
                 url:'{{route('laporan.index')}}',
@@ -329,13 +329,13 @@
                         }
             ],
                 "columns": [
-                {data: 'rownum', name: 'rownum'},
-                {data: 'jenis_laporan', name: 'jenis_laporan'},
+                {data: 'rownum',searchable:false},
                 {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
-                {data: 'jenis_apresiasi', name: 'jenis_apresiasi'},
+                {data: 'bentuk_pelanggaran', name: 'bentuk_pelanggaran'},
                 {data: 'keterangan', name: 'keterangan'},
                 {data: 'photo', name: 'photo'},
                 {data: 'nama_lokasi', name: 'nama_lokasi'},
+                {data: 'kawasan', name: 'kawasan'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'lat', name: 'lat'},
                 {data: 'lng', name: 'lng'},
@@ -346,7 +346,7 @@
                 {data: 'propinsi', name: 'propinsi'},
                 {data: 'negara', name: 'negara'},
                 {data: 'place_id', name: 'place_id'},
-                {data: 'action',width:'10%',searchable:false}    
+                {data: 'action',width:'10%',searchable:false}   
             ]
             });
         });
