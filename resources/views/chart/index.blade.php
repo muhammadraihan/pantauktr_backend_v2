@@ -42,10 +42,13 @@
                 </div>
                 <div id="" class="form-group col-md-5 mb-3">
                     <button type="button" name="filter" id="filter" class="btn btn-primary">Filter</button>
+                    <button type="button" name="resetFilter" id="resetFilter" class="btn btn-primary" onClick="refreshPage()">Reset
+                        Filter</button>
                 </div>
                 <div class="panel-content">
                     <div id="chartPelanggaran"></div>
-                    <div id="chartApresiasi"></div>
+                    <div id="chartBentukPelanggaran"></div>
+                    <div id="chartKawasan"></div>
                 </div>
             </div>
         </div>
@@ -82,139 +85,203 @@
         $('#filter').click(function (e){
             var tahun = $('#tahun').val();
             var bulan = $('#bulan').val();
-            var formatbulan = moment(bulan, 'MM').format('MMMM');
-
-        $.ajax({
-            url: "{{route('get.filters')}}",
-            type: 'GET',
-            data: {bulan: bulan, tahun: tahun},
-            success: function (response) {
-                var series = [];
-                var values = [];
-                $.each(response[0], function(key,value){
-                    series.push(key);
-                    values.push(value);
-                });
-                Highcharts.chart('chartPelanggaran', {
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        text: 'Chart Pelanggaran' + ' ' +formatbulan
-                    },
-                    xAxis: {
-                        categories: series,
-                        crosshair: true
-                    },
-                    yAxis: {
-                        min: 0,
+            $.ajax({
+                url: "{{route('get.filters')}}",
+                type: 'GET',
+                data: {bulan: bulan, tahun: tahun},
+                success: function (response) {
+                    var month = moment().month(bulan).format('MMMM');
+                    var year = moment().year(tahun).format('YYYY');
+                    // filter chart pelanggaran
+                    var series = [];
+                    var values = [];
+                    $.each(response[0], function(key,value){
+                        series.push(key);
+                        values.push({
+                            name: key,
+                            data: [value]
+                        });
+                    });
+                    Highcharts.chart('chartPelanggaran', {
+                        chart: {
+                            type: 'column'
+                        },
                         title: {
-                            text: 'Jumlah Laporan'
-                        }
-                    },
-                    series: [{
-                        name: series,
-                        data: values
-                    }],
+                            text: 'Chart Pelanggaran'+' '+month+' '+year
+                        },
+                        xAxis: {
+                            categories: series,
+                            crosshair: true
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Jumlah Laporan'
+                            }
+                        },
+                        series: values,
 
-                });
-                
-                var apresiasi = [];
-                var laporan = [];
-                $.each(response[1], function(key,value){
-                    apresiasi.push(key);
-                    laporan.push(value);
-                });
-                Highcharts.chart('chartApresiasi', {
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        text: 'Chart Apresiasi' + ' ' +formatbulan
-                    },
-                    xAxis: {
-                        categories: apresiasi,
-                        crosshair: true
-                    },
-                    yAxis: {
-                        min: 0,
+                    });
+                    // filter chart bentuk pelanggaran
+                    var seriesBp = [];
+                    var valuesBp = [];
+                    $.each(response[1], function(key,value){
+                        seriesBp.push(key);
+                        valuesBp.push({
+                            name: key,
+                            data: [value]
+                        });
+                    });
+                    Highcharts.chart('chartBentukPelanggaran', {
+                        chart: {
+                            type: 'column'
+                        },
                         title: {
-                            text: 'Jumlah Laporan'
-                        }
-                    },
-                    series: [{
-                        name: apresiasi,
-                        data: laporan
-                    }]
-                });
-            }
-        });
-    });
-        var data = {!!json_encode($arrPelanggaran)!!}
-            // console.log(data);
-            var series = [];
-            var values = [];
-            for (const [key, value] of Object.entries(data)) {
-                series.push(key);
-                values.push(value);
-            //   console.log(key, value);
-            }
-            // console.log(series,values);
-                Highcharts.chart('chartPelanggaran', {
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        text: 'Chart Pelanggaran' 
-                    },
-                    xAxis: {
-                        categories: series,
-                        crosshair: true
-                    },
-                    yAxis: {
-                        min: 0,
-                        title: {
-                            text: 'Jumlah Laporan'
-                        }
-                    },
-                    series: [{
-                        name: series,
-                        data: values
-                    }],
+                            text: 'Chart Bentuk Pelanggaran'+' '+month+' '+year
+                        },
+                        xAxis: {
+                            categories: seriesBp,
+                            crosshair: true
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Jumlah Laporan'
+                            }
+                        },
+                        series: valuesBp,
 
-                });
-                
-                var data = {!!json_encode($arrApresiasi)!!}
-                // console.log(data);
-                var apresiasi = [];
-                var laporan = [];
-                for (const [key, value] of Object.entries(data)) {
-                    apresiasi.push(key);
-                    laporan.push(value);
-                //   console.log(key, value);
+                    });
+                    // filter chart kawasan
+                    var seriesKawasan = [];
+                    var valuesKawasan = [];
+                    $.each(response[2], function(key,value){
+                        seriesKawasan.push(key);
+                        valuesKawasan.push({
+                            name: key,
+                            data: [value]
+                        });
+                    });
+                    Highcharts.chart('chartKawasan', {
+                        chart: {
+                            type: 'column'
+                        },
+                        title: {
+                            text: 'Chart Kawasan'+' '+month+' '+year
+                        },
+                        xAxis: {
+                            categories: seriesKawasan,
+                            crosshair: true
+                        },
+                        yAxis: {
+                            min: 0,
+                            title: {
+                                text: 'Jumlah Laporan'
+                            }
+                        },
+                        series: valuesKawasan,
+
+                    });
                 }
-                Highcharts.chart('chartApresiasi', {
-                    chart: {
-                        type: 'column'
-                    },
-                    title: {
-                        text: 'Chart Apresiasi'
-                    },
-                    xAxis: {
-                        categories: apresiasi,
-                        crosshair: true
-                    },
-                    yAxis: {
-                        min: 0,
-                        title: {
-                            text: 'Jumlah Laporan'
-                        }
-                    },
-                    series: [{
-                        name: apresiasi,
-                        data: laporan
-                    }]
-                });
+            });
+        });
+        
+        //chart pelanggaran
+        var data = {!!json_encode($arrPelanggaran)!!}
+        var series = [];
+        var values = [];
+        for (const [key, value] of Object.entries(data)) {
+            series.push(key);
+            values.push({
+                name: key,
+                data: [value]
+            });
+        }
+        Highcharts.chart('chartPelanggaran', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Chart Pelanggaran' 
+            },
+            xAxis: {
+                categories: series,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Jumlah Laporan'
+                }
+            },
+            series: values,
 
+        });
+        //chart bentuk pelanggaran
+        var data = {!!json_encode($arrBentukPelanggaran)!!}
+        var series = [];
+        var values = [];
+        for (const [key, value] of Object.entries(data)) {
+            series.push(key);
+            values.push({
+                name: key,
+                data: [value]
+            });
+        }
+        Highcharts.chart('chartBentukPelanggaran', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Chart Bentuk Pelanggaran' 
+            },
+            xAxis: {
+                categories: series,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Jumlah Laporan'
+                }
+            },
+            series: values,
+
+        });
+        //chart kawasan
+        var data = {!!json_encode($arrKawasan)!!}
+        var series = [];
+        var dtx = [];
+        for (const [key, value] of Object.entries(data)) {
+            series.push(key);
+            dtx.push({
+                name: key,
+                data: [value]
+            });
+        }
+        Highcharts.chart('chartKawasan', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Chart Kawasan' 
+            },
+            xAxis: {
+                categories: series,
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Jumlah Laporan'
+                }
+            },
+            series: dtx
+
+        });
+        // reset filter
+        function refreshPage(){
+            window.location.reload();
+        } 
 </script>
 @endsection
