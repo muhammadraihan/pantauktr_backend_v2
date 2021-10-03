@@ -291,6 +291,7 @@ class AuthController extends Controller
 
   public function RefreshToken(Request $request)
   {
+    DB::beginTransaction();
     try {
       $client = DB::table('oauth_clients')->where('provider', 'pelapors')->first();
       $data = [
@@ -310,7 +311,7 @@ class AuthController extends Controller
       $enc_key = base64_decode(substr($app_key, 7));
       $crypto = Crypto::decryptWithPassword($request->refresh_token, $enc_key);
       $decode = json_decode($crypto, true);
-
+      // get pelapor
       $pelapor = Pelapor::where('id', $decode['user_id'])->first();
       // throw error message if content contains error
       if (isset($content->error)) {
@@ -325,7 +326,13 @@ class AuthController extends Controller
           'message' => $content,
         ]);
       }
+      // saving user last login for tracking purpose
+      $pelapor->device = $request->header('User-Agent');
+      $pelapor->last_login_at = Carbon::now()->toDateTimeString();
+      $pelapor->last_login_ip = $request->getClientIp();
+      $pelapor->save();
     } catch (Exception $e) {
+      DB::rollback();
       // log message to local an slack
       Log::stack(['stack', 'slack'])->error('Error generate refresh token', [
         'user' => $pelapor->email,
@@ -337,6 +344,7 @@ class AuthController extends Controller
         'message' => $e->getMessage(),
       ]);
     }
+    DB::commit();
     return response()->json([
       'success' => true,
       'token' => [
@@ -474,19 +482,30 @@ class AuthController extends Controller
         'message' => 'Password tidak cocok dengan konfirmasi',
       ]);
     }
+    DB::beginTransaction();
     try {
-      $OtpModel = OtpModel::where('token', $request->otp)->where('expired', false)->first();
-      $verify = $this->VerifyOtp($OtpModel->identifier, $request->otp);
-      if ($verify->status == true) {
+      // check OTP if exist
+      $OtpModel = OtpModel::where('token', $request->otp)->first();
+      if (!$OtpModel == null) {
         $pelapor = Pelapor::where('email', $OtpModel->identifier)->first();
-        $pelapor->password = Hash::make($request->get('confirm-password'));
-        $pelapor->save();
+        $verify = $this->VerifyOtp($OtpModel->identifier, $request->otp);
+        if ($verify->status == true) {
+          $pelapor->password = Hash::make($request->get('confirm-password'));
+          $pelapor->save();
+        } else {
+          return response()->json([
+            'success' => $verify->status,
+            'message' => $verify->message,
+          ]);
+        }
+      } else {
+        return response()->json([
+          'success' => false,
+          'message' => 'Kode OTP tidak valid',
+        ]);
       }
-      return response()->json([
-        "success" => $verify->status,
-        "message" => $verify->message,
-      ]);
     } catch (Exception $e) {
+      DB::rollback();
       // log message to local an slack
       Log::stack(['stack', 'slack'])->error('Error change forget password pelapor', [
         'user' => $pelapor->email,
@@ -498,6 +517,7 @@ class AuthController extends Controller
         'message' => $e->getMessage(),
       ]);
     }
+    DB::commit();
     return response()->json([
       "success" => true,
       "message" => 'Password berhasil diubah, silahkan login',
@@ -507,17 +527,19 @@ class AuthController extends Controller
   public function UpdateName(Request $request)
   {
     $pelapor = Helper::pelapor();
-    $update_pelapor = Pelapor::uuid($pelapor->uuid);
-    if ($request->get('firstname')) {
-      $update_pelapor->firstname = $request->firstname;
-    }
-
-    if ($request->get('lastname')) {
-      $update_pelapor->lastname = $request->lastname;
-    }
+    DB::beginTransaction();
     try {
+      $update_pelapor = Pelapor::uuid($pelapor->uuid);
+      if ($request->get('firstname')) {
+        $update_pelapor->firstname = $request->firstname;
+      }
+
+      if ($request->get('lastname')) {
+        $update_pelapor->lastname = $request->lastname;
+      }
       $update_pelapor->save();
     } catch (Exception $e) {
+      DB::rollback();
       // log message to local an slack
       Log::stack(['stack', 'slack'])->error('Error update name pelapor', [
         'user' => $pelapor->email,
@@ -529,6 +551,7 @@ class AuthController extends Controller
         'message' => $e->getMessage(),
       ]);
     }
+    DB::commit();
     return response()->json([
       'success' => true,
       'message' => 'Nama berhasil diubah',
@@ -576,11 +599,13 @@ class AuthController extends Controller
         'message' => 'Password baru anda tidak cocok',
       ]);
     }
+    DB::beginTransaction();
     try {
       $update_pelapor = Pelapor::uuid($pelapor->uuid);
       $update_pelapor->password = Hash::make($request->get('confirm-password'));
       $update_pelapor->save();
     } catch (Exception $e) {
+      DB::rollback();
       // log message to local an slack
       Log::stack(['stack', 'slack'])->error('Error change password password', [
         'user' => $pelapor->email,
@@ -592,6 +617,7 @@ class AuthController extends Controller
         'message' => $e->getMessage(),
       ]);
     }
+    DB::commit();
     return response()->json([
       'success' => true,
       'message' => 'Password berhasil diubah',
