@@ -69,6 +69,7 @@ Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function
         Route::get('instagram','Api\ContentController@getInstagramContent');
         Route::get('website-content','Api\ContentController@getWebsiteContent');
         Route::get('website-content/{id}','Api\ContentController@getWebsiteContentDetail');
+        Route::get('static-page','Api\ContentController@getStaticPageContent');
     });
     // other
     Route::get('notif', 'Api\PushNotificationController@notification');
