@@ -46,17 +46,50 @@
                     <span class="nav-link-text">Dashboard</span>
                 </a>
             </li>
+
             @hasanyrole('superadmin|pusaka')
             <li class="">
-                <a href="{{route('external_link.index')}}" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-external-link-square"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">External Link</span>
+                <a href="#" title="Dashboard" data-filter-tags="theme settings">
+                    <i class="fal fa-mobile"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">CMS</span>
                 </a>
+                <ul>
+                    <li class="">
+                        <a href="{{route('external_link.index')}}" title="Link Mitra" data-filter-tags="theme settings">
+                            <i class="fal fa-external-link-square"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Link External</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{route('instagram.index')}}" title="Instagram Post" data-filter-tags="theme settings">
+                            <i class="fab fa-instagram"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Instagram Post</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{route('static_page.index')}}" title="Website Post" data-filter-tags="theme settings">
+                            <i class="fal fa-sitemap"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Website Post</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{route('banner.index')}}" title="Banner Image" data-filter-tags="theme settings">
+                            <i class="fal fa-image"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Banner Aplikasi</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{route('static_page.index')}}" title="Static Menu" data-filter-tags="theme settings">
+                            <i class="fal fa-external-link-square"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Link Menu Aplikasi</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             @endhasanyrole
             @hasanyrole('superadmin|pusaka|kementrian|pemda|who')
             <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                <a href="#" title="Laporan" data-filter-tags="theme settings">
                     <i class="fal fa-clipboard-list"></i>
                     <span class="nav-link-text" data-i18n="nav.theme_settings">Laporan</span>
                 </a>
@@ -78,7 +111,7 @@
             @endhasanyrole
             @hasanyrole('superadmin|pusaka')
             <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                <a href="#" title="Operator" data-filter-tags="theme settings">
                     <i class="fal fa-cogs"></i>
                     <span class="nav-link-text" data-i18n="nav.theme_settings">Operator</span>
                 </a>
@@ -99,7 +132,7 @@
             </li>
             @hasanyrole('superadmin')
             <li class="">
-                <a href="{{route('pelapor.index')}}" title="Theme Settings" data-filter-tags="theme settings">
+                <a href="{{route('pelapor.index')}}" title="Pelapor" data-filter-tags="theme settings">
                     <i class="fal fa-users"></i>
                     <span class="nav-link-text" data-i18n="nav.theme_settings">Pelapor</span>
                 </a>
@@ -107,7 +140,7 @@
             @endhasanyrole
 
             <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                <a href="#" title="Referensi" data-filter-tags="theme settings">
                     <i class="fal fa-tasks"></i>
                     <span class="nav-link-text" data-i18n="nav.theme_settings">Referensi</span>
                 </a>
