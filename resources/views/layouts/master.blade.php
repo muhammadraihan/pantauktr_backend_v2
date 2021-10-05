@@ -24,6 +24,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{asset('img/favicon/apple-touch-icon.png')}}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{asset('img/favicon/favicon-32x32.png')}}">
     <link rel="mask-icon" href="{{asset('img/favicon/safari-pinned-tab.svg')}}" color="#5bbad5">
+    <link rel="stylesheet" media="screen, print" href="{{asset('css/fa-brands.css')}}">
 </head>
 
 <body class="@yield('body_class')">
@@ -94,4 +95,5 @@
     @toastr_render
     @yield('themes_js')
 </body>
+
 </html>
