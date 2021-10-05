@@ -12,7 +12,7 @@ class Banner extends Model
     use Uuid;
 
     protected $fillable = [
-        'photo','status','created_by', 'edited_by'
+        'photo','url','status','created_by', 'edited_by'
     ];
 
     protected static $logAttributes = ['*'];

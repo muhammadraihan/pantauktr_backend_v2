@@ -39,6 +39,7 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Photo</th>
+                                    <th>Url</th>
                                     <th>Status</th>
                                     <th>Created By</th>
                                     <th>Action</th>
@@ -101,6 +102,7 @@
             "columns": [
                 {data:'rownum',width:'*',searchable:false},
                 {data: 'photo',width:'*'},
+                {data: 'url',width:'*'},
                 {data: 'status',width:'*'},
                 {data: 'created_by',width:'*'},
                 {data: 'action',width:'10%',searchable:false}    

@@ -47,6 +47,13 @@
                         <img id="image-preview" src="{{$banner->photo}}" class="shadow-2 img-thumbnail"
                             alt="">
                     </div>
+                    <div class="form-group col-md-4 mb-4">
+                        {{ Form::label('url','Url',['class' => 'required form-label'])}}
+                        {{ Form::text('url',$banner->url,['placeholder' => 'Url','class' => 'form-control '.($errors->has('url') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                        @if ($errors->has('url'))
+                        <div class="invalid-feedback">{{ $errors->first('url') }}</div>
+                        @endif
+                    </div>
                     <div class="form-group col-sm-6 col-xl-4">
                         <label>Status</label>
                         <select class="js-bg-color custom-select select2" name="status">
