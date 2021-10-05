@@ -27,7 +27,7 @@ class BannerController extends Controller
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
             $banner = Banner::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','photo','status','created_by'])->get();
+            'id','uuid','photo','url','status','created_by'])->get();
             return Datatables::of($banner)
                 ->addIndexColumn()
                 ->editColumn('photo', function ($row) {
@@ -100,6 +100,7 @@ class BannerController extends Controller
 
         $banner = new Banner();
         $banner->photo = $fileUrl;
+        $banner->url = $request->url;
         $banner->status = $request->status;
         $banner->created_by = Auth::user()->uuid;
         $banner->save();
@@ -170,6 +171,7 @@ class BannerController extends Controller
             $fileUrl = $disk->url(env('GOOGLE_CLOUD_STORAGE_BUCKET') . '/' . $googleContent);
             $banner->photo = $fileUrl;
         }
+        $banner->url = $request->url;
         $banner->status = $request->status;
         $banner->edited_by = Auth::user()->uuid;
         $banner->save();

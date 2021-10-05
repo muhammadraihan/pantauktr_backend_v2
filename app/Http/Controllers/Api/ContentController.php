@@ -25,7 +25,7 @@ class ContentController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $banner = Banner::select('id', 'uuid', 'photo')->where('status', 1)->first();
+            $banner = Banner::select('id', 'uuid', 'photo','url')->where('status', 1)->first();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get active banner', [
