@@ -16,7 +16,7 @@ use Storage;
 
 class BannerController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
     /**
      * Display a listing of the resource.
      *

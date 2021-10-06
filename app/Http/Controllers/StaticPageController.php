@@ -12,7 +12,7 @@ use URL;
 
 class StaticPageController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
     /**
      * Display a listing of the resource.
      *

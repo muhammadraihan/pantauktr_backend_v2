@@ -16,7 +16,7 @@ use Storage;
 
 class WebsiteController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
     /**
      * Display a listing of the resource.
      *
