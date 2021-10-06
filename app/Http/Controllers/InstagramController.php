@@ -16,6 +16,7 @@ use Storage;
 
 class InstagramController extends Controller
 {
+    use Authorizable;
     /**
      * Display a listing of the resource.
      *

@@ -32,7 +32,7 @@
                         {{ Form::label('title','Title',['class' => 'required form-label'])}}
                         {{ Form::text('title',null,['placeholder' => 'Title','id'=>'titles','class' => 'form-control titles'.($errors->has('title') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                         @if ($errors->has('title'))
-                        <div class="invalid-feedback">{{ $errors->first('title') }}</div>
+                        <div class="text-danger">{{ $errors->first('title') }}</div>
                         @endif
                     </div>
 
@@ -40,7 +40,7 @@
                         {{ Form::label('slug','Slug',['class' => 'required form-label'])}}
                         {{ Form::text('slug',null,['placeholder' => 'Slug','id'=>'slug','class' => 'form-control'.($errors->has('slug') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                         @if ($errors->has('slug'))
-                        <div class="invalid-feedback">{{ $errors->first('slug') }}</div>
+                        <div class="text-danger">{{ $errors->first('slug') }}</div>
                         @endif
                     </div>
 
@@ -68,12 +68,9 @@
 
                     <div class="form-group col-sm-6 col-xl-4">
                         {{ Form::label('description','Description',['class' => 'required form-label'])}}
-                        <!-- <textarea class="form-control" name="summernote" id="summernote">
-
-                        </textarea> -->
-                        {{ Form::textarea('description',null,['placeholder' => 'Content','id'=>'summernote','class' => 'form-control'.($errors->has('slug') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                        {{ Form::textarea('description',null,['placeholder' => 'Content','id'=>'summernote','class' => 'form-control'.($errors->has('description') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                         @if ($errors->has('description'))
-                        <div class="invalid-feedback">{{ $errors->first('description') }}</div>
+                        <div class="text-danger">{{ $errors->first('description') }}</div>
                         @endif
                     </div>
                 <div

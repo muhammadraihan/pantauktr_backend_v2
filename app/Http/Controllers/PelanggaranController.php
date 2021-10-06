@@ -27,11 +27,11 @@ class PelanggaranController extends Controller
             return Datatables::of($data)
                 ->addIndexColumn()
                 ->editColumn('created_by', function ($row) {
-                    return $row->userCreate->name;
+                    return $row->userCreate->name ?? null;
                 })
                 ->editColumn('edited_by', function ($row) {
                     if ($row->edited_by != null) {
-                        return $row->userEdit->name;
+                        return $row->userEdit->name ?? null;
                     } else {
                         return null;
                     }

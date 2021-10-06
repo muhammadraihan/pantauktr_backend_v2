@@ -67,7 +67,7 @@
                         </a>
                     </li>
                     <li class="">
-                        <a href="{{route('static_page.index')}}" title="Website Post" data-filter-tags="theme settings">
+                        <a href="{{route('website.index')}}" title="Website Post" data-filter-tags="theme settings">
                             <i class="fal fa-sitemap"></i>
                             <span class="nav-link-text" data-i18n="nav.theme_settings">Website Post</span>
                         </a>
