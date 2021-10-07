@@ -12,7 +12,7 @@
             <div class="panel-hdr">
                 <h2>Add New <span class="fw-300"><i>Static Page</i></span></h2>
                 <div class="panel-toolbar">
-                    <a class="nav-link active" href="{{route('static_page.index')}}"><i class="fal fa-arrow-alt-left">
+                    <a class="nav-link active" href="{{route('static-page.index')}}"><i class="fal fa-arrow-alt-left">
                         </i>
                         <span class="nav-link-text">Back</span>
                     </a>
@@ -25,7 +25,7 @@
                     <div class="panel-tag">
                         Form with <code>*</code> can not be empty.
                     </div>
-                    {!! Form::open(['route' => 'static_page.store','method' => 'POST','class' =>
+                    {!! Form::open(['route' => 'static-page.store','method' => 'POST','class' =>
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-6 mb-3">
                         {{ Form::label('menu_name','Menu Name',['class' => 'required form-label'])}}
@@ -41,16 +41,16 @@
                         <div class="invalid-feedback">{{ $errors->first('url') }}</div>
                         @endif
                     </div>
-                <div
-                    class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
-                    <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    <div
+                        class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
+                        <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
-                {!! Form::close() !!}
             </div>
         </div>
     </div>
-</div>
-@endsection
+    @endsection
 
-@section('js')
-@endsection
+    @section('js')
+    @endsection

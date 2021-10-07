@@ -19,11 +19,11 @@
     <div class="col-xl-12">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>
+                <h2>
                     Static Page <span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
-                    <a class="nav-link active" href="{{route('static_page.create')}}"><i class="fal fa-plus-circle">
+                    <a class="nav-link active" href="{{route('static-page.create')}}"><i class="fal fa-plus-circle">
                         </i>
                         <span class="nav-link-text">Add New</span>
                     </a>
@@ -36,13 +36,13 @@
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
                         <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Menu Name</th>
-                                    <th>Url</th>
-                                    <th>Created By</th>
-                                    <th>Action</th>
-                                </tr>
+                            <tr>
+                                <th>No</th>
+                                <th>Menu Name</th>
+                                <th>Url</th>
+                                <th>Created By</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
@@ -91,7 +91,7 @@
             "responsive": true,
             "order": [[ 0, "asc" ]],
             "ajax":{
-                url:'{{route('static_page.index')}}',
+                url:'{{route('static-page.index')}}',
                 type : "GET",
                 dataType: 'json',
                 error: function(data){

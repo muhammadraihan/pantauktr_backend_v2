@@ -7,9 +7,9 @@
     <div class="col-xl-6">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>Edit <span class="fw-300"><i>{{$static_page->menu_name}}</i></span></h2>
+                <h2>Edit <span class="fw-300"><i>{{$static_page->menu_name}}</i></span></h2>
                 <div class="panel-toolbar">
-                    <a class="nav-link active" href="{{route('static_page.index')}}"><i class="fal fa-arrow-alt-left">
+                    <a class="nav-link active" href="{{route('static-page.index')}}"><i class="fal fa-arrow-alt-left">
                         </i>
                         <span class="nav-link-text">Back</span>
                     </a>
@@ -22,7 +22,7 @@
                     <div class="panel-tag">
                         Form with <code>*</code> can not be empty.
                     </div>
-                    {!! Form::open(['route' => ['static_page.update',$static_page->uuid],'method' => 'PUT','class' =>
+                    {!! Form::open(['route' => ['static-page.update',$static_page->uuid],'method' => 'PUT','class' =>
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('menu_name','Menu Name',['class' => 'required form-label'])}}
@@ -39,13 +39,13 @@
                         <div class="invalid-feedback">{{ $errors->first('url') }}</div>
                         @endif
                     </div>
-                <div
-                    class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
-                    <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    <div
+                        class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
+                        <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
-                {!! Form::close() !!}
             </div>
         </div>
     </div>
-</div>
-@endsection
+    @endsection

@@ -79,7 +79,7 @@
                         </a>
                     </li>
                     <li class="">
-                        <a href="{{route('static_page.index')}}" title="Static Menu" data-filter-tags="theme settings">
+                        <a href="{{route('static-page.index')}}" title="Static Menu" data-filter-tags="theme settings">
                             <i class="fal fa-external-link-square"></i>
                             <span class="nav-link-text" data-i18n="nav.theme_settings">Link Menu Aplikasi</span>
                         </a>
