@@ -17,10 +17,8 @@ class PermissionTableSeeder extends Seeder
     {
         // superadmin role
         $role = Role::where('name', '=', 'superadmin')->first();
-        // dd($role->name);
         // Seed the additional permissions
         $permissions = Permission::additionalPermission();
-        // dd(count($permissions));
         if ($this->command->confirm('Seed additional permission data? [y|N]', true)) {
             $this->command->getOutput()->createProgressBar(count($permissions));
             $this->command->getOutput()->progressStart();
