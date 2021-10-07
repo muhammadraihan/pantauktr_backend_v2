@@ -26,14 +26,16 @@ class BannerController extends Controller
     {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            $banner = Banner::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','photo','url','status','created_by'])->get();
+            $banner = Banner::select([
+                DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                'id', 'uuid', 'photo', 'url', 'status', 'created_by'
+            ])->get();
             return Datatables::of($banner)
                 ->addIndexColumn()
                 ->editColumn('photo', function ($row) {
                     return $row->photo ? '<img style="width: 150px; height: 150px;"  src="' . $row->photo . '" alt="">' : '<span class="badge badge-secondary badge-pill">Foto tidak terlampir</span>';
                 })
-                ->editColumn('status',function($row){
+                ->editColumn('status', function ($row) {
                     if ($row->status == '1') {
                         return 'Aktif';
                     } else {
@@ -50,7 +52,7 @@ class BannerController extends Controller
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
-                ->rawColumns(['action','photo'])
+                ->rawColumns(['action', 'photo'])
                 ->make(true);
         }
 
@@ -97,7 +99,7 @@ class BannerController extends Controller
         $googleContent = 'banner' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
-        $fileUrl = $disk->url(env('GOOGLE_CLOUD_STORAGE_BUCKET') . '/' . $googleContent);
+        $fileUrl = $disk->url($googleContent);
 
         $banner = new Banner();
         $banner->photo = $fileUrl;
@@ -107,7 +109,7 @@ class BannerController extends Controller
         $banner->save();
 
         if ($banner->status == 1) {
-            $checkBanner = Banner::where('id','!=',$banner->id)->update(['status'=>0]);
+            $checkBanner = Banner::where('id', '!=', $banner->id)->update(['status' => 0]);
         }
 
         toastr()->success('New Banner Added', 'Success');
@@ -134,7 +136,7 @@ class BannerController extends Controller
     public function edit($uuid)
     {
         $banner = Banner::uuid($uuid);
-        return view('banners.edit',compact('banner'));
+        return view('banners.edit', compact('banner'));
     }
 
     /**
@@ -178,7 +180,7 @@ class BannerController extends Controller
         $banner->edited_by = Auth::user()->uuid;
         $banner->save();
         if ($banner->status == 1) {
-            $checkBanner = Banner::where('id','!=',$banner->id)->update(['status'=>0]);
+            $checkBanner = Banner::where('id', '!=', $banner->id)->update(['status' => 0]);
         }
         toastr()->success('Banner Edited', 'Success');
         return redirect()->route('banner.index');

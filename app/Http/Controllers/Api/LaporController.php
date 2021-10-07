@@ -57,7 +57,7 @@ class LaporController extends Controller
         $googleContent = 'lampiran' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
-        $fileUrl = $disk->url(env('GOOGLE_CLOUD_STORAGE_BUCKET') . '/' . $googleContent);
+        $fileUrl = $disk->url($googleContent);
 
         // begin transaction
         DB::beginTransaction();

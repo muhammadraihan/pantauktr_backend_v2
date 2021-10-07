@@ -26,8 +26,10 @@ class InstagramController extends Controller
     {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            $instagram = Instagram::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','photo','caption','created_by'])->get();
+            $instagram = Instagram::select([
+                DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                'id', 'uuid', 'photo', 'caption', 'created_by'
+            ])->get();
             return Datatables::of($instagram)
                 ->addIndexColumn()
                 ->editColumn('photo', function ($row) {
@@ -43,7 +45,7 @@ class InstagramController extends Controller
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
-                ->rawColumns(['action','photo'])
+                ->rawColumns(['action', 'photo'])
                 ->make(true);
         }
 
@@ -89,7 +91,7 @@ class InstagramController extends Controller
         $googleContent = 'instagram' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
-        $fileUrl = $disk->url(env('GOOGLE_CLOUD_STORAGE_BUCKET') . '/' . $googleContent);
+        $fileUrl = $disk->url($googleContent);
 
         $instagram = new Instagram();
         $instagram->photo = $fileUrl;
@@ -121,7 +123,7 @@ class InstagramController extends Controller
     public function edit($uuid)
     {
         $instagram = Instagram::uuid($uuid);
-        return view('instagrams.edit',compact('instagram'));
+        return view('instagrams.edit', compact('instagram'));
     }
 
     /**

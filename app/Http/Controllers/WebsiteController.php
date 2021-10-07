@@ -26,8 +26,10 @@ class WebsiteController extends Controller
     {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            $websites = Website::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','title','photo','description','created_by'])->get();
+            $websites = Website::select([
+                DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                'id', 'uuid', 'title', 'photo', 'description', 'created_by'
+            ])->get();
             return Datatables::of($websites)
                 ->addIndexColumn()
                 ->editColumn('photo', function ($row) {
@@ -44,7 +46,7 @@ class WebsiteController extends Controller
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
-                ->rawColumns(['action','photo'])
+                ->rawColumns(['action', 'photo'])
                 ->make(true);
         }
 
@@ -93,7 +95,7 @@ class WebsiteController extends Controller
         $googleContent = 'website' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
-        $fileUrl = $disk->url(env('GOOGLE_CLOUD_STORAGE_BUCKET') . '/' . $googleContent);
+        $fileUrl = $disk->url($googleContent);
 
         $websites = new Website();
         $websites->title = $request->title;
@@ -116,7 +118,7 @@ class WebsiteController extends Controller
     public function show($uuid)
     {
         $website = Website::uuid($uuid);
-        return view('websites.show',compact('website'));
+        return view('websites.show', compact('website'));
     }
 
     /**
@@ -128,7 +130,7 @@ class WebsiteController extends Controller
     public function edit($uuid)
     {
         $website = Website::uuid($uuid);
-        return view('websites.edit',compact('website'));
+        return view('websites.edit', compact('website'));
     }
 
     /**
@@ -138,7 +140,7 @@ class WebsiteController extends Controller
      * @param  \App\Models\Website  $website
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$uuid)
+    public function update(Request $request, $uuid)
     {
         $website = Website::uuid($uuid);
         if ($request->hasfile('photo')) {
