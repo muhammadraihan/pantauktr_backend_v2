@@ -152,24 +152,6 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('jenis_laporan.index')}}" title="Jenis Laporan Management"
-                            data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Laporan</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{route('jenis_apresiasi.index')}}" title="Jenis Laporan Management"
-                            data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Apresiasi</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{route('bentuk_apresiasi.index')}}" title="Bentuk Apresiasi Management"
-                            data-filter-tags="bentuk_apresiasi managements">
-                            <span class="nav-link-text" data-i18n="nav.bentuk_apresiasi">Bentuk Apresiasi</span>
-                        </a>
-                    </li>
-                    <li>
                         <a href="{{route('bentuk_pelanggaran.index')}}" title="Bentuk Pelanggaran Management"
                             data-filter-tags="bentuk_pelanggaran managements">
                             <span class="nav-link-text" data-i18n="nav.bentuk_pelanggaran">Bentuk Pelanggaran</span>
