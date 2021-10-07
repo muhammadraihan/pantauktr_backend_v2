@@ -16,6 +16,7 @@ git reset --hard
 git pull
 
 printf "Clearing Cache... \n"
+php artisan permission:cache-reset
 php artisan cache:clear
 php artisan config:clear
 
