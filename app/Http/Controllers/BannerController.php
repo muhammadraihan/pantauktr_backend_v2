@@ -16,7 +16,7 @@ use Storage;
 
 class BannerController extends Controller
 {
-    // use Authorizable;
+    use Authorizable;
     /**
      * Display a listing of the resource.
      *
@@ -77,6 +77,7 @@ class BannerController extends Controller
     {
         $rules = [
             'photo' => 'required|mimes:jpeg,jpg,png|max:5000',
+            'url' => 'required',
             'status' => 'required'
         ];
         $messages = [
@@ -149,6 +150,7 @@ class BannerController extends Controller
         if ($request->hasfile('photo')) {
             $rules = [
                 'photo' => 'required|mimes:jpeg,jpg,png|max:5000',
+                'url' => 'required',
                 'status' => 'required'
             ];
             $messages = [

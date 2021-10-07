@@ -52,7 +52,7 @@
                         {{ Form::label('url','Url',['class' => 'required form-label'])}}
                         {{ Form::text('url',null,['placeholder' => 'Url','class' => 'form-control '.($errors->has('url') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                         @if ($errors->has('url'))
-                        <div class="invalid-feedback">{{ $errors->first('url') }}</div>
+                        <div class="help-block text-danger">{{ $errors->first('url') }}</div>
                         @endif
                     </div>
                     <div class="form-group col-sm-6 col-xl-4">
