@@ -55,7 +55,7 @@
                 </a>
                 <ul>
                     <li class="">
-                        <a href="{{route('external_link.index')}}" title="Link Mitra" data-filter-tags="theme settings">
+                        <a href="{{route('external-link.index')}}" title="Link Mitra" data-filter-tags="theme settings">
                             <i class="fal fa-external-link-square"></i>
                             <span class="nav-link-text" data-i18n="nav.theme_settings">Link External</span>
                         </a>
@@ -123,7 +123,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('operator_type.index')}}" title="Operator Type Management"
+                        <a href="{{route('operator-type.index')}}" title="Operator Type Management"
                             data-filter-tags="operators type managements">
                             <span class="nav-link-text" data-i18n="nav.operators_type_managements">Operator Type</span>
                         </a>
@@ -152,9 +152,9 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('bentuk_pelanggaran.index')}}" title="Bentuk Pelanggaran Management"
-                            data-filter-tags="bentuk_pelanggaran managements">
-                            <span class="nav-link-text" data-i18n="nav.bentuk_pelanggaran">Bentuk Pelanggaran</span>
+                        <a href="{{route('bentuk-pelanggaran.index')}}" title="Bentuk Pelanggaran Management"
+                            data-filter-tags="bentuk-pelanggaran managements">
+                            <span class="nav-link-text" data-i18n="nav.bentuk-pelanggaran">Bentuk Pelanggaran</span>
                         </a>
                     </li>
                     <li>

@@ -12,7 +12,8 @@
             <div class="panel-hdr">
                 <h2>Add New <span class="fw-300"><i>Bentuk Pelanggaran</i></span></h2>
                 <div class="panel-toolbar">
-                    <a class="nav-link active" href="{{route('bentuk_pelanggaran.index')}}"><i class="fal fa-arrow-alt-left">
+                    <a class="nav-link active" href="{{route('bentuk-pelanggaran.index')}}"><i
+                            class="fal fa-arrow-alt-left">
                         </i>
                         <span class="nav-link-text">Back</span>
                     </a>
@@ -25,7 +26,7 @@
                     <div class="panel-tag">
                         Form with <code>*</code> can not be empty.
                     </div>
-                    {!! Form::open(['route' => 'bentuk_pelanggaran.store','method' => 'POST','class' =>
+                    {!! Form::open(['route' => 'bentuk-pelanggaran.store','method' => 'POST','class' =>
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-6 mb-3">
                         {{ Form::label('name','Bentuk Pelanggaran',['class' => 'required form-label'])}}
@@ -34,16 +35,16 @@
                         <div class="invalid-feedback">{{ $errors->first('name') }}</div>
                         @endif
                     </div>
-                <div
-                    class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
-                    <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    <div
+                        class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
+                        <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
-                {!! Form::close() !!}
             </div>
         </div>
     </div>
-</div>
-@endsection
+    @endsection
 
-@section('js')
-@endsection
+    @section('js')
+    @endsection

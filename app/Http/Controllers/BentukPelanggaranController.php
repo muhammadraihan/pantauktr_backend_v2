@@ -25,8 +25,10 @@ class BentukPelanggaranController extends Controller
     {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            $bentuk_Pelanggaran = BentukPelanggaran::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','bentuk_pelanggaran','created_by'])->get();
+            $bentuk_Pelanggaran = BentukPelanggaran::select([
+                DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                'id', 'uuid', 'bentuk_pelanggaran', 'created_by'
+            ])->get();
             return Datatables::of($bentuk_Pelanggaran)
                 ->addIndexColumn()
                 ->editColumn('created_by', function ($row) {
@@ -34,8 +36,8 @@ class BentukPelanggaranController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     return '
-                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('bentuk_pelanggaran.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>
-                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="' . URL::route('bentuk_pelanggaran.destroy', $row->uuid) . '" data-id="' . $row->uuid . '" data-token="' . csrf_token() . '" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
+                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('bentuk-pelanggaran.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>
+                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="' . URL::route('bentuk-pelanggaran.destroy', $row->uuid) . '" data-id="' . $row->uuid . '" data-token="' . csrf_token() . '" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
@@ -82,7 +84,7 @@ class BentukPelanggaranController extends Controller
 
 
         toastr()->success('New Bentuk Pelanggaran Added', 'Success');
-        return redirect()->route('bentuk_pelanggaran.index');
+        return redirect()->route('bentuk-pelanggaran.index');
     }
 
     /**
@@ -105,7 +107,7 @@ class BentukPelanggaranController extends Controller
     public function edit($uuid)
     {
         $bentuk_pelanggaran = BentukPelanggaran::uuid($uuid);
-        return view('bentuk_pelanggaran.edit',compact('bentuk_pelanggaran'));
+        return view('bentuk-pelanggaran.edit', compact('bentuk_pelanggaran'));
     }
 
     /**
@@ -115,7 +117,7 @@ class BentukPelanggaranController extends Controller
      * @param  \App\Models\BentukPelanggaran  $bentuk_Pelanggaran
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$uuid)
+    public function update(Request $request, $uuid)
     {
         $rules = [
             'name' => 'required',
@@ -134,7 +136,7 @@ class BentukPelanggaranController extends Controller
         $bentuk_Pelanggaran->save();
 
         toastr()->success('Bentuk Pelanggaran Edited', 'Success');
-        return redirect()->route('bentuk_pelanggaran.index');
+        return redirect()->route('bentuk-pelanggaran.index');
     }
 
     /**
@@ -148,6 +150,6 @@ class BentukPelanggaranController extends Controller
         $bentuk_Pelanggaran = BentukPelanggaran::uuid($uuid);
         $bentuk_Pelanggaran->delete();
         toastr()->success('Bentuk Pelanggaran Deleted', 'Success');
-        return redirect()->route('bentuk_pelanggaran.index');
+        return redirect()->route('bentuk-pelanggaran.index');
     }
 }
