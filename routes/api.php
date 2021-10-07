@@ -58,7 +58,6 @@ Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function
         Route::get('notification/{id}', 'Api\LaporController@notifLaporan');
         Route::post('send', 'Api\LaporController@lapor');
     });
-
     // content
     Route::group(['prefix' => 'content'], function () {
         Route::get('banner', 'Api\ContentController@getBanner');
