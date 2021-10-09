@@ -27,23 +27,65 @@
                     </div>
                     {!! Form::open(['route' => 'kawasan.store','method' => 'POST','class' =>
                     'needs-validation','novalidate']) !!}
-                    <div class="form-group col-md-6 mb-3">
-                        {{ Form::label('name','Kawasan',['class' => 'required form-label'])}}
-                        {{ Form::text('name',null,['placeholder' => 'Kawasan','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
-                        @if ($errors->has('name'))
-                        <div class="invalid-feedback">{{ $errors->first('name') }}</div>
-                        @endif
+                    <div class="form-row">
+                        <div class="form-group col-md-4 mb-3">
+                            {{ Form::label('kawasan','Kawasan',['class' => 'required form-label'])}}
+                            {{ Form::text('kawasan',null,['placeholder' => 'Kawasan Pelanggaran','class' => 'form-control '.($errors->has('kawasan') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                            @if ($errors->has('kawasan'))
+                            <div class="invalid-feedback">{{ $errors->first('kawasan') }}</div>
+                            @endif
+                        </div>
+                        <div class="form-group col-md-4 mb-2">
+                            {{ Form::label('image','Icon',['class' => 'required form-label'])}}
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input accept="image/*" name="image" type="file" class="custom-file-input @if ($errors->has('image'))
+                                        is-invalid
+                                    @endif" id="image" aria-describedby="image" required>
+                                        <label class="custom-file-label" for="image">Choose file</label>
+                                    </div>
+                                </div>
+                                @if ($errors->has('image'))
+                                <div class="text-danger">{{ $errors->first('image') }}</div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                <div
-                    class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
-                    <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    <div class="form-row">
+                        <div class="form-group col-md-4 mb-3">
+                            {{ Form::label('keterangan','Keterangan',['class' => 'required form-label'])}}
+                            {{ Form::textarea('keterangan',null,['placeholder' => 'Keterangan','class' => 'form-control '.($errors->has('keterangan') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                            @if ($errors->has('keterangan'))
+                            <div class="invalid-feedback">{{ $errors->first('keterangan') }}</div>
+                            @endif
+                        </div>
+                        <div class="form-group col-md-4 mb-3">
+                            <img id="image-preview" src="{{asset('img/placeholder.png')}}"
+                                class="shadow-2 img-thumbnail" alt="">
+                        </div>
+                    </div>
+                    <div
+                        class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
+                        <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
-                {!! Form::close() !!}
             </div>
         </div>
     </div>
+    @endsection
 </div>
-@endsection
 
 @section('js')
+<script>
+    $(document).ready(function(){
+        $('#image').change(function(){
+            let reader = new FileReader();reader.onload = (e) => { 
+                $('#image-preview').attr('src', e.target.result); 
+            }
+            reader.readAsDataURL(this.files[0]); 
+        });
+    });
+</script>
 @endsection

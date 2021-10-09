@@ -51,14 +51,14 @@ class ReferensiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $jenisLaporan,
-        ], 200);
+        ]);
     }
 
     public function getJenisPelanggaran(Request $request)
     {
         $pelapor = Helper::pelapor();
         try {
-            $jenisPelanggaran = Pelanggaran::select('id', 'uuid', 'name', 'keterangan')->get();
+            $jenisPelanggaran = Pelanggaran::select('id', 'uuid', 'name', 'keterangan', 'image')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get jenis pelanggaran', [
@@ -74,7 +74,7 @@ class ReferensiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $jenisPelanggaran,
-        ], 200);
+        ]);
     }
 
     public function getJenisApresiasi(Request $request)
@@ -97,14 +97,14 @@ class ReferensiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $jenisApresiasi,
-        ], 200);
+        ]);
     }
 
     public function getBentukPelanggaran(Request $request)
     {
         $pelapor = Helper::pelapor();
         try {
-            $bentuk_pelanggaran = BentukPelanggaran::select('id', 'uuid', 'bentuk_pelanggaran', 'keterangan')->get();
+            $bentuk_pelanggaran = BentukPelanggaran::select('id', 'uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get bentuk pelanggaran', [
@@ -120,14 +120,14 @@ class ReferensiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $bentuk_pelanggaran,
-        ], 200);
+        ]);
     }
 
     public function getKawasan(Request $request)
     {
         $pelapor = Helper::pelapor();
         try {
-            $kawasan = Kawasan::select('id', 'uuid', 'kawasan', 'keterangan')->get();
+            $kawasan = Kawasan::select('id', 'uuid', 'kawasan', 'keterangan', 'image')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get kawasan', [
@@ -143,6 +143,6 @@ class ReferensiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $kawasan,
-        ], 200);
+        ]);
     }
 }

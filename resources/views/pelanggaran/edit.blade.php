@@ -11,7 +11,7 @@
     <div class="col-xl-6">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>Edit <span class="fw-300"><i>{{$pelanggaran->name}}</i></span></h2>
+                <h2>Edit <span class="fw-300"><i>{{$pelanggaran->name}}</i></span></h2>
                 <div class="panel-toolbar">
                     <a class="nav-link active" href="{{route('pelanggaran.index')}}"><i class="fal fa-arrow-alt-left">
                         </i>
@@ -28,58 +28,65 @@
                     </div>
                     {!! Form::open(['route' => ['pelanggaran.update',$pelanggaran->uuid],'method' => 'PUT','class' =>
                     'needs-validation','novalidate']) !!}
-                    <div class="form-group col-md-4 mb-3">
-                        {{ Form::label('name','Nama Pelanggaran',['class' => 'required form-label'])}}
-                        {{ Form::text('name',$pelanggaran->name,['placeholder' => 'Nama Pelanggaran','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
-                        @if ($errors->has('name'))
-                        <div class="invalid-feedback">{{ $errors->first('name') }}</div>
-                        @endif
+                    <div class="form-row">
+                        <div class="form-group col-md-4 mb-3">
+                            {{ Form::label('name','Nama Pelanggaran',['class' => 'required form-label'])}}
+                            {{ Form::text('name',$pelanggaran->name,['placeholder' => 'Jenis Pelanggaran','class' => 'form-control '.($errors->has('name') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                            @if ($errors->has('name'))
+                            <div class="invalid-feedback">{{ $errors->first('name') }}</div>
+                            @endif
+                        </div>
+                        <div class="form-group col-md-4 mb-2">
+                            {{ Form::label('image','Icon',['class' => 'required form-label'])}}
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input accept="image/*" name="image" type="file" class="custom-file-input @if ($errors->has('image'))
+                                        is-invalid
+                                    @endif" id="image" aria-describedby="image" required>
+                                        <label class="custom-file-label" for="image">Choose file</label>
+                                    </div>
+                                </div>
+                                @if ($errors->has('image'))
+                                <div class="text-danger">{{ $errors->first('image') }}</div>
+                                @endif
+                            </div>
+                        </div>
                     </div>
-                <div
-                    class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
-                    <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    <div class="form-row">
+                        <div class="form-group col-md-4 mb-3">
+                            {{ Form::label('keterangan','Keterangan Pelanggaran',['class' => 'required form-label'])}}
+                            {{ Form::textarea('keterangan',$pelanggaran->keterangan,['placeholder' => 'Keterangan jenis pelanggaran','class' => 'form-control '.($errors->has('keterangan') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                            @if ($errors->has('keterangan'))
+                            <div class="invalid-feedback">{{ $errors->first('keterangan') }}</div>
+                            @endif
+                        </div>
+                        <div class="form-group col-md-4 mb-3">
+                            <img id="image-preview" src="{{$pelanggaran->image}}" class="shadow-2 img-thumbnail"
+                                alt="Image not found">
+                        </div>
+                    </div>
+                    <div
+                        class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
+                        <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
-                {!! Form::close() !!}
             </div>
         </div>
     </div>
-</div>
-@endsection
+    @endsection
 
-@section('js')
-<script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
-<script>
-    $(document).ready(function(){
-        $('.select2').select2();
-        
-        // Generate a password string
-        function randString(){
-            var chars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNP123456789";
-            var string_length = 8;
-            var randomstring = '';
-            for (var i = 0; i < string_length; i++) {
-                var rnum = Math.floor(Math.random() * chars.length);
-                randomstring += chars.substring(rnum, rnum + 1);
+    @section('js')
+    <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
+    <script>
+        $(document).ready(function(){
+        $('#image').change(function(){
+            let reader = new FileReader();reader.onload = (e) => { 
+                $('#image-preview').attr('src', e.target.result); 
             }
-            return randomstring;
-        }
-        
-        // Create a new password
-        $(".getNewPass").click(function(){
-            var field = $('#password').closest('div').find('input[name="password"]');
-            field.val(randString(field));
-        });
-
-        //Enable input and button change password
-        $('#enablePassChange').click(function() {
-            if ($(this).is(':checked')) {
-                $('#passwordForm').attr('disabled',false); //enable input
-                $('#getNewPass').attr('disabled',false); //enable button
-            } else {
-                    $('#passwordForm').attr('disabled', true); //disable input
-                    $('#getNewPass').attr('disabled', true); //disable button
-            }
+            reader.readAsDataURL(this.files[0]); 
         });
     });
-</script>
-@endsection
+    </script>
+    @endsection

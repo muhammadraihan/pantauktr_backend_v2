@@ -25,7 +25,7 @@ class ContentController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $banner = Banner::select('id', 'uuid', 'photo','url')->where('status', 1)->first();
+            $banner = Banner::select('id', 'uuid', 'photo', 'url')->where('status', 1)->first();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get active banner', [
@@ -41,7 +41,7 @@ class ContentController extends Controller
         return response()->json([
             'success' => true,
             'data' => $banner,
-        ], 200);
+        ]);
     }
     /**
      * Get Website Content
@@ -68,7 +68,7 @@ class ContentController extends Controller
         return response()->json([
             'success' => true,
             'data' => $website,
-        ], 200);
+        ]);
     }
     /**
      * Get Detail Website Content
@@ -96,7 +96,7 @@ class ContentController extends Controller
         return response()->json([
             'success' => true,
             'data' => $website,
-        ], 200);
+        ]);
     }
 
     public function getInstagramContent(Request $request)
@@ -119,7 +119,7 @@ class ContentController extends Controller
         return response()->json([
             'success' => true,
             'data' => $instagram,
-        ], 200);
+        ]);
     }
 
     public function getStaticPageContent(Request $request)
@@ -142,7 +142,6 @@ class ContentController extends Controller
         return response()->json([
             'success' => true,
             'data' => $static_page,
-        ], 200);
+        ]);
     }
-
 }

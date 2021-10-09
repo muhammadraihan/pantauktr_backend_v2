@@ -19,7 +19,7 @@
     <div class="col-xl-12">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>
+                <h2>
                     Pelanggaran <span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
@@ -35,14 +35,16 @@
                 <div class="panel-content">
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th>Created by</th>
-                <th>Edited by</th>
-                <th width="120px">Action</th>
-                </tr>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Jenis Pelanggaran</th>
+                                <th>Keterangan</th>
+                                <th>Image</th>
+                                <th>Created by</th>
+                                <th>Edited by</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
@@ -105,10 +107,12 @@
                     }
             },
             "columns": [
-            {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-            {data: 'name', name: 'name'},
-            {data: 'created_by', name: 'created_by'},
-            {data: 'edited_by', name: 'edited_by'},
+            {data: 'DT_RowIndex', name: 'DT_RowIndex', searchable:false},
+            {data: 'name', searchable:false},
+            {data: 'keterangan', searchable:false},
+            {data: 'image', searchable:false},
+            {data: 'created_by'},
+            {data: 'edited_by'},
             {data: 'action', name: 'action', orderable: false, searchable: false},
         ]
     });

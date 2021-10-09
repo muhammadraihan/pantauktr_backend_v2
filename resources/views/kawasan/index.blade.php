@@ -19,7 +19,7 @@
     <div class="col-xl-12">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>
+                <h2>
                     Kawasan <span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
@@ -36,12 +36,14 @@
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
                         <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Kawasan</th>
-                                    <th>Created By</th>
-                                    <th>Action</th>
-                                </tr>
+                            <tr>
+                                <th>No</th>
+                                <th>Kawasan</th>
+                                <th>Keterangan</th>
+                                <th>Image</th>
+                                <th>Created By</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
@@ -100,6 +102,8 @@
             "columns": [
                 {data:'rownum',width:'*',searchable:false},
                 {data: 'kawasan',width:'*'},
+                {data: 'keterangan',width:'*',searchable:false},
+                {data: 'image',width:'*',searchable:false},
                 {data: 'created_by',width:'*'},
                 {data: 'action',width:'10%',searchable:false}    
             ]

@@ -112,7 +112,7 @@ class LaporController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ], 500);
+            ]);
         }
         // if no error commit data saving
         DB::commit();
@@ -159,10 +159,10 @@ class LaporController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ], 500);
+            ]);
         }
         // return response
-        return response()->json($response, 200);
+        return response()->json($response);
     }
 
     public function detailLaporan(Request $request, $id)
@@ -204,7 +204,7 @@ class LaporController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
-            ], 500);
+            ]);
         }
         // return response
         return response()->json([

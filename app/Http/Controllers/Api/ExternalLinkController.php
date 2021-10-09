@@ -32,7 +32,7 @@ class ExternalLinkController extends Controller
         return response()->json([
             'success' => true,
             'data' => $blog,
-        ], 200);
+        ]);
     }
 
     public function getOneBlog(Request $request, $id)
@@ -55,6 +55,6 @@ class ExternalLinkController extends Controller
         return response()->json([
             'success' => true,
             'data' => $blog,
-        ], 200);
+        ]);
     }
 }

@@ -20,12 +20,14 @@ class PelanggaranController extends Controller
      */
     public function index()
     {
-        $pelanggaran = Pelanggaran::all();
         if (request()->ajax()) {
             $data = Pelanggaran::latest()->get();
 
             return Datatables::of($data)
                 ->addIndexColumn()
+                ->editColumn('image', function ($row) {
+                    return $row->image ? '<img style="width: 150px; height: 150px;"  src="' . $row->image . '" alt="">' : '<span class="badge badge-secondary badge-pill">Foto tidak terlampir</span>';
+                })
                 ->editColumn('created_by', function ($row) {
                     return $row->userCreate->name ?? null;
                 })
@@ -43,7 +45,7 @@ class PelanggaranController extends Controller
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
-                ->rawColumns(['action'])
+                ->rawColumns(['action', 'image'])
                 ->make(true);
         }
 
@@ -70,16 +72,35 @@ class PelanggaranController extends Controller
     {
         $rules = [
             'name' => 'required|min:2',
+            'keterangan' => 'required',
+            'image' => 'required|mimes:jpeg,jpg,png|max:5000',
         ];
 
         $messages = [
-            '*.required' => 'Field tidak boleh kosong !',
+            '*.required' => 'Field tidak boleh kosong',
+            '*.mimes' => 'Type File Harus jpeg, jpg dan png',
+            '*.max' => 'Size File Tidak Boleh Lebih Dari 5Mb'
         ];
 
         $this->validate($request, $rules, $messages);
 
+        $image = $request->file('image');
+        $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
+        // resizing image to upload
+        $resizeImage = Image::make($image);
+        $resizeImage->resize(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode();
+        // upload resized image to gcs
+        $googleContent = 'reference' . '/' . $filename;
+        $disk = Storage::disk('gcs');
+        $disk->put($googleContent, (string) $resizeImage);
+        $fileUrl = $disk->url($googleContent);
+
         $pelanggaran = new Pelanggaran();
         $pelanggaran->name = $request->name;
+        $pelanggaran->keterangan = $request->keterangan;
+        $pelanggaran->image = $fileUrl;
         $pelanggaran->created_by = Auth::user()->uuid;
 
         $pelanggaran->save();
@@ -123,18 +144,36 @@ class PelanggaranController extends Controller
     {
         $rules = [
             'name' => 'required|min:2',
+            'keterangan' => 'required',
+            'image' => 'required|mimes:jpeg,jpg,png|max:5000',
         ];
 
         $messages = [
-            '*.required' => 'Field tidak boleh kosong !',
+            '*.required' => 'Field tidak boleh kosong',
+            '*.mimes' => 'Type File Harus jpeg, jpg dan png',
+            '*.max' => 'Size File Tidak Boleh Lebih Dari 5Mb'
         ];
 
         $this->validate($request, $rules, $messages);
+
+        $image = $request->file('image');
+        $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
+        // resizing image to upload
+        $resizeImage = Image::make($image);
+        $resizeImage->resize(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode();
+        // upload resized image to gcs
+        $googleContent = 'reference' . '/' . $filename;
+        $disk = Storage::disk('gcs');
+        $disk->put($googleContent, (string) $resizeImage);
+        $fileUrl = $disk->url($googleContent);
         // Saving data
         $pelanggaran = Pelanggaran::uuid($id);
         $pelanggaran->name = $request->name;
+        $pelanggaran->keterangan = $request->keterangan;
+        $pelanggaran->image = $fileUrl;
         $pelanggaran->edited_by = Auth::user()->uuid;
-
         $pelanggaran->save();
 
         toastr()->success('Pelanggaran Edited', 'Success');

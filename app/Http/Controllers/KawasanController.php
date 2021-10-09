@@ -24,10 +24,16 @@ class KawasanController extends Controller
     {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
-            $kawasan = Kawasan::select([DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-            'id','uuid','kawasan','created_by'])->get();
+            $kawasan = Kawasan::select([
+                DB::raw('@rownum  := @rownum  + 1 AS rownum'),
+                'id', 'uuid', 'kawasan', 'keterangan', 'image', 'created_by'
+            ]);
+
             return Datatables::of($kawasan)
                 ->addIndexColumn()
+                ->editColumn('image', function ($row) {
+                    return $row->image ? '<img style="width: 150px; height: 150px;"  src="' . $row->image . '" alt="">' : '<span class="badge badge-secondary badge-pill">Foto tidak terlampir</span>';
+                })
                 ->editColumn('created_by', function ($row) {
                     return $row->users->name;
                 })
@@ -38,7 +44,7 @@ class KawasanController extends Controller
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
-                ->rawColumns(['action'])
+                ->rawColumns(['action', 'image'])
                 ->make(true);
         }
 
@@ -64,21 +70,38 @@ class KawasanController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required'
+            'kawasan' => 'required',
+            'keterangan' => 'required',
+            'image' => 'required|mimes:jpeg,jpg,png|max:5000',
         ];
 
         $messages = [
             '*.required' => 'Field tidak boleh kosong !',
+            '*.mimes' => 'Type File Harus jpeg, jpg dan png',
+            '*.max' => 'Size File Tidak Boleh Lebih Dari 5Mb'
         ];
 
         $this->validate($request, $rules, $messages);
 
-        $kawasan = new Kawasan();
-        $kawasan->kawasan = $request->name;
-        $kawasan->created_by = Auth::user()->uuid;
+        $image = $request->file('image');
+        $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
+        // resizing image to upload
+        $resizeImage = Image::make($image);
+        $resizeImage->resize(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode();
+        // upload resized image to gcs
+        $googleContent = 'reference' . '/' . $filename;
+        $disk = Storage::disk('gcs');
+        $disk->put($googleContent, (string) $resizeImage);
+        $fileUrl = $disk->url($googleContent);
 
-        $kawasan->save();
-
+        $kawasan_table = new Kawasan();
+        $kawasan_table->kawasan = $request->kawasan;
+        $kawasan_table->keterangan = $request->keterangan;
+        $kawasan_table->image = $fileUrl;
+        $kawasan_table->created_by = Auth::user()->uuid;
+        $kawasan_table->save();
 
         toastr()->success('New Kawasan Added', 'Success');
         return redirect()->route('kawasan.index');
@@ -104,7 +127,7 @@ class KawasanController extends Controller
     public function edit($uuid)
     {
         $kawasan = Kawasan::uuid($uuid);
-        return view('kawasan.edit',compact('kawasan'));
+        return view('kawasan.edit', compact('kawasan'));
     }
 
     /**
@@ -114,23 +137,41 @@ class KawasanController extends Controller
      * @param  \App\Models\Kawasan  $kawasan
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,$uuid)
+    public function update(Request $request, $uuid)
     {
         $rules = [
-            'name' => 'required',
+            'kawasan' => 'required',
+            'keterangan' => 'required',
+            'image' => 'required|mimes:jpeg,jpg,png|max:5000',
         ];
 
         $messages = [
             '*.required' => 'Field tidak boleh kosong !',
+            '*.mimes' => 'Type File Harus jpeg, jpg dan png',
+            '*.max' => 'Size File Tidak Boleh Lebih Dari 5Mb'
         ];
 
         $this->validate($request, $rules, $messages);
-        // Saving data
-        $kawasan = Kawasan::uuid($uuid);
-        $kawasan->kawasan = $request->name;
-        $kawasan->edited_by = Auth::user()->uuid;
 
-        $kawasan->save();
+        $image = $request->file('image');
+        $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
+        // resizing image to upload
+        $resizeImage = Image::make($image);
+        $resizeImage->resize(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode();
+        // upload resized image to gcs
+        $googleContent = 'reference' . '/' . $filename;
+        $disk = Storage::disk('gcs');
+        $disk->put($googleContent, (string) $resizeImage);
+        $fileUrl = $disk->url($googleContent);
+        // Saving data
+        $kawasan_table = Kawasan::uuid($uuid);
+        $kawasan_table->kawasan = $request->kawasan;
+        $kawasan_table->keterangan = $request->keterangan;
+        $kawasan_table->image = $fileUrl;
+        $kawasan_table->edited_by = Auth::user()->uuid;
+        $kawasan_table->save();
 
         toastr()->success('Kawasan Edited', 'Success');
         return redirect()->route('kawasan.index');

@@ -25,12 +25,17 @@ class BentukPelanggaranController extends Controller
     {
         if (request()->ajax()) {
             DB::statement(DB::raw('set @rownum=0'));
+
             $bentuk_Pelanggaran = BentukPelanggaran::select([
                 DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-                'id', 'uuid', 'bentuk_pelanggaran', 'created_by'
-            ])->get();
+                'id', 'uuid', 'bentuk_pelanggaran', 'keterangan', 'image', 'created_by'
+            ]);
+
             return Datatables::of($bentuk_Pelanggaran)
                 ->addIndexColumn()
+                ->editColumn('image', function ($row) {
+                    return $row->image ? '<img style="width: 150px; height: 150px;"  src="' . $row->image . '" alt="">' : '<span class="badge badge-secondary badge-pill">Foto tidak terlampir</span>';
+                })
                 ->editColumn('created_by', function ($row) {
                     return $row->users->name;
                 })
@@ -41,11 +46,11 @@ class BentukPelanggaranController extends Controller
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
-                ->rawColumns(['action'])
+                ->rawColumns(['action', 'image'])
                 ->make(true);
         }
 
-        return view('bentuk_Pelanggaran.index');
+        return view('bentuk_pelanggaran.index');
     }
 
     /**
@@ -67,21 +72,37 @@ class BentukPelanggaranController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required'
+            'bentuk_pelanggaran' => 'required',
+            'keterangan' => 'required',
+            'image' => 'required|mimes:jpeg,jpg,png|max:5000',
         ];
 
         $messages = [
             '*.required' => 'Field tidak boleh kosong !',
+            '*.mimes' => 'Type File Harus jpeg, jpg dan png',
+            '*.max' => 'Size File Tidak Boleh Lebih Dari 5Mb'
         ];
 
         $this->validate($request, $rules, $messages);
-
-        $bentuk_Pelanggaran = new BentukPelanggaran();
-        $bentuk_Pelanggaran->bentuk_pelanggaran = $request->name;
-        $bentuk_Pelanggaran->created_by = Auth::user()->uuid;
-
-        $bentuk_Pelanggaran->save();
-
+        $image = $request->file('image');
+        $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
+        // resizing image to upload
+        $resizeImage = Image::make($image);
+        $resizeImage->resize(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode();
+        // upload resized image to gcs
+        $googleContent = 'reference' . '/' . $filename;
+        $disk = Storage::disk('gcs');
+        $disk->put($googleContent, (string) $resizeImage);
+        $fileUrl = $disk->url($googleContent);
+        // saving
+        $bentuk = new BentukPelanggaran();
+        $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
+        $bentuk->keterangan = $request->keterangan;
+        $bentuk->image = $fileUrl;
+        $bentuk->created_by = Auth::user()->uuid;
+        $bentuk->save();
 
         toastr()->success('New Bentuk Pelanggaran Added', 'Success');
         return redirect()->route('bentuk-pelanggaran.index');
@@ -107,7 +128,7 @@ class BentukPelanggaranController extends Controller
     public function edit($uuid)
     {
         $bentuk_pelanggaran = BentukPelanggaran::uuid($uuid);
-        return view('bentuk-pelanggaran.edit', compact('bentuk_pelanggaran'));
+        return view('bentuk_pelanggaran.edit', compact('bentuk_pelanggaran'));
     }
 
     /**
@@ -120,20 +141,37 @@ class BentukPelanggaranController extends Controller
     public function update(Request $request, $uuid)
     {
         $rules = [
-            'name' => 'required',
+            'name' => 'required|min:2',
+            'keterangan' => 'required',
+            'image' => 'required|mimes:jpeg,jpg,png|max:5000',
         ];
 
         $messages = [
-            '*.required' => 'Field tidak boleh kosong !',
+            '*.required' => 'Field tidak boleh kosong',
+            '*.mimes' => 'Type File Harus jpeg, jpg dan png',
+            '*.max' => 'Size File Tidak Boleh Lebih Dari 5Mb'
         ];
 
         $this->validate($request, $rules, $messages);
+        $image = $request->file('image');
+        $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
+        // resizing image to upload
+        $resizeImage = Image::make($image);
+        $resizeImage->resize(800, 800, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode();
+        // upload resized image to gcs
+        $googleContent = 'reference' . '/' . $filename;
+        $disk = Storage::disk('gcs');
+        $disk->put($googleContent, (string) $resizeImage);
+        $fileUrl = $disk->url($googleContent);
         // Saving data
-        $bentuk_Pelanggaran = BentukPelanggaran::uuid($uuid);
-        $bentuk_Pelanggaran->bentuk_pelanggaran = $request->name;
-        $bentuk_Pelanggaran->edited_by = Auth::user()->uuid;
-
-        $bentuk_Pelanggaran->save();
+        $bentuk = BentukPelanggaran::uuid($uuid);
+        $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
+        $bentuk->keterangan = $request->keterangan;
+        $bentuk->image = $fileUrl;
+        $bentuk->edited_by = Auth::user()->uuid;
+        $bentuk->save();
 
         toastr()->success('Bentuk Pelanggaran Edited', 'Success');
         return redirect()->route('bentuk-pelanggaran.index');

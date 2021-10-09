@@ -40,6 +40,8 @@
                             <tr>
                                 <th>No</th>
                                 <th>Bentuk Pelanggaran</th>
+                                <th>Keterangan</th>
+                                <th>Image</th>
                                 <th>Created By</th>
                                 <th>Action</th>
                             </tr>
@@ -101,6 +103,8 @@
             "columns": [
                 {data:'rownum',width:'*',searchable:false},
                 {data: 'bentuk_pelanggaran',width:'*'},
+                {data: 'keterangan',width:'*',searchable:false},
+                {data: 'image',width:'*',searchable:false},
                 {data: 'created_by',width:'*'},
                 {data: 'action',width:'10%',searchable:false}    
             ]

@@ -53,7 +53,7 @@
                 <div class="form-group col-md-5 mb-3">
                     <label>Bentuk Pelanggaran</label>
                     <select class="js-bg-color custom-select bp" name="bp">
-                        <option value="">Bentuk Pelanggaran</option>    
+                        <option value="">Bentuk Pelanggaran</option>
                         @foreach($bentuk_pelanggaran as $bp)
                         <option value="{{$bp->uuid}}"> {{$bp->bentuk_pelanggaran}} </option>
                         @endforeach
@@ -62,13 +62,13 @@
                 <div class="form-group col-md-5 mb-3">
                     <label>Kawasan</label>
                     <select class="js-bg-color custom-select kawasan" name="kawasan">
-                        <option value="">Kawasan</option>    
+                        <option value="">Kawasan</option>
                         @foreach($kawasan as $k)
                         <option value="{{$k->uuid}}"> {{$k->kawasan}} </option>
                         @endforeach
                     </select>
                 </div>
-                
+
                 <div id="" class="form-group col-md-5 mb-3">
                     <button type="button" name="filter" id="filter" class="btn btn-primary">Filter</button>
                     <button type="button" name="resetFilter" id="resetFilter" class="btn btn-primary">Reset
@@ -112,14 +112,6 @@
 <script src="{{asset('js/datagrid/datatables/datatables.export.js')}}"></script>
 <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
 <script src="{{asset('js/formplugins/bootstrap-datepicker/bootstrap-datepicker.js')}}"></script>
-{{-- <script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script> --}}
-
 {{-- <script src="https://www.gstatic.com/firebasejs/8.2.9/firebase.js"></script> --}}
 <script>
     $(document).ready(function(){
