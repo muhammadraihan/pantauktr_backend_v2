@@ -167,8 +167,8 @@ class WebsiteController extends Controller
             $googleContent = 'website' . '/' . $filename;
             $disk = Storage::disk('gcs');
             $disk->put($googleContent, (string) $resizeImage);
-            $fileUrl = $disk->url(env('GOOGLE_CLOUD_STORAGE_BUCKET') . '/' . $googleContent);
-            $banner->photo = $fileUrl;
+            $fileUrl = $disk->url($googleContent);
+            $website->photo = $fileUrl;
         }
         $website->title = $request->title;
         $website->slug = $request->slug;

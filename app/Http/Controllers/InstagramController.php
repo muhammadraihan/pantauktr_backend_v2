@@ -158,7 +158,7 @@ class InstagramController extends Controller
             $googleContent = 'instagram' . '/' . $filename;
             $disk = Storage::disk('gcs');
             $disk->put($googleContent, (string) $resizeImage);
-            $fileUrl = $disk->url(env('GOOGLE_CLOUD_STORAGE_BUCKET') . '/' . $googleContent);
+            $fileUrl = $disk->url($googleContent);
             $instagram->photo = $fileUrl;
         }
         $instagram->caption = $request->caption;
