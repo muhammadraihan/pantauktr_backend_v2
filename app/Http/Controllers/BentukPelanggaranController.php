@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BentukPelanggaran;
+use App\Models\Pelanggaran;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -28,13 +29,16 @@ class BentukPelanggaranController extends Controller
 
             $bentuk_Pelanggaran = BentukPelanggaran::select([
                 DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-                'id', 'uuid', 'bentuk_pelanggaran', 'keterangan', 'image', 'created_by'
+                'id', 'uuid', 'bentuk_pelanggaran', 'keterangan', 'image', 'jenis_pelanggaran', 'created_by'
             ]);
 
             return Datatables::of($bentuk_Pelanggaran)
                 ->addIndexColumn()
                 ->editColumn('image', function ($row) {
                     return $row->image ? '<img style="width: 150px; height: 150px;"  src="' . $row->image . '" alt="">' : '<span class="badge badge-secondary badge-pill">Foto tidak terlampir</span>';
+                })
+                ->editColumn('jenis_pelanggaran', function ($row) {
+                    return $row->JenisPelanggaran->name;
                 })
                 ->editColumn('created_by', function ($row) {
                     return $row->users->name;
@@ -60,7 +64,8 @@ class BentukPelanggaranController extends Controller
      */
     public function create()
     {
-        return view('bentuk_pelanggaran.create');
+        $pelanggarans = Pelanggaran::all()->pluck('name', 'uuid');
+        return view('bentuk_pelanggaran.create', compact('pelanggarans'));
     }
 
     /**
@@ -73,6 +78,7 @@ class BentukPelanggaranController extends Controller
     {
         $rules = [
             'bentuk_pelanggaran' => 'required',
+            'pelanggaran' => 'required',
             'keterangan' => 'required',
             'image' => 'required|mimes:jpeg,jpg,png|max:5000',
         ];
@@ -101,6 +107,7 @@ class BentukPelanggaranController extends Controller
         $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
         $bentuk->keterangan = $request->keterangan;
         $bentuk->image = $fileUrl;
+        $bentuk->jenis_pelanggaran = $request->pelanggaran;
         $bentuk->created_by = Auth::user()->uuid;
         $bentuk->save();
 
@@ -127,8 +134,9 @@ class BentukPelanggaranController extends Controller
      */
     public function edit($uuid)
     {
+        $pelanggarans = Pelanggaran::all()->pluck('name', 'uuid');
         $bentuk_pelanggaran = BentukPelanggaran::uuid($uuid);
-        return view('bentuk_pelanggaran.edit', compact('bentuk_pelanggaran'));
+        return view('bentuk_pelanggaran.edit', compact('bentuk_pelanggaran', 'pelanggarans'));
     }
 
     /**
@@ -143,6 +151,7 @@ class BentukPelanggaranController extends Controller
         $rules = [
             'name' => 'required|min:2',
             'keterangan' => 'required',
+            'pelanggaran' => 'required',
             'image' => 'required|mimes:jpeg,jpg,png|max:5000',
         ];
 
@@ -170,6 +179,7 @@ class BentukPelanggaranController extends Controller
         $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
         $bentuk->keterangan = $request->keterangan;
         $bentuk->image = $fileUrl;
+        $bentuk->jenis_pelanggaran = $request->pelanggaran;
         $bentuk->edited_by = Auth::user()->uuid;
         $bentuk->save();
 
