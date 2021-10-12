@@ -103,13 +103,16 @@ class BannerController extends Controller
         $banner = new Banner();
         $banner->photo = $fileUrl;
         $banner->url = $request->url;
-        $banner->status = $request->status;
+        if ($request->has('status')) {
+            if ($request->status == 1) {
+                Banner::where('status', 1)->update(['status' => 0]);
+                $banner->status = $request->status;
+            } else {
+                $banner->status = $request->status;
+            }
+        }
         $banner->created_by = Auth::user()->uuid;
         $banner->save();
-
-        if ($banner->status == 1) {
-            $checkBanner = Banner::where('id', '!=', $banner->id)->update(['status' => 0]);
-        }
 
         toastr()->success('New Banner Added', 'Success');
         return redirect()->route('banner.index');
@@ -147,7 +150,18 @@ class BannerController extends Controller
      */
     public function update(Request $request, $uuid)
     {
+        $rules = [
+            'url' => 'required',
+            'status' => 'required'
+        ];
+        $messages = [
+            '*.required' => 'Data Harus Di isi',
+        ];
+        $this->validate($request, $rules, $messages);
+
         $banner = Banner::uuid($uuid);
+        $banner->url = $request->url;
+        $banner->status = $request->status;
         if ($request->hasfile('photo')) {
             $rules = [
                 'photo' => 'required|mimes:jpeg,jpg,png|max:5000',
@@ -171,16 +185,15 @@ class BannerController extends Controller
             $googleContent = 'banner' . '/' . $filename;
             $disk = Storage::disk('gcs');
             $disk->put($googleContent, (string) $resizeImage);
-            $fileUrl = $disk->url(env('GOOGLE_CLOUD_STORAGE_BUCKET') . '/' . $googleContent);
+            $fileUrl = $disk->url($googleContent);
             $banner->photo = $fileUrl;
         }
-        $banner->url = $request->url;
-        $banner->status = $request->status;
+        if ($request->has('status')) {
+            Banner::where('status', 1)->update(['status' => 0]);
+            $banner->status = $request->status;
+        }
         $banner->edited_by = Auth::user()->uuid;
         $banner->save();
-        if ($banner->status == 1) {
-            $checkBanner = Banner::where('id', '!=', $banner->id)->update(['status' => 0]);
-        }
         toastr()->success('Banner Edited', 'Success');
         return redirect()->route('banner.index');
     }
