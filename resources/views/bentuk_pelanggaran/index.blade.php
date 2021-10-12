@@ -42,6 +42,7 @@
                                 <th>Bentuk Pelanggaran</th>
                                 <th>Keterangan</th>
                                 <th>Image</th>
+                                <th>Pelanggaran</th>
                                 <th>Created By</th>
                                 <th>Action</th>
                             </tr>
@@ -105,6 +106,7 @@
                 {data: 'bentuk_pelanggaran',width:'*'},
                 {data: 'keterangan',width:'*',searchable:false},
                 {data: 'image',width:'*',searchable:false},
+                {data: 'jenis_pelanggaran',width:'*',searchable:false},
                 {data: 'created_by',width:'*'},
                 {data: 'action',width:'10%',searchable:false}    
             ]
