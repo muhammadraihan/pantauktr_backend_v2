@@ -35,7 +35,7 @@ class ReferensiController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $jenisLaporan = Jenis_laporan::select('id', 'uuid', 'name')->get();
+            $jenisLaporan = Jenis_laporan::select('uuid', 'name')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get jenis laporan', [
@@ -58,7 +58,7 @@ class ReferensiController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $jenisPelanggaran = Pelanggaran::select('id', 'uuid', 'name', 'keterangan', 'image')->get();
+            $jenisPelanggaran = Pelanggaran::select('uuid', 'name', 'keterangan', 'image')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get jenis pelanggaran', [
@@ -81,7 +81,7 @@ class ReferensiController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $jenisApresiasi = Jenis_apresiasi::select('id', 'uuid', 'name')->get();
+            $jenisApresiasi = Jenis_apresiasi::select('uuid', 'name')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get jenis apresiasi', [
@@ -104,7 +104,7 @@ class ReferensiController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $bentuk_pelanggaran = BentukPelanggaran::select('id', 'uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->get();
+            $bentuk_pelanggaran = BentukPelanggaran::select('uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get bentuk pelanggaran', [
@@ -127,7 +127,7 @@ class ReferensiController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $bentuk_pelanggaran = BentukPelanggaran::select('id', 'uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->where('jenis_pelanggaran', $uuid)->get();
+            $bentuk_pelanggaran = BentukPelanggaran::select('uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->where('jenis_pelanggaran', $uuid)->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get bentuk pelanggaran', [
@@ -150,7 +150,7 @@ class ReferensiController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $kawasan = Kawasan::select('id', 'uuid', 'kawasan', 'keterangan', 'image')->get();
+            $kawasan = Kawasan::select('uuid', 'kawasan', 'keterangan', 'image')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get kawasan', [
