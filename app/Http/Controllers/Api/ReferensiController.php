@@ -123,6 +123,29 @@ class ReferensiController extends Controller
         ]);
     }
 
+    public function getBentukByPelanggaran(Request $request, $uuid)
+    {
+        $pelapor = Helper::pelapor();
+        try {
+            $bentuk_pelanggaran = BentukPelanggaran::select('id', 'uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->where('jenis_pelanggaran', $uuid)->get();
+        } catch (Exception $e) {
+            // log message to local an slack
+            Log::stack(['stack', 'slack'])->error('Error get bentuk pelanggaran', [
+                'user' => $pelapor->email,
+                'agent' => $request->header('User-Agent'),
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $bentuk_pelanggaran,
+        ]);
+    }
+
     public function getKawasan(Request $request)
     {
         $pelapor = Helper::pelapor();
