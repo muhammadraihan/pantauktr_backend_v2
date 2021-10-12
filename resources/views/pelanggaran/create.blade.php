@@ -27,7 +27,7 @@
                         Form with <code>*</code> can not be empty.
                     </div>
                     {!! Form::open(['route' => 'pelanggaran.store','method' => 'POST','class' =>
-                    'needs-validation','novalidate']) !!}
+                    'needs-validation','novalidate','enctype' => 'multipart/form-data']) !!}
                     <div class="form-row">
                         <div class="form-group col-md-4 mb-3">
                             {{ Form::label('name','Nama Pelanggaran',['class' => 'required form-label'])}}

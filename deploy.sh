@@ -17,8 +17,11 @@ git pull
 
 printf "Clearing Cache... \n"
 php artisan permission:cache-reset
-php artisan cache:clear
 php artisan config:clear
+php artisan cache:clear
+composer dump-autoload
+php artisan view:clear
+php artisan route:clear
 
 printf "Migrating Database... \n"
 php artisan migrate --force

@@ -29,7 +29,7 @@
                     </div>
                     {!! Form::open(['route' => ['bentuk-pelanggaran.update',$bentuk_pelanggaran->uuid],'method' =>
                     'PUT','class' =>
-                    'needs-validation','novalidate']) !!}
+                    'needs-validation','novalidate','enctype' => 'multipart/form-data']) !!}
                     <div class="form-row">
                         <div class="form-group col-md-4 mb-3">
                             {{ Form::label('bentuk_pelanggaran','Bentuk Pelanggaran',['class' => 'required form-label'])}}

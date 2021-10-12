@@ -7,9 +7,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Traits\Authorizable;
+
 use Auth;
 use DataTables;
 use DB;
+use Image;
+use Storage;
 use URL;
 
 class KawasanController extends Controller

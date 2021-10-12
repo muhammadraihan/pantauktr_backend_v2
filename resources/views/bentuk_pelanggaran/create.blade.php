@@ -27,7 +27,8 @@
                     <div class="panel-tag">
                         Form with <code>*</code> can not be empty.
                     </div>
-                    {!! Form::open(['route' => 'bentuk-pelanggaran.store','method' => 'POST','class' =>
+                    {!! Form::open(['route' => 'bentuk-pelanggaran.store','method' => 'POST','enctype' =>
+                    'multipart/form-data','class' =>
                     'needs-validation','novalidate']) !!}
                     <div class="form-row">
                         <div class="form-group col-md-4 mb-3">

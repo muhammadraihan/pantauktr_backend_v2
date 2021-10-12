@@ -100,7 +100,6 @@ class BannerController extends Controller
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
         $fileUrl = $disk->url($googleContent);
-
         $banner = new Banner();
         $banner->photo = $fileUrl;
         $banner->url = $request->url;

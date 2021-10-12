@@ -8,6 +8,8 @@ use App\Models\Pelanggaran;
 
 use Auth;
 use DataTables;
+use Image;
+use Storage;
 use URL;
 
 class PelanggaranController extends Controller

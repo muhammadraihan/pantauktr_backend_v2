@@ -9,9 +9,11 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Traits\Authorizable;
 use Auth;
+use Image;
 use DataTables;
 use DB;
 use URL;
+use Storage;
 
 
 class BentukPelanggaranController extends Controller
@@ -149,7 +151,7 @@ class BentukPelanggaranController extends Controller
     public function update(Request $request, $uuid)
     {
         $rules = [
-            'name' => 'required|min:2',
+            'bentuk_pelanggaran' => 'required|min:2',
             'keterangan' => 'required',
             'pelanggaran' => 'required',
             'image' => 'required|mimes:jpeg,jpg,png|max:5000',
@@ -162,6 +164,10 @@ class BentukPelanggaranController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
+        // Saving data
+        $bentuk = BentukPelanggaran::uuid($uuid);
+        $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
+        $bentuk->keterangan = $request->keterangan;
         $image = $request->file('image');
         $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
         // resizing image to upload
@@ -174,10 +180,7 @@ class BentukPelanggaranController extends Controller
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
         $fileUrl = $disk->url($googleContent);
-        // Saving data
-        $bentuk = BentukPelanggaran::uuid($uuid);
-        $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
-        $bentuk->keterangan = $request->keterangan;
+
         $bentuk->image = $fileUrl;
         $bentuk->jenis_pelanggaran = $request->pelanggaran;
         $bentuk->edited_by = Auth::user()->uuid;
