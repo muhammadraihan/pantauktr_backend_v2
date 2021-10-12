@@ -12,7 +12,7 @@ class Kawasan extends Model
     use Uuid;
 
     protected $fillable = [
-        'kawasan','created_by','edited_by'
+        'kawasan', 'keterangan', 'image', 'created_by', 'edited_by'
     ];
 
     protected static $logAttributes = ['*'];
@@ -49,7 +49,8 @@ class Kawasan extends Model
         return "Data has been {$eventName}";
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->belongsTo(User::class, 'created_by', 'uuid');
     }
 }
