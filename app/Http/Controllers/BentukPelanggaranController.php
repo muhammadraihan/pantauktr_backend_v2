@@ -168,20 +168,21 @@ class BentukPelanggaranController extends Controller
         $bentuk = BentukPelanggaran::uuid($uuid);
         $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
         $bentuk->keterangan = $request->keterangan;
-        $image = $request->file('image');
-        $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-        // resizing image to upload
-        $resizeImage = Image::make($image);
-        $resizeImage->resize(800, 800, function ($constraint) {
-            $constraint->aspectRatio();
-        })->encode();
-        // upload resized image to gcs
-        $googleContent = 'reference' . '/' . $filename;
-        $disk = Storage::disk('gcs');
-        $disk->put($googleContent, (string) $resizeImage);
-        $fileUrl = $disk->url($googleContent);
-
-        $bentuk->image = $fileUrl;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
+            // resizing image to upload
+            $resizeImage = Image::make($image);
+            $resizeImage->resize(800, 800, function ($constraint) {
+                $constraint->aspectRatio();
+            })->encode();
+            // upload resized image to gcs
+            $googleContent = 'reference' . '/' . $filename;
+            $disk = Storage::disk('gcs');
+            $disk->put($googleContent, (string) $resizeImage);
+            $fileUrl = $disk->url($googleContent);
+            $bentuk->image = $fileUrl;
+        }
         $bentuk->jenis_pelanggaran = $request->pelanggaran;
         $bentuk->edited_by = Auth::user()->uuid;
         $bentuk->save();

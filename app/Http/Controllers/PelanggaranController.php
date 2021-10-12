@@ -157,24 +157,25 @@ class PelanggaranController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-
-        $image = $request->file('image');
-        $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-        // resizing image to upload
-        $resizeImage = Image::make($image);
-        $resizeImage->resize(800, 800, function ($constraint) {
-            $constraint->aspectRatio();
-        })->encode();
-        // upload resized image to gcs
-        $googleContent = 'reference' . '/' . $filename;
-        $disk = Storage::disk('gcs');
-        $disk->put($googleContent, (string) $resizeImage);
-        $fileUrl = $disk->url($googleContent);
         // Saving data
         $pelanggaran = Pelanggaran::uuid($id);
         $pelanggaran->name = $request->name;
         $pelanggaran->keterangan = $request->keterangan;
-        $pelanggaran->image = $fileUrl;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
+            // resizing image to upload
+            $resizeImage = Image::make($image);
+            $resizeImage->resize(800, 800, function ($constraint) {
+                $constraint->aspectRatio();
+            })->encode();
+            // upload resized image to gcs
+            $googleContent = 'reference' . '/' . $filename;
+            $disk = Storage::disk('gcs');
+            $disk->put($googleContent, (string) $resizeImage);
+            $fileUrl = $disk->url($googleContent);
+            $pelanggaran->image = $fileUrl;
+        }
         $pelanggaran->edited_by = Auth::user()->uuid;
         $pelanggaran->save();
 
