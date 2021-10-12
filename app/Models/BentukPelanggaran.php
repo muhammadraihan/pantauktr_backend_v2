@@ -12,7 +12,7 @@ class BentukPelanggaran extends Model
     use Uuid;
 
     protected $fillable = [
-        'bentuk_pelanggaran','created_by','edited_by'
+        'bentuk_pelanggaran', 'keterangan', 'image', 'jenis_pelanggaran', 'created_by', 'edited_by'
     ];
 
     protected static $logAttributes = ['*'];
@@ -49,7 +49,13 @@ class BentukPelanggaran extends Model
         return "Data has been {$eventName}";
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->belongsTo(User::class, 'created_by', 'uuid');
+    }
+
+    public function jenisPelanggaran()
+    {
+        return $this->belongsTo(Pelanggaran::class, 'jenis_pelanggaran', 'uuid');
     }
 }
