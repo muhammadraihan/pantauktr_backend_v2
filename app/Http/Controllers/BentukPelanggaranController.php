@@ -154,13 +154,10 @@ class BentukPelanggaranController extends Controller
             'bentuk_pelanggaran' => 'required|min:2',
             'keterangan' => 'required',
             'pelanggaran' => 'required',
-            'image' => 'required|mimes:jpeg,jpg,png|max:5000',
         ];
 
         $messages = [
             '*.required' => 'Field tidak boleh kosong',
-            '*.mimes' => 'Type File Harus jpeg, jpg dan png',
-            '*.max' => 'Size File Tidak Boleh Lebih Dari 5Mb'
         ];
 
         $this->validate($request, $rules, $messages);
@@ -169,6 +166,17 @@ class BentukPelanggaranController extends Controller
         $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
         $bentuk->keterangan = $request->keterangan;
         if ($request->hasFile('image')) {
+            $rules = [
+                'image' => 'required|mimes:jpeg,jpg,png|max:5000',
+            ];
+
+            $messages = [
+                '*.mimes' => 'Type File Harus jpeg, jpg dan png',
+                '*.max' => 'Size File Tidak Boleh Lebih Dari 5Mb'
+            ];
+
+            $this->validate($request, $rules, $messages);
+
             $image = $request->file('image');
             $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
             // resizing image to upload
