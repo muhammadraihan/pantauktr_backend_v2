@@ -35,7 +35,7 @@ class ReferensiController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $jenisLaporan = Jenis_laporan::select('uuid', 'name')->get();
+            $jenisLaporan = Jenis_laporan::select('id', 'uuid', 'name')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get jenis laporan', [
