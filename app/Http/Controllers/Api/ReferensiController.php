@@ -58,7 +58,30 @@ class ReferensiController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $jenisPelanggaran = Pelanggaran::select('id', 'uuid', 'name', 'keterangan', 'image')->get();
+            $jenisPelanggaran = Pelanggaran::select('uuid', 'name', 'keterangan', 'image')->get();
+        } catch (Exception $e) {
+            // log message to local an slack
+            Log::stack(['stack', 'slack'])->error('Error get jenis pelanggaran', [
+                'user' => $pelapor->email,
+                'agent' => $request->header('User-Agent'),
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $jenisPelanggaran,
+        ]);
+    }
+
+    public function getSingleJenisPelanggaran(Request $request, $uuid)
+    {
+        $pelapor = Helper::pelapor();
+        try {
+            $jenisPelanggaran = Pelanggaran::select('uuid', 'name', 'keterangan', 'image')->where('uuid', $uuid)->first();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get jenis pelanggaran', [

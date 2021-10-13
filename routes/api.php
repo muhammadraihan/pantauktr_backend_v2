@@ -45,9 +45,8 @@ Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function
     });
     // reference
     Route::group(['prefix' => 'reference'], function () {
-        Route::get('jenis-laporan', 'Api\ReferensiController@getJenisLaporan');
         Route::get('jenis-pelanggaran', 'Api\ReferensiController@getJenisPelanggaran');
-        Route::get('jenis-apresiasi', 'Api\ReferensiController@getJenisApresiasi');
+        Route::get('jenis-pelanggaran/{uuid}', 'Api\ReferensiController@getSingleJenisPelanggaran');
         Route::get('bentuk-pelanggaran', 'Api\ReferensiController@getBentukPelanggaran');
         Route::get('bentuk-pelanggaran/{uuid}', 'Api\ReferensiController@getBentukByPelanggaran');
         Route::get('kawasan', 'Api\ReferensiController@getKawasan');
