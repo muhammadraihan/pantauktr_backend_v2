@@ -25,16 +25,6 @@ class LaporController extends Controller
     {
         $pelapor = Helper::pelapor();
         $uniqueCode = Helper::GenerateReportNumber(13);
-        $validator = Validator::make($request->all(), [
-            'photo' => 'required|image',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => $validator->messages()
-            ]);
-        }
 
         $lat = $request->get('lat');
         $lng = $request->get('lng');
@@ -45,20 +35,6 @@ class LaporController extends Controller
         $response = $geocoder->getAddressForCoordinates($lat, $lng);
         $address = $response['address_components'];
 
-        // request image files and uploading to google cloud storage
-        $image = $request->file('photo');
-        $filename = $pelapor->uuid . uniqid(mt_rand(), true) . '.' . $image->getClientOriginalExtension();
-        // resizing image to upload
-        $resizeImage = Image::make($image);
-        $resizeImage->resize(800, 600, function ($constraint) {
-            $constraint->aspectRatio();
-        })->encode();
-        // upload resized image to gcs
-        $googleContent = 'lampiran' . '/' . $filename;
-        $disk = Storage::disk('gcs');
-        $disk->put($googleContent, (string) $resizeImage);
-        $fileUrl = $disk->url($googleContent);
-
         // begin transaction
         DB::beginTransaction();
         try {
@@ -66,7 +42,7 @@ class LaporController extends Controller
             $laporan->nomor_laporan = 'KTR' . '-' . $uniqueCode;
             $laporan->jenis_pelanggaran = $request->jenis_pelanggaran;
             $laporan->bentuk_pelanggaran = $request->bentuk_pelanggaran;
-            $laporan->photo = $fileUrl;
+            $laporan->photo = $request->image_url;
             $laporan->kawasan = $request->kawasan;
             $laporan->lat = $lat;
             $laporan->lng = $lng;
@@ -94,6 +70,7 @@ class LaporController extends Controller
             $laporan->created_by = $pelapor->uuid;
             $laporan->status = 0;
             $laporan->device_token = $request->device_token;
+            $laporan->created_at = $request->report_date;
             $laporan->save();
             // update reward point
             $pelapor = Pelapor::uuid($pelapor->uuid);
