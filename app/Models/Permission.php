@@ -141,10 +141,10 @@ class Permission extends \Spatie\Permission\Models\Permission
             'edit_kawasan',
             'delete_kawasan',
 
-            'add_static-pelanggaran',
-            'view_static-pelanggaran',
-            'edit_static-pelanggaran',
-            'delete_static-pelanggaran',
+            'add_static-page',
+            'view_static-page',
+            'edit_static-page',
+            'delete_static-page',
 
             'add_instagram',
             'view_instagram',
