@@ -31,28 +31,6 @@ class ReferensiController extends Controller
         ]);
     }
 
-    public function getJenisLaporan(Request $request)
-    {
-        $pelapor = Helper::pelapor();
-        try {
-            $jenisLaporan = Jenis_laporan::select('uuid', 'name')->get();
-        } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get jenis laporan', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'error' => $e->getMessage(),
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
-        return response()->json([
-            'success' => true,
-            'data' => $jenisLaporan,
-        ]);
-    }
 
     public function getJenisPelanggaran(Request $request)
     {
@@ -97,29 +75,6 @@ class ReferensiController extends Controller
         return response()->json([
             'success' => true,
             'data' => $jenisPelanggaran,
-        ]);
-    }
-
-    public function getJenisApresiasi(Request $request)
-    {
-        $pelapor = Helper::pelapor();
-        try {
-            $jenisApresiasi = Jenis_apresiasi::select('uuid', 'name')->get();
-        } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get jenis apresiasi', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'error' => $e->getMessage(),
-            ]);
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ]);
-        }
-        return response()->json([
-            'success' => true,
-            'data' => $jenisApresiasi,
         ]);
     }
 
@@ -169,11 +124,57 @@ class ReferensiController extends Controller
         ]);
     }
 
+    public function getSingleBentukPelanggaran(Request $request, $uuid)
+    {
+        $pelapor = Helper::pelapor();
+        try {
+            $bentuk = BentukPelanggaran::select('uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->where('uuid', $uuid)->first();
+        } catch (Exception $e) {
+            // log message to local an slack
+            Log::stack(['stack', 'slack'])->error('Error get bentuk pelanggaran', [
+                'user' => $pelapor->email,
+                'agent' => $request->header('User-Agent'),
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $bentuk,
+        ]);
+    }
+
     public function getKawasan(Request $request)
     {
         $pelapor = Helper::pelapor();
         try {
             $kawasan = Kawasan::select('uuid', 'kawasan', 'keterangan', 'image')->get();
+        } catch (Exception $e) {
+            // log message to local an slack
+            Log::stack(['stack', 'slack'])->error('Error get kawasan', [
+                'user' => $pelapor->email,
+                'agent' => $request->header('User-Agent'),
+                'error' => $e->getMessage(),
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ]);
+        }
+        return response()->json([
+            'success' => true,
+            'data' => $kawasan,
+        ]);
+    }
+
+    public function getSingleKawasan(Request $request, $uuid)
+    {
+        $pelapor = Helper::pelapor();
+        try {
+            $kawasan = Kawasan::select('uuid', 'kawasan', 'keterangan', 'image')->where('uuid', $uuid)->first();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get kawasan', [
