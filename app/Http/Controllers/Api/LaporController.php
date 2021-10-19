@@ -111,12 +111,28 @@ class LaporController extends Controller
             // get pelapor details based on auth token
             $pelapor = Helper::pelapor();
             // select laporan based on user auth
-            $list = Laporan::select('uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'kawasan', 'nama_lokasi', 'created_at')
+            $list = Laporan::select('uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'kawasan', 'nama_lokasi', 'status', 'created_at')
                 ->where('created_by', $pelapor->uuid)->orderByDesc('created_at')->get();
             // form response
             for ($i = 0; $i < count($list); $i++) {
                 // parsing carbon to locale config
                 $tanggalBuat = Carbon::parse($list[$i]->created_at)->translatedFormat('d/m/y H:i');
+                // change status code to human readable for good sake
+                $status = '';
+                switch ($list[$i]->status) {
+                    case 0:
+                        $status = 'Laporan Diterima';
+                        break;
+                    case 1:
+                        $status = 'Laporan Ditindaklanjuti';
+                        break;
+                    case 2:
+                        $status = 'Laporan Selesai';
+                        break;
+                    default:
+                        $status = 'Laporan Diterima';
+                        break;
+                }
                 $response['data'][$i] = array();
                 $response['data'][$i]['uuid'] = $list[$i]->uuid;
                 $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->jenis_pelanggaran == null ? "" : $list[$i]->pelanggaran->name;
@@ -125,6 +141,7 @@ class LaporController extends Controller
                 $response['data'][$i]['kawasan'] = $list[$i]->kawasan == null ? "" : $list[$i]->Kawasan->kawasan;
                 $response['data'][$i]['lokasi'] = $list[$i]->nama_lokasi;
                 $response['data'][$i]['tanggal_laporan'] = $tanggalBuat;
+                $response['data'][$i]['status'] = $status;
             }
         } catch (Exception $e) {
             // log message to local an slack
@@ -154,18 +171,18 @@ class LaporController extends Controller
                 ->first();
             // change status code to human readable for good sake
             $status = '';
-            switch ($detailLaporan->status) {
+            switch ($list[$i]->status) {
                 case 0:
-                    $status = 'Diterima';
+                    $status = 'Laporan Diterima';
                     break;
                 case 1:
-                    $status = 'Ditindaklanjuti';
+                    $status = 'Laporan Ditindaklanjuti';
                     break;
                 case 2:
-                    $status = 'Selesai';
+                    $status = 'Laporan Selesai';
                     break;
                 default:
-                    $status = 'Diterima';
+                    $status = 'Laporan Diterima';
                     break;
             }
             // parsing carbon to locale config
