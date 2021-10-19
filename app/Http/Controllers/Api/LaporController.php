@@ -169,7 +169,7 @@ class LaporController extends Controller
                     break;
             }
             // parsing carbon to locale config
-            $tanggalBuat = Carbon::parse($detailLaporan->created_at)->translatedFormat('j F Y');
+            $tanggalBuat = Carbon::parse($detailLaporan->created_at)->translatedFormat('d/m/y H:i');
             $tanggalUbah = Carbon::parse($detailLaporan->updated_at)->translatedFormat('l\\, j F Y H:i:s');
         } catch (Exception $e) {
             // log message to local an slack
