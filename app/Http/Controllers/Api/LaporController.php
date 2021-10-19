@@ -116,10 +116,11 @@ class LaporController extends Controller
             // form response
             for ($i = 0; $i < count($list); $i++) {
                 // parsing carbon to locale config
-                $tanggalBuat = Carbon::parse($list[$i]->created_at)->translatedFormat('j F Y');
+                $tanggalBuat = Carbon::parse($list[$i]->created_at)->translatedFormat('d/m/y H:i');
                 $response['data'][$i] = array();
                 $response['data'][$i]['uuid'] = $list[$i]->uuid;
                 $response['data'][$i]['jenis_pelanggaran'] = $list[$i]->jenis_pelanggaran == null ? "" : $list[$i]->pelanggaran->name;
+                $response['data'][$i]['icon_pelanggaran'] =  $list[$i]->pelanggaran->image;
                 $response['data'][$i]['bentuk_pelanggaran'] = $list[$i]->bentuk_pelanggaran == null ? "" : $list[$i]->BentukPelanggaran->bentuk_pelanggaran;
                 $response['data'][$i]['kawasan'] = $list[$i]->kawasan == null ? "" : $list[$i]->Kawasan->kawasan;
                 $response['data'][$i]['lokasi'] = $list[$i]->nama_lokasi;
