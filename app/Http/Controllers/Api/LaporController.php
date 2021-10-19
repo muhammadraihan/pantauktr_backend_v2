@@ -141,7 +141,7 @@ class LaporController extends Controller
                 $response['data'][$i]['kawasan'] = $list[$i]->kawasan == null ? "" : $list[$i]->Kawasan->kawasan;
                 $response['data'][$i]['lokasi'] = $list[$i]->nama_lokasi;
                 $response['data'][$i]['tanggal_laporan'] = $tanggalBuat;
-                $response['data'][$i]['status'] = $status;
+                $response['data'][$i]['status_laporan'] = $status;
             }
         } catch (Exception $e) {
             // log message to local an slack
@@ -171,7 +171,7 @@ class LaporController extends Controller
                 ->first();
             // change status code to human readable for good sake
             $status = '';
-            switch ($list[$i]->status) {
+            switch ($detailLaporan->status) {
                 case 0:
                     $status = 'Laporan Diterima';
                     break;
