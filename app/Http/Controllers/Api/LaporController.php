@@ -141,7 +141,7 @@ class LaporController extends Controller
                 $response['data'][$i]['kawasan'] = $list[$i]->kawasan == null ? "" : $list[$i]->Kawasan->kawasan;
                 $response['data'][$i]['lokasi'] = $list[$i]->nama_lokasi;
                 $response['data'][$i]['tanggal_laporan'] = $tanggalBuat;
-                $response['data'][$i]['status_laporan'] = $status;
+                $response['data'][$i]['status'] = $status;
             }
         } catch (Exception $e) {
             // log message to local an slack
