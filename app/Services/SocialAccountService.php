@@ -28,14 +28,14 @@ class SocialAccountService
         $linkedSocialAccount = LinkedSocialAccount::where('provider_name', $provider)
             ->where('provider_id', $providerUser->getId())->first();
         // if match return user
-        if ($linkedSocialAccount) {
+        if (!is_null($linkedSocialAccount)) {
             Auth::guard('pelapors-api')->login($linkedSocialAccount->pelapor);
             return $linkedSocialAccount->pelapor;
         } else {
             // check if user exist
             $pelapor = Pelapor::where('email', $providerUser->getEmail())->first();
             // if not exist create one
-            if (!$pelapor) {
+            if (is_null($pelapor)) {
                 $name = $providerUser->getName();
                 $parts = explode(" ", $name);
                 if (count($parts) > 1) {
@@ -45,13 +45,14 @@ class SocialAccountService
                     $firstname = $name;
                     $lastname = " ";
                 }
-                $pelapor = Pelapor::create([
-                    'firstname' => $firstname,
-                    'lastname' => $lastname,
-                    'email' => $providerUser->getEmail(),
-                    'avatar' => $providerUser->getAvatar(),
-                    'provider' => $provider,
-                ]);
+                $pelapor = new Pelapor;
+                $pelapor->firstname = $firstname;
+                $pelapor->lastname = $lastname;
+                $pelapor->email = $providerUser->getEmail();
+                $pelapor->avatar =  $providerUser->getAvatar();
+                $pelapor->provider = $provider;
+                $pelapor->save();
+                // logged in pelapor
                 Auth::guard('pelapors-api')->login($pelapor);
             }
             // save linked social accounts info

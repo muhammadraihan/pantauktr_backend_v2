@@ -253,7 +253,7 @@ class AuthController extends Controller
 
       // get last login for tracking purpose
       $loggedInPelapor = Auth::guard('pelapors-api')->user();
-      // dd($loggedInPelapor);
+
       $pelapor = Pelapor::uuid($loggedInPelapor->uuid);
       $pelapor->device = $request->header('User-Agent');
       $pelapor->last_login_at = Carbon::now()->toDateTimeString();
