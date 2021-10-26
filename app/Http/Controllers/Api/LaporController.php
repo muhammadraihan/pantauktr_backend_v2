@@ -141,6 +141,7 @@ class LaporController extends Controller
                 $response['data'][$i]['kawasan'] = $list[$i]->kawasan == null ? "" : $list[$i]->Kawasan->kawasan;
                 $response['data'][$i]['lokasi'] = $list[$i]->nama_lokasi;
                 $response['data'][$i]['tanggal_laporan'] = $tanggalBuat;
+                $response['data'][$i]['kode_status'] = $list[$i]->status;
                 $response['data'][$i]['status'] = $status;
             }
         } catch (Exception $e) {
@@ -213,6 +214,7 @@ class LaporController extends Controller
                 'lokasi' => $detailLaporan->nama_lokasi,
                 'detail_lokasi' => $detailLaporan->detail_lokasi,
                 'photo' => $detailLaporan->photo,
+                'kode_status' => $detailLaporan->status,
                 'status' => $status,
                 'tanggal_laporan' => $tanggalBuat,
             ],
