@@ -29,6 +29,7 @@ class SocialAccountService
             ->where('provider_id', $providerUser->getId())->first();
         // if match return user
         if (!is_null($linkedSocialAccount)) {
+            // loggedin pelapor
             Auth::guard('pelapors-api')->login($linkedSocialAccount->pelapor);
             return $linkedSocialAccount->pelapor;
         } else {
@@ -60,6 +61,8 @@ class SocialAccountService
                 'provider_id' => $providerUser->getId(),
                 'provider_name' => $provider,
             ]);
+            // logged in pelapor
+            Auth::guard('pelapors-api')->login($pelapor);
             return $pelapor;
         }
     }
