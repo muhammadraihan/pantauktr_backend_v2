@@ -19,11 +19,11 @@
     <div class="col-xl-12">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>
+                <h2>
                     External Link <span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
-                    <a class="nav-link active" href="{{route('external_link.create')}}"><i class="fal fa-plus-circle">
+                    <a class="nav-link active" href="{{route('external-link.create')}}"><i class="fal fa-plus-circle">
                         </i>
                         <span class="nav-link-text">Add New</span>
                     </a>
@@ -35,14 +35,14 @@
                 <div class="panel-content">
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
-        <thead>
-            <tr>
-                <th>No</th>
-                <th>Title</th>
-                <th>description</th>
-                <th>Link</th>
-                <th width="120px">Action</th>
-                </tr>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Title</th>
+                                <th>description</th>
+                                <th>Link</th>
+                                <th width="120px">Action</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>
@@ -97,7 +97,7 @@
             "responsive": true,
             "order": [[ 0, "asc" ]],
             "ajax":{
-                url:'{{route('external_link.index')}}',
+                url:'{{route('external-link.index')}}',
                 type : "GET",
                 dataType: 'json',
                 error: function(data){

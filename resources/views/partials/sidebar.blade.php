@@ -2,7 +2,8 @@
     <div class="page-logo">
         <a href="#" class="page-logo-link press-scale-down d-flex align-items-center position-relative"
             data-toggle="modal" data-target="#modal-shortcut">
-            <img src="{{asset('img/wba_logo.png')}}" alt="{{env('APP_NAME','')}}" aria-roledescription="logo">
+            <img src="{{asset('img/logo-gray.png')}}" class="rounded-circle" alt="{{env('APP_NAME','')}}"
+                aria-roledescription="logo">
             <span class="page-logo-text mr-1">{{env('APP_NAME','')}}</span>
             <span class="position-absolute text-white opacity-50 small pos-top pos-right mr-2 mt-n2"></span>
             <i class="fal fa-angle-down d-inline-block ml-1 fs-lg color-primary-300"></i>
@@ -45,17 +46,50 @@
                     <span class="nav-link-text">Dashboard</span>
                 </a>
             </li>
+
             @hasanyrole('superadmin|pusaka')
             <li class="">
-                <a href="{{route('external_link.index')}}" title="Theme Settings" data-filter-tags="theme settings">
-                    <i class="fal fa-external-link-square"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">External Link</span>
+                <a href="#" title="Dashboard" data-filter-tags="theme settings">
+                    <i class="fal fa-mobile"></i>
+                    <span class="nav-link-text" data-i18n="nav.theme_settings">CMS</span>
                 </a>
+                <ul>
+                    <li class="">
+                        <a href="{{route('external-link.index')}}" title="Link Mitra" data-filter-tags="theme settings">
+                            <i class="fal fa-external-link-square"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Link External</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{route('instagram.index')}}" title="Instagram Post" data-filter-tags="theme settings">
+                            <i class="fab fa-instagram"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Instagram Post</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{route('website.index')}}" title="Website Post" data-filter-tags="theme settings">
+                            <i class="fal fa-sitemap"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Website Post</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{route('banner.index')}}" title="Banner Image" data-filter-tags="theme settings">
+                            <i class="fal fa-image"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Banner Aplikasi</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="{{route('static-page.index')}}" title="Static Menu" data-filter-tags="theme settings">
+                            <i class="fal fa-external-link-square"></i>
+                            <span class="nav-link-text" data-i18n="nav.theme_settings">Link Menu Aplikasi</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             @endhasanyrole
             @hasanyrole('superadmin|pusaka|kementrian|pemda|who')
             <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                <a href="#" title="Laporan" data-filter-tags="theme settings">
                     <i class="fal fa-clipboard-list"></i>
                     <span class="nav-link-text" data-i18n="nav.theme_settings">Laporan</span>
                 </a>
@@ -77,7 +111,7 @@
             @endhasanyrole
             @hasanyrole('superadmin|pusaka')
             <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                <a href="#" title="Operator" data-filter-tags="theme settings">
                     <i class="fal fa-cogs"></i>
                     <span class="nav-link-text" data-i18n="nav.theme_settings">Operator</span>
                 </a>
@@ -89,7 +123,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('operator_type.index')}}" title="Operator Type Management"
+                        <a href="{{route('operator-type.index')}}" title="Operator Type Management"
                             data-filter-tags="operators type managements">
                             <span class="nav-link-text" data-i18n="nav.operators_type_managements">Operator Type</span>
                         </a>
@@ -98,7 +132,7 @@
             </li>
             @hasanyrole('superadmin')
             <li class="">
-                <a href="{{route('pelapor.index')}}" title="Theme Settings" data-filter-tags="theme settings">
+                <a href="{{route('pelapor.index')}}" title="Pelapor" data-filter-tags="theme settings">
                     <i class="fal fa-users"></i>
                     <span class="nav-link-text" data-i18n="nav.theme_settings">Pelapor</span>
                 </a>
@@ -106,7 +140,7 @@
             @endhasanyrole
 
             <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                <a href="#" title="Referensi" data-filter-tags="theme settings">
                     <i class="fal fa-tasks"></i>
                     <span class="nav-link-text" data-i18n="nav.theme_settings">Referensi</span>
                 </a>
@@ -118,15 +152,15 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('jenis_laporan.index')}}" title="Jenis Laporan Management"
-                            data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Laporan</span>
+                        <a href="{{route('bentuk-pelanggaran.index')}}" title="Bentuk Pelanggaran Management"
+                            data-filter-tags="bentuk-pelanggaran managements">
+                            <span class="nav-link-text" data-i18n="nav.bentuk-pelanggaran">Bentuk Pelanggaran</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('jenis_apresiasi.index')}}" title="Jenis Laporan Management"
-                            data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Apresiasi</span>
+                        <a href="{{route('kawasan.index')}}" title="Kawasan Management"
+                            data-filter-tags="kawasan managements">
+                            <span class="nav-link-text" data-i18n="nav.kawasan">Kawasan</span>
                         </a>
                     </li>
                     <li>

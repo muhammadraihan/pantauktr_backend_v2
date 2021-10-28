@@ -7,12 +7,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Contracts\Auth\CanResetPassword;
 
 use App\Traits\Uuid;
 
-class User extends Authenticatable implements JWTSubject, CanResetPassword
+class User extends Authenticatable implements CanResetPassword
 {
     use HasRoles;
     use Notifiable;
@@ -25,7 +24,7 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','avatar', 'city_id', 'place_id', 'operator_id', 'last_login_at','last_login_ip',
+        'name', 'email', 'password', 'avatar', 'city_id', 'place_id', 'operator_id', 'last_login_at', 'last_login_ip',
     ];
 
     /**
@@ -46,12 +45,12 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         'email_verified_at' => 'datetime',
     ];
 
-      /**
+    /**
      * The attibutes for logging the event change
      *
      * @var array
      */
-    protected static $logAttributes = ['name', 'email','password','avatar'];
+    protected static $logAttributes = ['name', 'email', 'password', 'avatar'];
 
     /**
      * Logging name
@@ -85,28 +84,13 @@ class User extends Authenticatable implements JWTSubject, CanResetPassword
         return "Data has been {$eventName}";
     }
 
-     /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     * @return mixed
-     */
-    public function getJWTIdentifier()
+    public function city()
     {
-        return $this->getKey();
-    }
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     * @return array
-     */
-    public function getJWTCustomClaims()
-    {
-        return [];
-    }
-
-    public function city(){
         return $this->belongsTo(Kota::class, 'city_id', 'uuid');
     }
 
-    public function operator(){
+    public function operator()
+    {
         return $this->belongsTo(Operator_type::class, 'operator_id', 'uuid');
     }
 }

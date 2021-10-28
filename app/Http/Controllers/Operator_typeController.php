@@ -28,8 +28,8 @@ class Operator_typeController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     return '
-                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('operator_type.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>
-                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="' . URL::route('operator_type.destroy', $row->uuid) . '" data-id="' . $row->uuid . '" data-token="' . csrf_token() . '" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
+                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('operator-type.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>
+                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="' . URL::route('operator-type.destroy', $row->uuid) . '" data-id="' . $row->uuid . '" data-token="' . csrf_token() . '" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
@@ -75,7 +75,7 @@ class Operator_typeController extends Controller
 
 
         toastr()->success('New Operator Added', 'Success');
-        return redirect()->route('operator_type.index');
+        return redirect()->route('operator-type.index');
     }
 
     /**
@@ -98,7 +98,7 @@ class Operator_typeController extends Controller
     public function edit($id)
     {
         $operator = Operator_type::uuid($id);
-        return view('operator_type.edit', compact('operator'));
+        return view('operator-type.edit', compact('operator'));
     }
 
     /**
@@ -126,7 +126,7 @@ class Operator_typeController extends Controller
         $operator->save();
 
         toastr()->success('Operator Edited', 'Success');
-        return redirect()->route('operator_type.index');
+        return redirect()->route('operator-type.index');
     }
 
     /**
@@ -140,6 +140,6 @@ class Operator_typeController extends Controller
         $operator = Operator_type::uuid($id);
         $operator->delete();
         toastr()->success('Operator Deleted', 'Success');
-        return redirect()->route('operator_type.index');
+        return redirect()->route('operator-type.index');
     }
 }

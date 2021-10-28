@@ -63,8 +63,6 @@ class Kernel extends HttpKernel
         // spatie middleware
         'role' => \Spatie\Permission\Middlewares\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middlewares\PermissionMiddleware::class,
-        // custom jwt auth middleware
-        'jwt' => \App\Http\Middleware\JwtMiddleware::class,
     ];
 
     /**

@@ -13,7 +13,7 @@
             <div class="panel-hdr">
                 <h2>Add New <span class="fw-300"><i>Operator</i></span></h2>
                 <div class="panel-toolbar">
-                    <a class="nav-link active" href="{{route('operator_type.index')}}"><i class="fal fa-arrow-alt-left">
+                    <a class="nav-link active" href="{{route('operator-type.index')}}"><i class="fal fa-arrow-alt-left">
                         </i>
                         <span class="nav-link-text">Back</span>
                     </a>
@@ -26,7 +26,7 @@
                     <div class="panel-tag">
                         Form with <code>*</code> can not be empty.
                     </div>
-                    {!! Form::open(['route' => 'operator_type.store','method' => 'POST','class' =>
+                    {!! Form::open(['route' => 'operator-type.store','method' => 'POST','class' =>
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('name','Nama Operator',['class' => 'required form-label'])}}

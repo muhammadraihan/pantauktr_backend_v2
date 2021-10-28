@@ -11,9 +11,9 @@
     <div class="col-xl-6">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>Edit <span class="fw-300"><i>{{$external->title}}</i></span></h2>
+                <h2>Edit <span class="fw-300"><i>{{$external->title}}</i></span></h2>
                 <div class="panel-toolbar">
-                    <a class="nav-link active" href="{{route('external_link.index')}}"><i class="fal fa-arrow-alt-left">
+                    <a class="nav-link active" href="{{route('external-link.index')}}"><i class="fal fa-arrow-alt-left">
                         </i>
                         <span class="nav-link-text">Back</span>
                     </a>
@@ -26,7 +26,7 @@
                     <div class="panel-tag">
                         Form with <code>*</code> can not be empty.
                     </div>
-                    {!! Form::open(['route' => ['external_link.update',$external->uuid],'method' => 'PUT','class' =>
+                    {!! Form::open(['route' => ['external-link.update',$external->uuid],'method' => 'PUT','class' =>
                     'needs-validation','novalidate']) !!}
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('title','Title',['class' => 'required form-label'])}}
@@ -49,21 +49,21 @@
                         <div class="invalid-feedback">{{ $errors->first('link') }}</div>
                         @endif
                     </div>
-                <div
-                    class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
-                    <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    <div
+                        class="panel-content border-faded border-left-0 border-right-0 border-bottom-0 d-flex flex-row align-items-center">
+                        <button class="btn btn-primary ml-auto" type="submit">Submit</button>
+                    </div>
+                    {!! Form::close() !!}
                 </div>
-                {!! Form::close() !!}
             </div>
         </div>
     </div>
-</div>
-@endsection
+    @endsection
 
-@section('js')
-<script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
-<script>
-    $(document).ready(function(){
+    @section('js')
+    <script src="{{asset('js/formplugins/select2/select2.bundle.js')}}"></script>
+    <script>
+        $(document).ready(function(){
         $('.select2').select2();
         
         // Generate a password string
@@ -95,5 +95,5 @@
             }
         });
     });
-</script>
-@endsection
+    </script>
+    @endsection

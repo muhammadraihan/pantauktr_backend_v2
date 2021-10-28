@@ -30,8 +30,8 @@ class ExternalController extends Controller
                 ->addIndexColumn()
                 ->addColumn('action', function ($row) {
                     return '
-                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('external_link.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>
-                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="' . URL::route('external_link.destroy', $row->uuid) . '" data-id="' . $row->uuid . '" data-token="' . csrf_token() . '" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
+                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('external-link.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>
+                        <a class="btn btn-danger btn-sm btn-icon waves-effect waves-themed delete-btn" data-url="' . URL::route('external-link.destroy', $row->uuid) . '" data-id="' . $row->uuid . '" data-token="' . csrf_token() . '" data-toggle="modal" data-target="#modal-delete"><i class="fal fa-trash-alt"></i></a>';
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
@@ -82,7 +82,7 @@ class ExternalController extends Controller
 
 
         toastr()->success('New Link Added', 'Success');
-        return redirect()->route('external_link.index');
+        return redirect()->route('external-link.index');
     }
 
     /**
@@ -139,7 +139,7 @@ class ExternalController extends Controller
 
 
         toastr()->success('New Link Added', 'Success');
-        return redirect()->route('external_link.index');
+        return redirect()->route('external-link.index');
     }
 
     /**
@@ -153,6 +153,6 @@ class ExternalController extends Controller
         $external = External_link::uuid($id);
         $external->delete();
         toastr()->success('link Deleted', 'Success');
-        return redirect()->route('external_link.index');
+        return redirect()->route('external-link.index');
     }
 }

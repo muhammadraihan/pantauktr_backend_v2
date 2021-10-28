@@ -91,20 +91,10 @@ class Permission extends \Spatie\Permission\Models\Permission
             'edit_pelanggaran',
             'delete_pelanggaran',
 
-            'add_operator_type',
-            'view_operator_type',
-            'edit_operator_type',
-            'delete_operator_type',
-
-            'add_jenis_laporan',
-            'view_jenis_laporan',
-            'edit_jenis_laporan',
-            'delete_jenis_laporan',
-
-            'add_jenis_apresiasi',
-            'view_jenis_apresiasi',
-            'edit_jenis_apresiasi',
-            'delete_jenis_apresiasi',
+            'add_operator-type',
+            'view_operator-type',
+            'edit_operator-type',
+            'delete_operator-type',
 
             'add_kota',
             'view_kota',
@@ -126,15 +116,45 @@ class Permission extends \Spatie\Permission\Models\Permission
             'edit_operator',
             'delete_operator',
 
-            'add_external_link',
-            'view_external_link',
-            'edit_external_link',
-            'delete_external_link',
+            'add_external-link',
+            'view_external-link',
+            'edit_external-link',
+            'delete_external-link',
 
             'add_chart',
             'view_chart',
             'edit_chart',
-            'delete_chart'
+            'delete_chart',
+
+            'add_banner',
+            'view_banner',
+            'edit_banner',
+            'delete_banner',
+
+            'add_bentuk-pelanggaran',
+            'view_bentuk-pelanggaran',
+            'edit_bentuk-pelanggaran',
+            'delete_bentuk-pelanggaran',
+
+            'add_kawasan',
+            'view_kawasan',
+            'edit_kawasan',
+            'delete_kawasan',
+
+            'add_static-page',
+            'view_static-page',
+            'edit_static-page',
+            'delete_static-page',
+
+            'add_instagram',
+            'view_instagram',
+            'edit_instagram',
+            'delete_instagram',
+
+            'add_website',
+            'view_website',
+            'edit_website',
+            'delete_website',
         ];
     }
 }

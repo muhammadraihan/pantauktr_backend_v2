@@ -26,31 +26,37 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function () {
     Route::get('/', 'DashboardController@index');
     Route::get('dashboard', 'DashboardController@dashboard')->name('backoffice.dashboard');
     Route::get('logs', 'ActivityController@index')->name('logs');
-    Route::resource('users', 'UserController');
-    Route::resource('permissions', 'PermissionController');
-    Route::resource('roles', 'RoleController');
-    Route::resource('pelapor', 'PelaporController');
-    Route::resource('pelanggaran', 'PelanggaranController');
-    Route::resource('operator_type', 'Operator_typeController');
-    Route::resource('jenis_laporan', 'Jenis_LaporanController');
-    Route::resource('jenis_apresiasi', 'Jenis_ApresiasiController');
+    // resource
+    Route::resource('banner', 'BannerController');
+    Route::resource('bentuk-pelanggaran', 'BentukPelanggaranController');
+    Route::resource('chart', 'ChartController');
+    Route::resource('external-link', 'ExternalController');
+    Route::resource('instagram', 'InstagramController');
+    Route::resource('kawasan', 'KawasanController');
     Route::resource('kota', 'KotaController');
-    Route::resource('province', 'ProvinceController');
     Route::resource('laporan', 'LaporanController');
     Route::resource('operator', 'OperatorController');
-    Route::resource('external_link', 'ExternalController');
-    Route::resource('chart', 'ChartController');
-    Route::get('filters', 'ChartController@filter')->name('get.filters');
-    Route::get('filter', 'LaporanController@filter')->name('get.filter');
-    Route::get('cetak-pdf-pelanggaran', 'LaporanController@cetakpelanggaran')->name('cetak.laporan_pelanggaran');
-    Route::get('cetak-pdf-apresiasi', 'LaporanController@cetakapresiasi')->name('cetak.laporan_apresiasi');
-    Route::get('tindak_lanjut/{id}', 'LaporanController@tindaklanjut')->name('tindaklanjut.index');
-    Route::get('tindak_lanjut_notification', 'LaporanController@sendNotifToAndroid')->name('tindaklanjut.notif');
-    Route::post('tindak_lanjut', 'LaporanController@storetindaklanjut')->name('tindaklanjut.store');
-
-
+    Route::resource('operator-type', 'Operator_typeController');
+    Route::resource('pelanggaran', 'PelanggaranController');
+    Route::resource('pelapor', 'PelaporController');
+    Route::resource('permissions', 'PermissionController');
+    Route::resource('province', 'ProvinceController');
+    Route::resource('roles', 'RoleController');
+    Route::resource('users', 'UserController');
+    Route::resource('static-page', 'StaticPageController');
+    Route::resource('website', 'WebsiteController');
     // user Profile
     Route::get('profile', 'UserController@profile')->name('profile');
     Route::patch('profile/{user}/update', 'UserController@ProfileUpdate')->name('profile.update');
     Route::patch('profile/{user}/password', 'UserController@ChangePassword')->name('profile.password');
+    // tindak lanjut
+    Route::post('tindak-lanjut', 'LaporanController@storetindaklanjut')->name('tindaklanjut.store');
+    Route::get('tindak-lanjut/{id}', 'LaporanController@tindaklanjut')->name('tindaklanjut.index');
+    Route::get('tindak-lanjut-notification', 'LaporanController@sendNotifToAndroid')->name('tindaklanjut.notif');
+    // filter
+    Route::get('filters', 'ChartController@filter')->name('get.filters');
+    Route::get('filter', 'LaporanController@filter')->name('get.filter');
+    // cetak
+    Route::get('cetak-pdf-pelanggaran', 'LaporanController@cetakpelanggaran')->name('cetak.laporan_pelanggaran');
+    Route::get('cetak-pdf-apresiasi', 'LaporanController@cetakapresiasi')->name('cetak.laporan_apresiasi');
 });
