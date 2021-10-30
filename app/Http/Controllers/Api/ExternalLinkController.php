@@ -22,6 +22,7 @@ class ExternalLinkController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get external link list', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
@@ -45,6 +46,7 @@ class ExternalLinkController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get external link detail', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([

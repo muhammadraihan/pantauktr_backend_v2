@@ -106,6 +106,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error register by email', [
         'email' => $request->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       // rollback save data
@@ -201,6 +202,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error login', [
         'user' => $request->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       // rolback saving data
@@ -264,6 +266,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error generate token from social account', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       // begin transaction
@@ -319,6 +322,7 @@ class AuthController extends Controller
         Log::stack(['stack', 'slack'])->error('Error generate refresh token', [
           'user' => $pelapor->email,
           'agent' => $request->header('User-Agent'),
+          'origin' => env('APP_URL'),
           'error' => $content->message,
         ]);
         return response()->json([
@@ -337,6 +341,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error generate refresh token', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -371,6 +376,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error get detail pelapor', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -436,6 +442,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error request forget password otp', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -510,6 +517,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error change forget password pelapor', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -544,6 +552,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error update name pelapor', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -610,6 +619,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error change password password', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -648,6 +658,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error logout pelapor', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       // something went wrong whilst attempting to encode the token
@@ -685,6 +696,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error delete pelapor account', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       DB::rollback();

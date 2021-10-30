@@ -31,6 +31,7 @@ class ContentController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get active banner', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
@@ -52,12 +53,13 @@ class ContentController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $website = Website::select('id', 'uuid', 'title', 'slug', 'photo', 'description')->get();
+            $website = Website::select('uuid', 'title', 'slug', 'photo', 'description')->latest()->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get website content list', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
@@ -80,12 +82,13 @@ class ContentController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $website = Website::select('id', 'uuid', 'title', 'slug', 'photo', 'description')->where('uuid', $id)->first();
+            $website = Website::select('uuid', 'title', 'slug', 'photo', 'description')->where('uuid', $id)->first();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get website content detail', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
@@ -103,12 +106,13 @@ class ContentController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $instagram = Instagram::select('id', 'uuid', 'photo', 'caption')->get();
+            $instagram = Instagram::select('uuid', 'photo', 'caption')->latest()->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get instagram post', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
@@ -126,12 +130,13 @@ class ContentController extends Controller
     {
         $pelapor = Helper::pelapor();
         try {
-            $static_page = StaticPage::select('id', 'uuid', 'menu_name', 'url')->get();
+            $static_page = StaticPage::select('menu_name', 'url')->get();
         } catch (Exception $e) {
             // log message to local an slack
             Log::stack(['stack', 'slack'])->error('Error get static page post', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
