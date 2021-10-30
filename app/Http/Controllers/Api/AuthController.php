@@ -15,7 +15,9 @@ use Laravel\Passport\TokenRepository;
 use Laravel\Passport\RefreshTokenRepository;
 
 
+use App;
 use Auth;
+use Browser;
 use DB;
 use Defuse\Crypto\Crypto;
 use Exception;
@@ -174,6 +176,7 @@ class AuthController extends Controller
         // requesting token
         $request_token = Request::create('/oauth/token', 'POST', $data);
         $content = json_decode(app()->handle($request_token)->getContent());
+        // dd($content);
         /**
          * Decrypt refresh token to get expired time
          * this step is important to pass refresh token expires time to app
@@ -186,7 +189,7 @@ class AuthController extends Controller
         // get last login for tracking purpose
         $loggedInPelapor = Auth::guard('pelapors-api')->user();
         $pelapor = Pelapor::uuid($loggedInPelapor->uuid);
-        $pelapor->device = $request->header('User-Agent');
+        $pelapor->device = Browser::deviceFamily();
         $pelapor->last_login_at = Carbon::now()->toDateTimeString();
         $pelapor->last_login_ip = $request->getClientIp();
         $pelapor->save();
@@ -197,12 +200,14 @@ class AuthController extends Controller
         ]);
       }
     } catch (Exception $e) {
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error login', [
-        'user' => $request->email,
-        'agent' => $request->header('User-Agent'),
-        'error' => $e->getMessage(),
-      ]);
+      if (App::environment('production')) {
+        // log message to local an slack
+        Log::stack(['stack', 'slack'])->error('Error login', [
+          'user' => $request->email,
+          'agent' => $request->header('User-Agent'),
+          'error' => $e->getMessage(),
+        ]);
+      }
       // rolback saving data
       DB::rollback();
       return response()->json([
