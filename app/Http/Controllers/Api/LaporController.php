@@ -15,9 +15,6 @@ use DB;
 use Exception;
 use Helper;
 use Log;
-use Image;
-use Validator;
-use Storage;
 
 class LaporController extends Controller
 {
@@ -83,6 +80,7 @@ class LaporController extends Controller
             Log::stack(['stack', 'slack'])->error('Error post laporan', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             // catch error message
@@ -149,6 +147,7 @@ class LaporController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get list laporan', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             // catch error message
@@ -194,6 +193,7 @@ class LaporController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get detail laporan', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             // catch error message

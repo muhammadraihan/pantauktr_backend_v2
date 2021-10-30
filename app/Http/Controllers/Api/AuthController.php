@@ -15,9 +15,7 @@ use Laravel\Passport\TokenRepository;
 use Laravel\Passport\RefreshTokenRepository;
 
 
-use App;
 use Auth;
-use Browser;
 use DB;
 use Defuse\Crypto\Crypto;
 use Exception;
@@ -108,6 +106,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error register by email', [
         'email' => $request->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       // rollback save data
@@ -176,7 +175,6 @@ class AuthController extends Controller
         // requesting token
         $request_token = Request::create('/oauth/token', 'POST', $data);
         $content = json_decode(app()->handle($request_token)->getContent());
-        // dd($content);
         /**
          * Decrypt refresh token to get expired time
          * this step is important to pass refresh token expires time to app
@@ -189,7 +187,7 @@ class AuthController extends Controller
         // get last login for tracking purpose
         $loggedInPelapor = Auth::guard('pelapors-api')->user();
         $pelapor = Pelapor::uuid($loggedInPelapor->uuid);
-        $pelapor->device = Browser::deviceFamily();
+        $pelapor->device = $request->header('User-Agent');
         $pelapor->last_login_at = Carbon::now()->toDateTimeString();
         $pelapor->last_login_ip = $request->getClientIp();
         $pelapor->save();
@@ -200,14 +198,13 @@ class AuthController extends Controller
         ]);
       }
     } catch (Exception $e) {
-      if (App::environment('production')) {
-        // log message to local an slack
-        Log::stack(['stack', 'slack'])->error('Error login', [
-          'user' => $request->email,
-          'agent' => $request->header('User-Agent'),
-          'error' => $e->getMessage(),
-        ]);
-      }
+      // log message to local an slack
+      Log::stack(['stack', 'slack'])->error('Error login', [
+        'user' => $request->email,
+        'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
+        'error' => $e->getMessage(),
+      ]);
       // rolback saving data
       DB::rollback();
       return response()->json([
@@ -269,6 +266,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error generate token from social account', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       // begin transaction
@@ -324,6 +322,7 @@ class AuthController extends Controller
         Log::stack(['stack', 'slack'])->error('Error generate refresh token', [
           'user' => $pelapor->email,
           'agent' => $request->header('User-Agent'),
+          'origin' => env('APP_URL'),
           'error' => $content->message,
         ]);
         return response()->json([
@@ -342,6 +341,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error generate refresh token', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -376,6 +376,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error get detail pelapor', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -441,6 +442,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error request forget password otp', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -515,6 +517,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error change forget password pelapor', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -549,6 +552,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error update name pelapor', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -615,6 +619,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error change password password', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       return response()->json([
@@ -653,6 +658,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error logout pelapor', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       // something went wrong whilst attempting to encode the token
@@ -690,6 +696,7 @@ class AuthController extends Controller
       Log::stack(['stack', 'slack'])->error('Error delete pelapor account', [
         'user' => $pelapor->email,
         'agent' => $request->header('User-Agent'),
+        'origin' => env('APP_URL'),
         'error' => $e->getMessage(),
       ]);
       DB::rollback();

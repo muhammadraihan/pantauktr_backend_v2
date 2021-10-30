@@ -31,6 +31,7 @@ class ContentController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get active banner', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
@@ -58,6 +59,7 @@ class ContentController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get website content list', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
@@ -86,6 +88,7 @@ class ContentController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get website content detail', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
@@ -109,6 +112,7 @@ class ContentController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get instagram post', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
@@ -132,6 +136,7 @@ class ContentController extends Controller
             Log::stack(['stack', 'slack'])->error('Error get static page post', [
                 'user' => $pelapor->email,
                 'agent' => $request->header('User-Agent'),
+                'origin' => env('APP_URL'),
                 'error' => $e->getMessage(),
             ]);
             return response()->json([
