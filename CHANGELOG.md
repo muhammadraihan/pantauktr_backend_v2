@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.4.1](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.4.0...v2.4.1) (2021-10-30)
+
+
+### Bug Fixes
+
+* Add origin request in log json ([803e1c4](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/803e1c418533a506d469646e2af913243bc0bd08))
+* Order response to latest ([1607320](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/1607320d5dbaeb99425ea93dd5bfd8a9653bcb09))
+
+## [2.4.0](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.3.2...v2.4.0) (2021-10-28)
+
+
+### Features
+
+* Add get single jenis pelanggaran data api endpoint ([4303826](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/4303826bd39cf635529477412430d3a50f061c30))
+* Add new get single reference data endpoint ([6fe1a92](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/6fe1a92b43b483ccf8dffb9449b661e7d45cc2f7))
+* Adding json response in auth api middleware ([6d985c0](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/6d985c005a8f0b7c3de3672954c95929e373abbe))
+* Adding pelanggaran icon in report list api endpoint ([2aefa35](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/2aefa35109e766a4b6821e6e6ec0f925656d4ee9))
+* Adding schedule command to prune revoked and expired token ([3655820](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/3655820a22a03e9b996ca3ba398e431d1133c20e))
+* API v2 is deprecated migrate to API v3 ([10345cf](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/10345cf18dc49626ddf99ff18c0f3a69a7426249))
+* Auth token now generated using laravel passport ([b414054](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/b4140549e21d57c8e069e7c9113a10c0b24bef32))
+* Bentuk pelanggaran now relate to jenis pelanggaran ([af7831e](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/af7831ea25999b6e7cdba6470e288c0500962b62))
+* Migrate endpoint url to version 3 ([f714e8a](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/f714e8a148648dbe21e5cb71a55bbdfc85bcd281))
+* Send app error log to slack channel ([7a61f4d](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/7a61f4df049b625651dd9eafb865b98f3db1764f))
+* Tracking device user when requesting api ([7669b0d](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/7669b0ddd82eaddcb4a17ce6ba3d2f8a3879bb58))
+
+
+### Bug Fixes
+
+* Add relation to pelanggaran in crud method ([bfd1c1c](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/bfd1c1c259c44d639f98475c942d7107f8e34300))
+* Add static page permission ([af236bd](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/af236bd92f8eb083c998a31e33f71f631da59be5))
+* Adding image icon in reference data ([22881d7](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/22881d73233556870ebfa10052841d945d9c9a2b))
+* Change alamat column type to text for data too long error ([9d0ed80](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/9d0ed8009df92a23681068eb9259770c491ae389))
+* Change how to generate token from social account ([f2b3a13](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/f2b3a132b2c11e0d1ce103bd5f1350bf540d47e7))
+* Change json response and adding expires time decoder for passport refresh token ([277e648](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/277e648dc150f5211f7e5fcf3e0e2a3b06a39696))
+* Check image in request if exist for update ([751eead](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/751eead6c23a5bbc0422370eabbf5d30353c0d59))
+* Fix issue in slug column and change photo url in laporan to text ([3159f9a](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/3159f9ad5e51bbbca228a02bbb96d22f8c93b314))
+* Fix redundan google bucket name ([dde95fd](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/dde95fd8155b210887af2ddb61c2e828c7e09f2a))
+* Fix redundan google bucket name and change status logic ([154dd02](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/154dd02c4de3dba52f94db89d8a655cf5bb6dbf0))
+* Fixing double bucket name when gcs url change to https ([fc5b8df](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/fc5b8df73802588c3904f7ed2ddce6836d0bc67f))
+* Fixing double folder name when upload in GCS ([6056f07](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/6056f0786f50593a7a9982bc76e9d41c5c6ed8ca))
+* Fixing error when OTP not exists ([937adae](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/937adae63cd55aa313a0d0ec27d60ddc4107a300))
+* Fixing failed to generate session for social login ([3fe2256](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/3fe2256d1a7155cec5a6ba0dc274e53b86f2e922))
+* Fixing failed to generate session for social login ([a2bc6fc](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/a2bc6fca32c05f7dfa274e69c2a7f997173aea7c))
+* Fixing validation if image not exist in update ([55592b6](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/55592b6182895e88fffa3fe0ca698e0e2ae5bb1e))
+* Fixing wrong array key in report detail endpoint ([0f82896](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/0f828965700dc075b82bb0ffc9ca57c950d91ac2))
+* Fixing wrong parameter in report detail endpoint ([c4ee2c8](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/c4ee2c867e0b7f551d0a5aab6229d8df2d9dccb6))
+* Remove id from reference api response ([d3fbb89](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/d3fbb898d3ee4cd6fbe00d91aa42f542ded2c939))
+* Remove image in laporan api endpoint, upload image now handled from app ([41b8cea](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/41b8cea82f77729fcd44e70d688dc7d377af5483))
+* Return laravel passport token when user registered and instances logged in, revoke all tokens when user loggout ([195744a](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/195744aae55a911eb993527aa211ae2c25db357c))
+* Social account login now using resolver from social grant ([1c788c8](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/1c788c8e43a4caf8f3b92fc02a170a3587b8e2b6))
+
 ### [2.3.2](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.3.1...v2.3.2) (2021-07-24)
 
 
