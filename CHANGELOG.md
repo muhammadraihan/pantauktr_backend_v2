@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.4.2](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.4.1...v2.4.2) (2021-11-06)
+
+
+### Features
+
+* Add info statistic in dashboard page ([dac95ac](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/dac95ace4a64a1960f31b9557434112975bbc616))
+* Chunk data monthly and filtering chart based on operator data ([523196d](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/523196d1e6927e3790b2b1f72420a0626b9fd088))
+
+
+### Bug Fixes
+
+* Fix multiple data row when filter with user based city ([9840ea7](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/9840ea70bd0d16ceae6e15753237e5ccb27c4ba2))
+* Fixing city name distinction in admin level 2 in google geocode api ([868ef18](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/868ef184aa54a150715d8918cadb36bd47a91307))
+* Simplified and advancing filtering data process ([375016e](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/375016ebf328f2bd84071eb7a2f831d631f02b0d))
+
 ### [2.4.1](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.4.0...v2.4.1) (2021-10-30)
 
 
