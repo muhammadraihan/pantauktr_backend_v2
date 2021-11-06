@@ -12,8 +12,6 @@ use App\Models\Kawasan;
 use App\Models\Kota;
 use Carbon\Carbon;
 use Auth;
-use DB;
-use Lang;
 
 class ChartController extends Controller
 {
@@ -23,7 +21,7 @@ class ChartController extends Controller
     {
         $user = Auth::user();
         $roles = $user->getRoleNames();
-        $user_city = Helper::GetOperatorCityName();
+        $user_city = $user->city_id ? Helper::GetOperatorCityName($user->city->city_name) : '';
         $city = Kota::all()->pluck('city_name', 'city_name');
 
         $month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -44,30 +42,30 @@ class ChartController extends Controller
         $kawasan_count = [];
         $kawasan_drilldown = [];
 
-        foreach ($pelanggarans as $key => $pelanggaran) {
+        foreach ($pelanggarans as $pelanggaran) {
             // select laporan by jenis
             $laporan_jenis = Laporan::select('uuid', 'jenis_pelanggaran', 'created_at')
                 ->where('jenis_pelanggaran', $pelanggaran->uuid)
                 ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                    $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                        ->where('kota', 'like', '%' . $user_city . '%');
+                    return $query->where(function ($q) use ($user, $user_city) {
+                        return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                    });
                 })
                 ->get()
                 ->groupBy(function ($date) {
                     return (int)Carbon::parse($date->created_at)->format('m');
                 });
-            foreach ($laporan_jenis as $k => $v) {
-                //count laporan result
-                $countLaporan = count($laporan_jenis);
-                // iterate for 12 months
-                for ($j = 1; $j <= 12; $j++) {
-                    // match key with index
-                    // if match return laporan array count
-                    if (!empty($laporan_jenis[$j])) {
-                        $jenis_count[$j]['count'] = count($laporan_jenis[$j]);
-                    } else {
-                        $jenis_count[$j]['count'] = 0;
-                    }
+
+            // iterate for 12 months
+            for ($j = 1; $j <= 12; $j++) {
+                // match key with index
+                // if match return laporan array count
+                if (!empty($laporan_jenis[$j])) {
+                    $jenis_count[$j]['count'] = count($laporan_jenis[$j]);
+                } else {
+                    $jenis_count[$j]['count'] = 0;
                 }
             }
             // collect array count and flatten
@@ -81,12 +79,15 @@ class ChartController extends Controller
             );
         }
 
-        foreach ($bentuks as $key => $bentuk) {
+        foreach ($bentuks as $bentuk) {
             $laporan_bentuk = Laporan::select('uuid', 'bentuk_pelanggaran', 'created_at')
                 ->where('bentuk_pelanggaran', $bentuk->uuid)
                 ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                    $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                        ->where('kota', 'like', '%' . $user_city . '%');
+                    return $query->where(function ($q) use ($user, $user_city) {
+                        return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                    });
                 })
                 ->get()
                 ->groupBy('bentuk_pelanggaran');
@@ -101,29 +102,30 @@ class ChartController extends Controller
             $laporan_bentuk_monthly = Laporan::select('uuid', 'bentuk_pelanggaran', 'created_at')
                 ->where('bentuk_pelanggaran', $bentuk->uuid)
                 ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                    $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                        ->where('kota', 'like', '%' . $user_city . '%');
+                    return $query->where(function ($q) use ($user, $user_city) {
+                        return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                    });
                 })
                 ->get()
                 ->groupBy(function ($date) {
                     return (int)Carbon::parse($date->created_at)->format('m');
                 });
-            foreach ($laporan_bentuk_monthly as $k => $v) {
-                // iterate for 12 months
-                for ($j = 1; $j <= 12; $j++) {
-                    // match key with index
-                    // if match return laporan array count
-                    if (!empty($laporan_bentuk_monthly[$j])) {
-                        $bentuk_count[$j] = array(
-                            $month[$j - 1],
-                            count($laporan_bentuk_monthly[$j]),
-                        );
-                    } else {
-                        $bentuk_count[$j] = array(
-                            $month[$j - 1],
-                            0,
-                        );
-                    }
+            // iterate for 12 months
+            for ($j = 1; $j <= 12; $j++) {
+                // match key with index
+                // if match return laporan array count
+                if (!empty($laporan_bentuk_monthly[$j])) {
+                    $bentuk_count[$j] = array(
+                        $month[$j - 1],
+                        count($laporan_bentuk_monthly[$j]),
+                    );
+                } else {
+                    $bentuk_count[$j] = array(
+                        $month[$j - 1],
+                        0,
+                    );
                 }
             }
             $bentuk_drilldown[] = array(
@@ -133,12 +135,15 @@ class ChartController extends Controller
             );
         }
 
-        foreach ($kawasans as $key => $kawasan) {
+        foreach ($kawasans as $kawasan) {
             $laporan_kawasan = Laporan::select('uuid', 'kawasan', 'created_at')
                 ->where('kawasan', $kawasan->uuid)
                 ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                    $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                        ->where('kota', 'like', '%' . $user_city . '%');
+                    return $query->where(function ($q) use ($user, $user_city) {
+                        return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                    });
                 })
                 ->get()
                 ->groupBy('kawasan');
@@ -153,29 +158,30 @@ class ChartController extends Controller
             $laporan_kawasan_monthly = Laporan::select('uuid', 'kawasan', 'created_at')
                 ->where('kawasan', $kawasan->uuid)
                 ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                    $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                        ->orWhere('kota', 'like', '%' . $user_city . '%');
+                    return $query->where(function ($q) use ($user, $user_city) {
+                        return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                            ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                    });
                 })
                 ->get()
                 ->groupBy(function ($date) {
                     return (int)Carbon::parse($date->created_at)->format('m');
                 });
-            foreach ($laporan_kawasan_monthly as $k => $v) {
-                // iterate for 12 months
-                for ($j = 1; $j <= 12; $j++) {
-                    // match key with index
-                    // if match return laporan array count
-                    if (!empty($laporan_kawasan_monthly[$j])) {
-                        $kawasan_count[$j] = array(
-                            $month[$j - 1],
-                            count($laporan_kawasan_monthly[$j]),
-                        );
-                    } else {
-                        $kawasan_count[$j] = array(
-                            $month[$j - 1],
-                            0,
-                        );
-                    }
+            // iterate for 12 months
+            for ($j = 1; $j <= 12; $j++) {
+                // match key with index
+                // if match return laporan array count
+                if (!empty($laporan_kawasan_monthly[$j])) {
+                    $kawasan_count[$j] = array(
+                        $month[$j - 1],
+                        count($laporan_kawasan_monthly[$j]),
+                    );
+                } else {
+                    $kawasan_count[$j] = array(
+                        $month[$j - 1],
+                        0,
+                    );
                 }
             }
             $kawasan_drilldown[] = array(
@@ -191,8 +197,8 @@ class ChartController extends Controller
     {
         $user = Auth::user();
         $roles = $user->getRoleNames();
-        $user_city = Helper::GetOperatorCityName();
-
+        $user_city = $user->city_id ? Helper::GetOperatorCityName($user->city->city_name) : '';
+        $request_city = Helper::GetOperatorCityName($request->get('city'));
         $month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         if (request()->ajax()) {
             $jenis_series = [];
@@ -206,37 +212,44 @@ class ChartController extends Controller
             $pelanggarans = Pelanggaran::select('uuid', 'name')->get();
             $bentuks = BentukPelanggaran::select('uuid', 'bentuk_pelanggaran')->get();
             $kawasans = Kawasan::select('uuid', 'kawasan')->get();
-            foreach ($pelanggarans as $key => $pelanggaran) {
+
+            foreach ($pelanggarans as $pelanggaran) {
                 // select laporan by jenis
                 $laporan_jenis = Laporan::select('uuid', 'jenis_pelanggaran', 'created_at')
                     ->where('jenis_pelanggaran', $pelanggaran->uuid)
                     ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                        $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                            ->where('kota', 'like', '%' . $user_city . '%');
+                        return $query->where(function ($q) use ($user, $user_city) {
+                            return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                                ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                                ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                        });
                     })
                     ->when($request->get('year'), function ($query) use ($request) {
-                        $query->whereYear('created_at', $request->get('year'));
+                        return $query->whereYear('created_at', $request->get('year'));
                     })
-                    ->when($request->get('city'), function ($query) use ($request) {
-                        $query->where('kota', 'like', '%' . $request->get('city') . '%');
+                    ->when($request->get('city'), function ($query) use ($request, $request_city) {
+                        return $query->where(function ($q) use ($request, $request_city) {
+                            return $q->where('kota', 'like', '%' . $request->get('city') . '%')
+                                ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'City' . '%')
+                                ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'Regency' . '%');
+                        });
                     })
                     ->get()
                     ->groupBy(function ($date) {
                         return (int)Carbon::parse($date->created_at)->format('m');
                     });
+
                 if (!empty($laporan_jenis)) {
-                    foreach ($laporan_jenis as $k => $v) {
-                        // iterate for 12 months
-                        for ($j = 1; $j <= 12; $j++) {
-                            // match key with index
-                            // if match return laporan array count
-                            if (!empty($laporan_jenis[$j])) {
-                                $jenis_count[$j]['count'] = count($laporan_jenis[$j]);
-                            } else {
-                                $jenis_count[$j]['count'] = 0;
-                            }
+                    for ($j = 1; $j <= 12; $j++) {
+                        // match key with index
+                        // if match return laporan array count
+                        if (!empty($laporan_jenis[$j])) {
+                            $jenis_count[$j]['count'] = count($laporan_jenis[$j]);
+                        } else {
+                            $jenis_count[$j]['count'] = 0;
                         }
                     }
+                    // dd($jenis_count);
                     // collect array count and flatten
                     $collection = collect($jenis_count);
                     $flattened = $collection->flatten();
@@ -249,18 +262,25 @@ class ChartController extends Controller
                 }
             }
 
-            foreach ($bentuks as $key => $bentuk) {
+            foreach ($bentuks as $bentuk) {
                 $laporan_bentuk = Laporan::select('uuid', 'bentuk_pelanggaran', 'created_at')
                     ->where('bentuk_pelanggaran', $bentuk->uuid)
                     ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                        $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                            ->where('kota', 'like', '%' . $user_city . '%');
+                        return $query->where(function ($q) use ($user, $user_city) {
+                            return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                                ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                                ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                        });
                     })
                     ->when($request->get('year'), function ($query) use ($request) {
-                        $query->whereYear('created_at', $request->get('year'));
+                        return $query->whereYear('created_at', $request->get('year'));
                     })
-                    ->when($request->get('city'), function ($query) use ($request) {
-                        $query->where('kota', 'like', '%' . $request->get('city') . '%');
+                    ->when($request->get('city'), function ($query) use ($request, $request_city) {
+                        return $query->where(function ($q) use ($request, $request_city) {
+                            return $q->where('kota', 'like', '%' . $request->get('city') . '%')
+                                ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'City' . '%')
+                                ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'Regency' . '%');
+                        });
                     })
                     ->get()
                     ->groupBy('bentuk_pelanggaran');
@@ -275,35 +295,40 @@ class ChartController extends Controller
                     $laporan_bentuk_monthly = Laporan::select('uuid', 'bentuk_pelanggaran', 'created_at')
                         ->where('bentuk_pelanggaran', $bentuk->uuid)
                         ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                            $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                                ->where('kota', 'like', '%' . $user_city . '%');
+                            return $query->where(function ($q) use ($user, $user_city) {
+                                return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                                    ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                                    ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                            });
                         })
                         ->when($request->get('year'), function ($query) use ($request) {
                             $query->whereYear('created_at', $request->get('year'));
                         })
-                        ->when($request->get('city'), function ($query) use ($request) {
-                            $query->where('kota', 'like', '%' . $request->get('city') . '%');
+                        ->when($request->get('city'), function ($query) use ($request, $request_city) {
+                            return $query->where(function ($q) use ($request, $request_city) {
+                                return $q->where('kota', 'like', '%' . $request->get('city') . '%')
+                                    ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'City' . '%')
+                                    ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'Regency' . '%');
+                            });
                         })
                         ->get()
                         ->groupBy(function ($date) {
                             return (int)Carbon::parse($date->created_at)->format('m');
                         });
-                    foreach ($laporan_bentuk_monthly as $k => $v) {
-                        // iterate for 12 months
-                        for ($j = 1; $j <= 12; $j++) {
-                            // match key with index
-                            // if match return laporan array count
-                            if (!empty($laporan_bentuk_monthly[$j])) {
-                                $bentuk_count[$j] = array(
-                                    $month[$j - 1],
-                                    count($laporan_bentuk_monthly[$j]),
-                                );
-                            } else {
-                                $bentuk_count[$j] = array(
-                                    $month[$j - 1],
-                                    0,
-                                );
-                            }
+                    // iterate for 12 months
+                    for ($j = 1; $j <= 12; $j++) {
+                        // match key with index
+                        // if match return laporan array count
+                        if (!empty($laporan_bentuk_monthly[$j])) {
+                            $bentuk_count[$j] = array(
+                                $month[$j - 1],
+                                count($laporan_bentuk_monthly[$j]),
+                            );
+                        } else {
+                            $bentuk_count[$j] = array(
+                                $month[$j - 1],
+                                0,
+                            );
                         }
                     }
                     $bentuk_drilldown[] = array(
@@ -313,21 +338,29 @@ class ChartController extends Controller
                     );
                 }
             }
-            foreach ($kawasans as $key => $kawasan) {
+            foreach ($kawasans as $kawasan) {
                 $laporan_kawasan = Laporan::select('uuid', 'kawasan', 'created_at')
                     ->where('kawasan', $kawasan->uuid)
                     ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                        $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                            ->where('kota', 'like', '%' . $user_city . '%');
+                        return $query->where(function ($q) use ($user, $user_city) {
+                            return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                                ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                                ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                        });
                     })
                     ->when($request->get('year'), function ($query) use ($request) {
-                        $query->whereYear('created_at', $request->get('year'));
+                        return $query->whereYear('created_at', $request->get('year'));
                     })
-                    ->when($request->get('city'), function ($query) use ($request) {
-                        $query->where('kota', 'like', '%' . $request->get('city') . '%');
+                    ->when($request->get('city'), function ($query) use ($request, $request_city) {
+                        return $query->where(function ($q) use ($request, $request_city) {
+                            return $q->where('kota', 'like', '%' . $request->get('city') . '%')
+                                ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'City' . '%')
+                                ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'Regency' . '%');
+                        });
                     })
                     ->get()
                     ->groupBy('kawasan');
+
                 if (!empty($laporan_kawasan)) {
                     foreach ($laporan_kawasan as $k => $v) {
                         $kawasan_series[] = array(
@@ -339,35 +372,40 @@ class ChartController extends Controller
                     $laporan_kawasan_monthly = Laporan::select('uuid', 'kawasan', 'created_at')
                         ->where('kawasan', $kawasan->uuid)
                         ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
-                            $query->where('kota', 'like', '%' . $user->city->city_name . '%')
-                                ->where('kota', 'like', '%' . $user_city . '%');
+                            return $query->where(function ($q) use ($user, $user_city) {
+                                return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
+                                    ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'City' . '%')
+                                    ->orWhere('kota', 'like', '%' . $user_city . ' ' . 'Regency' . '%');
+                            });
                         })
                         ->when($request->get('year'), function ($query) use ($request) {
-                            $query->whereYear('created_at', $request->get('year'));
+                            return $query->whereYear('created_at', $request->get('year'));
                         })
-                        ->when($request->get('city'), function ($query) use ($request) {
-                            $query->where('kota', 'like', '%' . $request->get('city') . '%');
+                        ->when($request->get('city'), function ($query) use ($request, $request_city) {
+                            return $query->where(function ($q) use ($request, $request_city) {
+                                return $q->where('kota', 'like', '%' . $request->get('city') . '%')
+                                    ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'City' . '%')
+                                    ->orWhere('kota', 'like', '%' . $request_city . ' ' . 'Regency' . '%');
+                            });
                         })
                         ->get()
                         ->groupBy(function ($date) {
                             return (int)Carbon::parse($date->created_at)->format('m');
                         });
-                    foreach ($laporan_kawasan_monthly as $k => $v) {
-                        // iterate for 12 months
-                        for ($j = 1; $j <= 12; $j++) {
-                            // match key with index
-                            // if match return laporan array count
-                            if (!empty($laporan_kawasan_monthly[$j])) {
-                                $kawasan_count[$j] = array(
-                                    $month[$j - 1],
-                                    count($laporan_kawasan_monthly[$j]),
-                                );
-                            } else {
-                                $kawasan_count[$j] = array(
-                                    $month[$j - 1],
-                                    0,
-                                );
-                            }
+                    // iterate for 12 months
+                    for ($j = 1; $j <= 12; $j++) {
+                        // match key with index
+                        // if match return laporan array count
+                        if (!empty($laporan_kawasan_monthly[$j])) {
+                            $kawasan_count[$j] = array(
+                                $month[$j - 1],
+                                count($laporan_kawasan_monthly[$j]),
+                            );
+                        } else {
+                            $kawasan_count[$j] = array(
+                                $month[$j - 1],
+                                0,
+                            );
                         }
                     }
                     $kawasan_drilldown[] = array(
