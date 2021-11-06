@@ -9,9 +9,9 @@
 @section('content')
 <div class="subheader">
     <h1 class="subheader-title">
-        <i class='subheader-icon fal fa-users'></i> Module: <span class='fw-300'>Kawasan</span>
+        <i class='subheader-icon fal fa-tasks'></i> Module: <span class='fw-300'>Kawasan</span>
         <small>
-            Module for manage Kawasan.
+            Module for manage kawasan.
         </small>
     </h1>
 </div>

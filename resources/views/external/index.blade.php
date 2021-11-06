@@ -9,9 +9,9 @@
 @section('content')
 <div class="subheader">
     <h1 class="subheader-title">
-        <i class='subheader-icon fal fa-users'></i> Module: <span class='fw-300'>External Link</span>
+        <i class='subheader-icon fal fa-external-link'></i> Module: <span class='fw-300'>External Link</span>
         <small>
-            Module for manage user access.
+            Module for manage external link for apps.
         </small>
     </h1>
 </div>
