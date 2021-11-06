@@ -59,4 +59,7 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function () {
     // cetak
     Route::get('cetak-pdf-pelanggaran', 'LaporanController@cetakpelanggaran')->name('cetak.laporan_pelanggaran');
     Route::get('cetak-pdf-apresiasi', 'LaporanController@cetakapresiasi')->name('cetak.laporan_apresiasi');
+    // reference
+    Route::get('get-bentuk-panggaran', 'BentukPelanggaranController@getBentukPelanggaranByJenis')->name('get.bentuk');
+    Route::get('get-kawasan', 'KawasanController@getKawasan')->name('get.kawasan');
 });
