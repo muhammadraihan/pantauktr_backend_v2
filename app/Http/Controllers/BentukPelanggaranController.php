@@ -212,4 +212,13 @@ class BentukPelanggaranController extends Controller
         toastr()->success('Bentuk Pelanggaran Deleted', 'Success');
         return redirect()->route('bentuk-pelanggaran.index');
     }
+
+    public function getBentukPelanggaranByJenis()
+    {
+        if (request()->ajax()) {
+            $bentuk_pelanggaran = BentukPelanggaran::where('jenis_pelanggaran', request()->get('uuid'))
+                ->pluck('bentuk_pelanggaran', 'uuid')->all();
+            return response()->json($bentuk_pelanggaran);
+        }
+    }
 }
