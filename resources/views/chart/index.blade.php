@@ -94,6 +94,7 @@
             $('#filter').attr('disabled',false);
             $('#resetFilter').attr('disabled',false);
         })
+        
         $('#city').change(function (e){
             $('#filter').attr('disabled',false);
             $('#resetFilter').attr('disabled',false);
@@ -378,7 +379,7 @@
                     /* update bentuk pelanggaran chart */
                     // update subtitle
                     kawasanChart.setTitle({
-                        text: 'Grafik Kawasan Pelanggaran Tahun' +' '+ cityTitle +' '+ yearTitle
+                        text: 'Grafik Kawasan Pelanggaran' +' '+ cityTitle +' '+ yearTitle
                     });
                     kawasanChart.series[0].setData(resKawasan);
                     // update series
