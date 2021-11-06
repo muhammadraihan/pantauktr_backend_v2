@@ -9,9 +9,9 @@
 @section('content')
 <div class="subheader">
     <h1 class="subheader-title">
-        <i class='subheader-icon fal fa-users'></i> Module: <span class='fw-300'>Berita</span>
+        <i class='subheader-icon fal fa-sitemap'></i> Module: <span class='fw-300'>Website Post</span>
         <small>
-            Module for manage Berita.
+            Module for manage website post.
         </small>
     </h1>
 </div>
@@ -19,7 +19,7 @@
     <div class="col-xl-12">
         <div id="panel-1" class="panel">
             <div class="panel-hdr">
-            <h2>
+                <h2>
                     Berita <span class="fw-300"><i>List</i></span>
                 </h2>
                 <div class="panel-toolbar">
@@ -36,13 +36,13 @@
                     <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
                         <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Title</th>
-                                    <th>Photo</th>
-                                    <th>Created By</th>
-                                    <th>Action</th>
-                                </tr>
+                            <tr>
+                                <th>No</th>
+                                <th>Title</th>
+                                <th>Photo</th>
+                                <th>Created By</th>
+                                <th>Action</th>
+                            </tr>
                         </thead>
                     </table>
                 </div>

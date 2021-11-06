@@ -22,7 +22,7 @@
         </div>
         <div class="info-card">
             {{-- <img src="{{asset('img/avatar').'/'.Auth::user()->avatar}}" class="profile-image rounded-circle"
-            alt="Dr. Codex Lantern">
+                alt="Dr. Codex Lantern">
             <div class="info-card-text">
                 <a href="#" class="d-flex align-items-center text-white">
                     <span class="text-truncate text-truncate-sm d-inline-block">
@@ -49,39 +49,34 @@
 
             @hasanyrole('superadmin|pusaka')
             <li class="">
-                <a href="#" title="Dashboard" data-filter-tags="theme settings">
+                <a href="#" title="Apps Content Management System" data-filter-tags="cms">
                     <i class="fal fa-mobile"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">CMS</span>
+                    <span class="nav-link-text" data-i18n="nav.cms">CMS</span>
                 </a>
                 <ul>
                     <li class="">
-                        <a href="{{route('external-link.index')}}" title="Link Mitra" data-filter-tags="theme settings">
-                            <i class="fal fa-external-link-square"></i>
-                            <span class="nav-link-text" data-i18n="nav.theme_settings">Link External</span>
+                        <a href="{{route('external-link.index')}}" title="Link Mitra" data-filter-tags="esternal link">
+                            <span class="nav-link-text" data-i18n="nav.external_link">Link Mitra</span>
                         </a>
                     </li>
                     <li class="">
-                        <a href="{{route('instagram.index')}}" title="Instagram Post" data-filter-tags="theme settings">
-                            <i class="fab fa-instagram"></i>
-                            <span class="nav-link-text" data-i18n="nav.theme_settings">Instagram Post</span>
+                        <a href="{{route('instagram.index')}}" title="Instagram Post" data-filter-tags="instagram post">
+                            <span class="nav-link-text" data-i18n="nav.instagram_post">Instagram Post</span>
                         </a>
                     </li>
                     <li class="">
-                        <a href="{{route('website.index')}}" title="Website Post" data-filter-tags="theme settings">
-                            <i class="fal fa-sitemap"></i>
-                            <span class="nav-link-text" data-i18n="nav.theme_settings">Website Post</span>
+                        <a href="{{route('website.index')}}" title="Website Post" data-filter-tags="website_post">
+                            <span class="nav-link-text" data-i18n="nav.website_post">Website Post</span>
                         </a>
                     </li>
                     <li class="">
-                        <a href="{{route('banner.index')}}" title="Banner Image" data-filter-tags="theme settings">
-                            <i class="fal fa-image"></i>
-                            <span class="nav-link-text" data-i18n="nav.theme_settings">Banner Aplikasi</span>
+                        <a href="{{route('banner.index')}}" title="Banner Image" data-filter-tags="banner image">
+                            <span class="nav-link-text" data-i18n="nav.banner_image">Banner Aplikasi</span>
                         </a>
                     </li>
                     <li class="">
-                        <a href="{{route('static-page.index')}}" title="Static Menu" data-filter-tags="theme settings">
-                            <i class="fal fa-external-link-square"></i>
-                            <span class="nav-link-text" data-i18n="nav.theme_settings">Link Menu Aplikasi</span>
+                        <a href="{{route('static-page.index')}}" title="Static Menu" data-filter-tags="static menu">
+                            <span class="nav-link-text" data-i18n="nav.static_meni">Link Menu Aplikasi</span>
                         </a>
                     </li>
                 </ul>
@@ -89,21 +84,20 @@
             @endhasanyrole
             @hasanyrole('superadmin|pusaka|kementrian|pemda|who')
             <li class="">
-                <a href="#" title="Laporan" data-filter-tags="theme settings">
+                <a href="#" title="Laporan" data-filter-tags="laporan">
                     <i class="fal fa-clipboard-list"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Laporan</span>
+                    <span class="nav-link-text" data-i18n="nav.laporan">Laporan</span>
                 </a>
                 <ul>
                     <li>
-                        <a href="{{route('laporan.index')}}" title="Laporan Management"
-                            data-filter-tags="laporan managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Laporan</span>
+                        <a href="{{route('laporan.index')}}" title="Laporan Data" data-filter-tags="laporan data">
+                            <span class="nav-link-text" data-i18n="nav.laporan_data">Data Laporan</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('chart.index')}}" title="Chart Management"
-                            data-filter-tags="Chart managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Chart</span>
+                        <a href="{{route('chart.index')}}" title="Laporan Statistic"
+                            data-filter-tags="Laporan Statistic">
+                            <span class="nav-link-text" data-i18n="nav.laporan_statistic">Statistik Laporan</span>
                         </a>
                     </li>
                 </ul>
@@ -111,67 +105,64 @@
             @endhasanyrole
             @hasanyrole('superadmin|pusaka')
             <li class="">
-                <a href="#" title="Operator" data-filter-tags="theme settings">
+                <a href="#" title="Operator" data-filter-tags="operator">
                     <i class="fal fa-cogs"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Operator</span>
+                    <span class="nav-link-text" data-i18n="nav.operator">Operator</span>
                 </a>
                 <ul>
                     <li>
-                        <a href="{{route('operator.index')}}" title="Operator Management"
-                            data-filter-tags="operators managements">
-                            <span class="nav-link-text" data-i18n="nav.operators_managements">Operator</span>
+                        <a href="{{route('operator.index')}}" title="Operator Data" data-filter-tags="operator data">
+                            <span class="nav-link-text" data-i18n="nav.operator_data">Data Operator</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('operator-type.index')}}" title="Operator Type Management"
-                            data-filter-tags="operators type managements">
-                            <span class="nav-link-text" data-i18n="nav.operators_type_managements">Operator Type</span>
+                        <a href="{{route('operator-type.index')}}" title="Operator Type"
+                            data-filter-tags="operators type">
+                            <span class="nav-link-text" data-i18n="nav.operator_type">Tipe Operator</span>
                         </a>
                     </li>
                 </ul>
             </li>
             @hasanyrole('superadmin')
             <li class="">
-                <a href="{{route('pelapor.index')}}" title="Pelapor" data-filter-tags="theme settings">
+                <a href="{{route('pelapor.index')}}" title="Pelapor" data-filter-tags="pelapor">
                     <i class="fal fa-users"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Pelapor</span>
+                    <span class="nav-link-text" data-i18n="nav.pelapor">Pelapor</span>
                 </a>
             </li>
             @endhasanyrole
 
             <li class="">
-                <a href="#" title="Referensi" data-filter-tags="theme settings">
+                <a href="#" title="Referensi" data-filter-tags="reference">
                     <i class="fal fa-tasks"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Referensi</span>
+                    <span class="nav-link-text" data-i18n="nav.reference">Referensi</span>
                 </a>
                 <ul>
                     <li>
-                        <a href="{{route('pelanggaran.index')}}" title="Jenis Pelanggaran Management"
-                            data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Jenis Pelanggaran</span>
+                        <a href="{{route('pelanggaran.index')}}" title="Jenis Pelanggaran"
+                            data-filter-tags="jenis pelanggaran">
+                            <span class="nav-link-text" data-i18n="nav.jenis_pelanggaran">Jenis Pelanggaran</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('bentuk-pelanggaran.index')}}" title="Bentuk Pelanggaran Management"
-                            data-filter-tags="bentuk-pelanggaran managements">
+                        <a href="{{route('bentuk-pelanggaran.index')}}" title="Bentuk Pelanggaran"
+                            data-filter-tags="bentuk pelanggaran">
                             <span class="nav-link-text" data-i18n="nav.bentuk-pelanggaran">Bentuk Pelanggaran</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('kawasan.index')}}" title="Kawasan Management"
-                            data-filter-tags="kawasan managements">
+                        <a href="{{route('kawasan.index')}}" title="Kawasan" data-filter-tags="kawasan">
                             <span class="nav-link-text" data-i18n="nav.kawasan">Kawasan</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('province.index')}}" title="Province Management"
-                            data-filter-tags="province managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Province</span>
+                        <a href="{{route('province.index')}}" title="Province" data-filter-tags="province">
+                            <span class="nav-link-text" data-i18n="nav.province">Province</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('kota.index')}}" title="Kota Management" data-filter-tags="kota managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">City</span>
+                        <a href="{{route('kota.index')}}" title="City" data-filter-tags="city">
+                            <span class="nav-link-text" data-i18n="nav.city">City</span>
                         </a>
                     </li>
                 </ul>
@@ -180,29 +171,26 @@
             @hasanyrole('superadmin')
             <li class="nav-title">ACL & Settings</li>
             <li class="">
-                <a href="#" title="Theme Settings" data-filter-tags="theme settings">
+                <a href="#" title="Theme Settings" data-filter-tags="acl settings">
                     <i class="fal fa-cog"></i>
-                    <span class="nav-link-text" data-i18n="nav.theme_settings">Access Control List</span>
+                    <span class="nav-link-text" data-i18n="nav.acl_settings">Access Control List</span>
                 </a>
                 <ul>
                     <li>
-                        <a href="{{route('users.index')}}" title="Users Managements"
+                        <a href="{{route('users.index')}}" title="Users Management"
                             data-filter-tags="users managements">
-                            <span class="nav-link-text" data-i18n="nav.users_managements">Users Management</span>
+                            <span class="nav-link-text" data-i18n="nav.users_management">Users</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('permissions.index')}}" title="Permissions Managements"
+                        <a href="{{route('permissions.index')}}" title="Permissions Management"
                             data-filter-tags="permissions managements">
-                            <span class="nav-link-text" data-i18n="nav.permissions_managements">Permissions
-                                Management</span>
+                            <span class="nav-link-text" data-i18n="nav.permissions_management">Permissions</span>
                         </a>
                     </li>
                     <li>
-                        <a href="{{route('roles.index')}}" title="Roles Managements"
-                            data-filter-tags="roles managements">
-                            <span class="nav-link-text" data-i18n="nav.roles_managements">Roles
-                                Management</span>
+                        <a href="{{route('roles.index')}}" title="Roles Management" data-filter-tags="roles management">
+                            <span class="nav-link-text" data-i18n="nav.roles_managements">Roles</span>
                         </a>
                     </li>
                 </ul>

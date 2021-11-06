@@ -11,7 +11,7 @@
     <h1 class="subheader-title">
         <i class='subheader-icon fal fa-users'></i> Module: <span class='fw-300'>Operator</span>
         <small>
-            Module for manage user access.
+            Module for manage operator access.
         </small>
     </h1>
 </div>

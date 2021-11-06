@@ -9,9 +9,9 @@
 @section('content')
 <div class="subheader">
     <h1 class="subheader-title">
-        <i class='subheader-icon fal fa-users'></i> Module: <span class='fw-300'>Static Page</span>
+        <i class='subheader-icon fal fa-external-link'></i> Module: <span class='fw-300'>Static Page</span>
         <small>
-            Module for manage Static Page.
+            Module for manage static page for apps.
         </small>
     </h1>
 </div>

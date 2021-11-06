@@ -9,7 +9,7 @@
 @section('content')
 <div class="subheader">
     <h1 class="subheader-title">
-        <i class='subheader-icon fal fa-users'></i> Module: <span class='fw-300'>Bentuk Pelanggaran</span>
+        <i class='subheader-icon fal fa-tasks'></i> Module: <span class='fw-300'>Bentuk Pelanggaran</span>
         <small>
             Module for manage bentuk pelanggaran.
         </small>

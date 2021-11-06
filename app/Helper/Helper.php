@@ -3,7 +3,9 @@
 namespace App\Helper;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
+use Carbon\CarbonPeriod;
+
+use Auth;
 
 class Helper
 {
@@ -38,6 +40,41 @@ class Helper
       $randomString .= $characters[rand(0, $charactersLength - 1)];
     }
     return $randomString;
+  }
+
+  public static function ListOfMonths($oldest_date, $latest_date)
+  {
+    $latest = Carbon::parse($latest_date)->format('Y-m-d');
+    $oldest = Carbon::parse($oldest_date)->format('Y-m-d');
+    $period = CarbonPeriod::create($oldest, '1 month', $latest);
+    $months = array();
+    foreach ($period as $key => $date) {
+      $months[] = $date->format('M');
+    }
+
+    return $months;
+  }
+
+  public static function ListOfYears($oldest_date, $latest_date)
+  {
+    $latest = Carbon::parse($latest_date)->format('Y-m-d');
+    $oldest = Carbon::parse($oldest_date)->format('Y-m-d');
+    $period = CarbonPeriod::create($oldest, '1 year', $latest);
+    $years = array();
+    foreach ($period as $key => $date) {
+      $years[] = $date->format('Y');
+    }
+    return $years;
+  }
+
+  public static function GetOperatorCityName($city)
+  {
+    $explode_city = explode(" ", $city);
+    $explode_1 = array_key_exists(1, $explode_city) ? $explode_city[1] : "";
+    $explode_2 = array_key_exists(2, $explode_city) ? $explode_city[2] : "";
+    $city = $explode_2 ? $explode_1 . " " . $explode_2 : $explode_1;
+
+    return $city;
   }
 
   public static function notify($id, $title, $message)

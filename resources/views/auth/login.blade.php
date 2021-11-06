@@ -25,9 +25,6 @@ Login
                 <label class="form-label" for="email">Email</label>
                 <input type="email" id="email" class="form-control @error('email') is-invalid @enderror" name="email"
                     value="{{ old('email') }}" required autocomplete="email" placeholder="email">
-                <span class="help-block">
-                    Your registered email to app
-                </span>
                 @error('email')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -38,10 +35,6 @@ Login
                 <label class="form-label" for="password">Password</label>
                 <input type="password" id="password" class="form-control @error('password') is-invalid @enderror"
                     placeholder="password" name="password" required autocomplete="current-password">
-                <span class="help-block">
-                    Your password
-                </span>
-
                 @error('password')
                 <span class="invalid-feedback" role="alert">
                     <strong>{{ $message }}</strong>
@@ -50,8 +43,8 @@ Login
             </div>
             <div class="form-group text-left">
                 <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" name="remember" id="rememberme"
-                        {{ old('remember') ? 'checked' : '' }}>
+                    <input type="checkbox" class="custom-control-input" name="remember" id="rememberme" {{
+                        old('remember') ? 'checked' : '' }}>
                     <label class="custom-control-label" for="rememberme"> Remember me</label>
                 </div>
             </div>
@@ -67,7 +60,8 @@ Login
 <div class="login-footer p-2">
     <div class="row">
         <div class="col col-sm-12 text-center">
-            {{-- <i><strong>System Message:</strong> You were logged out from 198.164.246.1 on Saturday, March, 2017 at 10.56AM</i> --}}
+            {{-- <i><strong>System Message:</strong> You were logged out from 198.164.246.1 on Saturday, March, 2017 at
+                10.56AM</i> --}}
         </div>
     </div>
 </div>

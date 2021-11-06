@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Geocoder\Laravel\Facades\Geocoder;
 use Illuminate\Http\Request;
-use Spatie\Geocoder\Geocoder;
-use GuzzleHttp\Client;
 use Carbon\Carbon;
 
 use App\Models\Laporan;
@@ -20,18 +19,46 @@ class LaporController extends Controller
 {
     public function lapor(Request $request)
     {
+        // get pelapor data by token
         $pelapor = Helper::pelapor();
+        // generate report number
         $uniqueCode = Helper::GenerateReportNumber(13);
-
+        // get lat lng request data
         $lat = $request->get('lat');
         $lng = $request->get('lng');
         // reverse geocode
-        $client = new Client();
-        $geocoder = new Geocoder($client);
-        $geocoder->setApiKey(config('geocoder.key'));
-        $response = $geocoder->getAddressForCoordinates($lat, $lng);
-        $address = $response['address_components'];
-
+        $result = Geocoder::reverse($lat, $lng)->get();
+        /**
+         * This is the step of black magic 
+         * to solving city name distinction in google geocode api.
+         * 1. Filter result by admin level 2 name
+         * 2. Get first filtered data (somehow the first data is the most accurate). why? ask google :)
+         * 3. If filtered data null, get the original result if not pass the data
+         * 4. Get admin levels collection to get property
+         * 5. Done.
+         */
+        $map = $result->filter(function ($value, $key) {
+            return str_contains($value->getAdminLevels()->get(2)->getName(), 'Kota');
+        });
+        // get first data
+        $filter_result = $map->first();
+        // check filtered data not null
+        if ($filter_result != null) {
+            // get admin levels data
+            $admin_levels = $filter_result->getAdminLevels();
+            $propinsi = $admin_levels->get(1)->getName();
+            $kota = $admin_levels->get(2)->getName();
+            $kecamatan = $admin_levels->get(3)->getName();
+            $kelurahan = $admin_levels->get(4)->getName();
+            $negara = $filter_result->getCountry()->getName();
+        } else {
+            $admin_levels = $result->first()->getAdminLevels();
+            $propinsi = $admin_levels->get(1)->getName();
+            $kota = $admin_levels->get(2)->getName();
+            $kecamatan = $admin_levels->get(3)->getName();
+            $kelurahan = $admin_levels->get(4)->getName();
+            $negara = $result->first()->getCountry()->getName();
+        }
         // begin transaction
         DB::beginTransaction();
         try {
@@ -46,23 +73,11 @@ class LaporController extends Controller
             $laporan->nama_lokasi = $request->nama_lokasi;
             $laporan->detail_lokasi = $request->detail_lokasi;
             $laporan->alamat = $request->alamat;
-            foreach ($address as $key => $value) {
-                if (array_search('administrative_area_level_4', $value->types) !== false) {
-                    $laporan->kelurahan = $value->long_name;
-                }
-                if (array_search('administrative_area_level_3', $value->types) !== false) {
-                    $laporan->kecamatan = $value->long_name;
-                }
-                if (array_search('administrative_area_level_2', $value->types) !== false) {
-                    $laporan->kota = $value->long_name;
-                }
-                if (array_search('administrative_area_level_1', $value->types) !== false) {
-                    $laporan->propinsi = $value->long_name;
-                }
-                if (array_search('country', $value->types) !== false) {
-                    $laporan->negara = $value->long_name;
-                }
-            }
+            $laporan->kelurahan = $kelurahan;
+            $laporan->kecamatan = $kecamatan;
+            $laporan->kota = $kota;
+            $laporan->propinsi = $propinsi;
+            $laporan->negara = $negara;
             $laporan->place_id = $request->place_id;
             $laporan->created_by = $pelapor->uuid;
             $laporan->status = 0;

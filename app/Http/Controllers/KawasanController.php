@@ -202,4 +202,12 @@ class KawasanController extends Controller
         toastr()->success('Kawasan Deleted', 'Success');
         return redirect()->route('kawasan.index');
     }
+
+    public function getKawasan()
+    {
+        if (request()->ajax()) {
+            $kawasan = Kawasan::pluck('name', 'uuid')->all();
+            return response()->json($kawasan);
+        }
+    }
 }
