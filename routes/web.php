@@ -52,7 +52,6 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function () {
     // tindak lanjut
     Route::post('tindak-lanjut', 'LaporanController@storetindaklanjut')->name('tindaklanjut.store');
     Route::get('tindak-lanjut/{id}', 'LaporanController@tindaklanjut')->name('tindaklanjut.index');
-    Route::get('tindak-lanjut-notification', 'LaporanController@sendNotifToAndroid')->name('tindaklanjut.notif');
     // filter
     Route::get('filter-chart', 'ChartController@filter')->name('get.filter-chart');
     Route::get('filter', 'LaporanController@filter')->name('get.filter');
