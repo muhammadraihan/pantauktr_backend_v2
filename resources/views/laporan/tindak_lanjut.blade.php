@@ -40,7 +40,8 @@
                     </div>
                     <div class="form-group col-md-4 mb-3">
                         {{ Form::label('keterangan','Keterangan',['class' => 'required form-label'])}}
-                        {{ Form::textarea('keterangan',null,['placeholder' => 'Keterangan','class' => 'form-control '.($errors->has('keterangan') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
+                        {{ Form::textarea('keterangan',null,['placeholder' => 'Keterangan','class' => 'form-control
+                        '.($errors->has('keterangan') ? 'is-invalid':''),'required', 'autocomplete' => 'off'])}}
                         @if ($errors->has('keterangan'))
                         <div class="invalid-feedback">{{ $errors->first('keterangan') }}</div>
                         @endif
@@ -63,24 +64,6 @@
 <script>
     $(document).ready(function(){
         $('.select2').select2();
-        
-        // Generate a password string
-        function randString(){
-            var chars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNP123456789";
-            var string_length = 8;
-            var randomstring = '';
-            for (var i = 0; i < string_length; i++) {
-                var rnum = Math.floor(Math.random() * chars.length);
-                randomstring += chars.substring(rnum, rnum + 1);
-            }
-            return randomstring;
-        }
-        
-        // Create a new password
-        $(".getNewPass").click(function(){
-            var field = $('#password').closest('div').find('input[name="password"]');
-            field.val(randString(field));
-        });
     });
 </script>
 @endsection

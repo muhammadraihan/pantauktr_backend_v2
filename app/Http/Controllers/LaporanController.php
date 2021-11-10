@@ -9,6 +9,8 @@ use App\Models\TindakLanjut;
 use App\Models\Pelanggaran;
 use App\Models\Kawasan;
 use App\Models\Kota;
+use App\Models\Pelapor;
+use App\Notifications\LaporanProcessNotification;
 use Carbon\Carbon;
 
 use Auth;
@@ -38,7 +40,7 @@ class LaporanController extends Controller
             DB::statement(DB::raw('set @rownum=0'));
             $laporans = Laporan::select([
                 DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-                'id', 'uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'kawasan', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_at'
+                'id', 'uuid', 'nomor_laporan', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'kawasan', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'status', 'created_at'
             ])->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
                 return $query->where(function ($q) use ($user, $user_city) {
                     return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
@@ -59,6 +61,22 @@ class LaporanController extends Controller
                 ->editColumn('photo', function ($row) {
                     return $row->photo ? '<img style="width: 150px; height: 150px;"  src="' . $row->photo . '" alt="">' : '<span class="badge badge-secondary badge-pill">Foto tidak terlampir</span>';
                 })
+                ->editColumn('status', function ($row) {
+                    switch ($row->status) {
+                        case 0:
+                            return '<span class="badge badge-secondary">Diterima</span>';
+                            break;
+                        case 1:
+                            return '<span class="badge badge-info">Ditindak lanjuti</span>';
+                            break;
+                        case 2:
+                            return '<span class="badge badge-success">Selesai</span>';
+                            break;
+                        default:
+                            return '<span class="badge badge-secondary">Diterima</span>';
+                            break;
+                    }
+                })
                 ->editColumn('created_at', function ($row) {
                     return Carbon::parse($row->created_at)->translatedFormat('l\\, j F Y H:i:s');
                 })
@@ -68,7 +86,7 @@ class LaporanController extends Controller
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
-                ->rawColumns(['photo', 'action'])
+                ->rawColumns(['photo', 'status', 'action'])
                 ->make();
         }
 
@@ -87,7 +105,7 @@ class LaporanController extends Controller
 
             $laporan = Laporan::select([
                 DB::raw('@rownum  := @rownum  + 1 AS rownum'),
-                'id', 'uuid', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'kawasan', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'place_id', 'created_by', 'created_at'
+                'id', 'uuid', 'nomor_laporan', 'jenis_pelanggaran', 'bentuk_pelanggaran', 'keterangan', 'photo', 'lat', 'lng', 'nama_lokasi', 'kawasan', 'alamat', 'kelurahan', 'kecamatan', 'kota', 'propinsi', 'negara', 'status', 'created_at'
             ])->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
                 return $query->where(function ($q) use ($user, $user_city) {
                     return $q->where('kota', 'like', '%' . $user->city->city_name  . '%')
@@ -125,6 +143,22 @@ class LaporanController extends Controller
                 ->editColumn('photo', function ($row) {
                     return $row->photo ? '<img style="width: 150px; height: 150px;"  src="' . $row->photo . '" alt="">' : '<span class="badge badge-secondary badge-pill">Foto tidak terlampir</span>';
                 })
+                ->editColumn('status', function ($row) {
+                    switch ($row->status) {
+                        case 0:
+                            return '<span class="badge badge-secondary">Diterima</span>';
+                            break;
+                        case 1:
+                            return '<span class="badge badge-info">Ditindak lanjuti</span>';
+                            break;
+                        case 2:
+                            return '<span class="badge badge-success">Selesai</span>';
+                            break;
+                        default:
+                            return '<span class="badge badge-secondary">Diterima</span>';
+                            break;
+                    }
+                })
                 ->editColumn('created_at', function ($row) {
                     return Carbon::parse($row->created_at)->translatedFormat('l\\, j F Y H:i:s');
                 })
@@ -134,7 +168,7 @@ class LaporanController extends Controller
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
-                ->rawColumns(['photo', 'action'])
+                ->rawColumns(['photo', 'status', 'action'])
                 ->make();
         }
     }
@@ -167,118 +201,39 @@ class LaporanController extends Controller
         $laporan = Laporan::uuid($request->laporan_id);
         $laporan->status = $request->status;
         $laporan->save();
+        // get pelapor data
+        $pelapor =  Pelapor::where('uuid', $laporan->created_by)->first();
         // Saving data
         $tindaklanjut = new TindakLanjut();
         $tindaklanjut->laporan_id = $request->laporan_id;
         $tindaklanjut->keterangan = $request->keterangan;
         $tindaklanjut->status = $request->status;
         $tindaklanjut->updated_by = Auth::user()->uuid;
-
         $tindaklanjut->save();
-        $this->sendNotifToAndroid($tindaklanjut);
 
-        toastr()->success('Tindak Lanjut Updated', 'Success');
+        $nomor_laporan = $laporan->nomor_laporan;
+        switch ((int)$laporan->status) {
+            case 0:
+                $status_laporan = 'Telah diterima.';
+                break;
+            case 1:
+                $status_laporan = 'Sedang ditindak lanjuti oleh pihak terkait.';
+                break;
+            case 2:
+                $status_laporan = 'Telah selesai.';
+                break;
+            default:
+                $status_laporan =  'Telah diterima';
+                break;
+        }
+        // push notification
+        $details = [
+            'nomor_laporan' => $nomor_laporan,
+            'status' => $status_laporan
+        ];
+        $pelapor->notify(new LaporanProcessNotification($details));
+
+        toastr()->success('Laporan di tindak lanjuti', 'Success');
         return redirect()->route('laporan.index');
-    }
-
-    public function sendNotifToAndroid($messages)
-    {
-        //token from env
-        $token = "AAAA7vtgV4o:APA91bGc7FLESkwOnW1Mne4tcyZwENKSyQoirOny555Np4TU-F8wpr99KGughY2UNV-INUyspE-g2M9iRwZ1g-82m6oCLEpbU5fEtW80IuqpFIH2W11oLWDjt3fnZP_Xyyt5f6vCW8jS";
-        //token from device
-
-        // $token = Laporan::uuid($messages->laporan_id)->pluck('token_device');
-        $from = "d0IckHe9o1l3aPayOh553P:APA91bGyzUPnsqCjQ6xDTBW_ZUG1TQ-JL3wu053nmgWlT3le1vEen_s6Ty8R9kiUd2M2Vr8RwNLgCAcu3G8-xbrVG5VxQoMosxPdAogSaIPZ7k0xX-fnDgjTrnIsFJcnKIf5_qJ5TGWR";
-
-        $msg = collect(array(
-            'body'  => $messages->status,
-            'title' => "Status Laporan",
-            'receiver' => 'erw',
-            'icon'  => "https://image.flaticon.com/icons/png/512/270/270014.png",/*Default Icon*/
-            'sound' => 'mySound'/*Default sound*/
-        ))->toJson();
-
-        $fields = (object)array(
-
-            'to'        => $from,
-            'notification'  => array(
-                "data" => $msg,
-            )
-        );
-
-        $headers = array(
-            'Authorization: key=' . $token,
-            'Content-Type: application/json'
-        );
-        //#Send Reponse To FireBase Server 
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-        $result = curl_exec($ch);
-        return $result;
-        curl_close($ch);
-    }
-
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

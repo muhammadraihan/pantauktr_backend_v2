@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\CanResetPassword;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Notifications\Notifiable;
 use App\Traits\Uuid;
+use Arr;
 use Laravel\Passport\HasApiTokens;
 
 class Pelapor extends Authenticatable implements CanResetPassword
@@ -73,5 +74,21 @@ class Pelapor extends Authenticatable implements CanResetPassword
     public function LinkedSocialAccounts()
     {
         return $this->hasMany(LinkedSocialAccount::class, 'pelapor_uuid', 'uuid');
+    }
+
+    public function DeviceToken()
+    {
+        return $this->hasMany(FcmRegistrationToken::class, 'pelapor_id', 'uuid');
+    }
+
+    /**
+     * Specifies the user's FCM tokens
+     *
+     * @return string|array
+     */
+    public function routeNotificationForFcm()
+    {
+        $device_tokens = $this->DeviceToken->pluck('token')->toArray();
+        return $device_tokens;
     }
 }
