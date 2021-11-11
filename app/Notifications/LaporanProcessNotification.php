@@ -57,11 +57,18 @@ class LaporanProcessNotification extends Notification implements ShouldQueue
             )
             ->setAndroid(
                 AndroidConfig::create()
-                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
+                    ->setFcmOptions(AndroidFcmOptions::create()
+                        ->setAnalyticsLabel('analytics'))
             )
             ->setApns(
                 ApnsConfig::create()
-                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios'))
+                    ->setFcmOptions(ApnsFcmOptions::create()
+                        ->setAnalyticsLabel('analytics_ios'))
+                    ->setPayload([
+                        'aps' => [
+                            'sound' => "default"
+                        ]
+                    ])
             );
     }
 
