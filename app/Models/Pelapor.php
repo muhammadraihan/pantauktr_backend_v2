@@ -88,7 +88,9 @@ class Pelapor extends Authenticatable implements CanResetPassword
      */
     public function routeNotificationForFcm()
     {
-        $device_tokens = $this->DeviceToken->pluck('token')->toArray();
+        $device_tokens = $this->DeviceToken->where('revoked', 0)
+            ->pluck('token')
+            ->toArray();
         return $device_tokens;
     }
 }
