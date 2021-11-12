@@ -82,7 +82,7 @@ class LaporanController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     return '
-                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('tindaklanjut.index', $row->uuid) . '"><i class="fal fa-edit"></i></a>';
+                        <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('tindak-lanjut.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>';
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
@@ -164,76 +164,12 @@ class LaporanController extends Controller
                 })
                 ->addColumn('action', function ($row) {
                     return '
-                    <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('tindaklanjut.index', $row->uuid) . '"><i class="fal fa-edit"></i></a>';
+                    <a class="btn btn-success btn-sm btn-icon waves-effect waves-themed" href="' . route('tindak-lanjut.edit', $row->uuid) . '"><i class="fal fa-edit"></i></a>';
                 })
                 ->removeColumn('id')
                 ->removeColumn('uuid')
                 ->rawColumns(['photo', 'status', 'action'])
                 ->make();
         }
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-
-    public function tindaklanjut($id)
-    {
-        $idlaporan = Laporan::uuid($id);
-        return view('laporan.tindak_lanjut', compact('idlaporan'));
-    }
-
-    public function storetindaklanjut(Request $request)
-    {
-        $rules = [
-            'keterangan' => 'required|min:2',
-            'status' => 'required'
-        ];
-
-        $messages = [
-            '*.required' => 'Field tidak boleh kosong !',
-        ];
-
-        $this->validate($request, $rules, $messages);
-        $laporan = Laporan::uuid($request->laporan_id);
-        $laporan->status = $request->status;
-        $laporan->save();
-        // get pelapor data
-        $pelapor =  Pelapor::where('uuid', $laporan->created_by)->first();
-        // Saving data
-        $tindaklanjut = new TindakLanjut();
-        $tindaklanjut->laporan_id = $request->laporan_id;
-        $tindaklanjut->keterangan = $request->keterangan;
-        $tindaklanjut->status = $request->status;
-        $tindaklanjut->updated_by = Auth::user()->uuid;
-        $tindaklanjut->save();
-
-        $nomor_laporan = $laporan->nomor_laporan;
-        switch ((int)$laporan->status) {
-            case 0:
-                $status_laporan = 'Telah diterima.';
-                break;
-            case 1:
-                $status_laporan = 'Sedang ditindak lanjuti oleh pihak terkait.';
-                break;
-            case 2:
-                $status_laporan = 'Telah selesai.';
-                break;
-            default:
-                $status_laporan =  'Telah diterima';
-                break;
-        }
-        // push notification
-        $details = [
-            'nomor_laporan' => $nomor_laporan,
-            'status' => $status_laporan
-        ];
-        $pelapor->notify(new LaporanProcessNotification($details));
-
-        toastr()->success('Laporan di tindak lanjuti', 'Success');
-        return redirect()->route('laporan.index');
     }
 }
