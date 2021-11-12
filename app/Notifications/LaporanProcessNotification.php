@@ -52,8 +52,8 @@ class LaporanProcessNotification extends Notification implements ShouldQueue
         return FcmMessage::create()
             ->setNotification(
                 ResourcesNotification::create()
-                    ->setTitle('Laporan No.' . ' ' . $this->details['nomor_laporan'])
-                    ->setBody('Laporan anda' . ' ' . $this->details['status'])
+                    ->setTitle('Laporan' . ' ' . $this->details['nomor_laporan'])
+                    ->setBody('Telah' . ' ' . $this->details['status'] . ' ' . $this->details['keterangan'] . ' ' . 'Terus Pantau KTR di sekitar anda.')
             )
             ->setAndroid(
                 AndroidConfig::create()
