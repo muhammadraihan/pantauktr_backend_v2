@@ -317,7 +317,8 @@
                     {data: 'negara', name: 'negara'},
                     {data: 'lat', name: 'lat'},
                     {data: 'lng', name: 'lng'},
-                    {data: 'action',width:'10%',searchable:false}    
+                    {data: 'status', searchable:false},
+                    {data: 'action',width:'10%',searchable:false}
                 ]
             });
         });
@@ -378,6 +379,7 @@
                 ],
                 "columns": [
                     {data: 'rownum',searchable:false},
+                    {data: 'nomor_laporan',searchable:false},
                     {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
                     {data: 'bentuk_pelanggaran', name: 'bentuk_pelanggaran'},
                     {data: 'photo', name: 'photo'},
@@ -392,6 +394,7 @@
                     {data: 'negara', name: 'negara'},
                     {data: 'lat', name: 'lat'},
                     {data: 'lng', name: 'lng'},
+                    {data: 'status', searchable:false},
                     {data: 'action',width:'10%',searchable:false}    
                 ]
             });
