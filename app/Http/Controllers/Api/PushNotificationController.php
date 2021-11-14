@@ -53,9 +53,9 @@ class PushNotificationController extends Controller
         $fcm_token = $request->fcm_token;
         DB::beginTransaction();
         try {
-            $revoke_fcm_token = FcmRegistrationToken::where('token', $fcm_token)->first();
-            $revoke_fcm_token->revoked = 1;
-            $revoke_fcm_token->save();
+            FcmRegistrationToken::where('token', $fcm_token)
+                ->where('revoked', 0)
+                ->update(['revoked' => 1]);
         } catch (Exception $e) {
             DB::rollback();
             // log message to local an slack
