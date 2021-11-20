@@ -28,13 +28,6 @@ class PushNotificationController extends Controller
             $newFcmToken->save();
         } catch (Exception $e) {
             DB::rollback();
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error saving push notification registration token', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -57,15 +50,7 @@ class PushNotificationController extends Controller
                 ->where('revoked', 0)
                 ->update(['revoked' => 1]);
         } catch (Exception $e) {
-            DB::rollback();
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error revoking push notification registration token', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
-            return response()->json([
+            DB::rollback();response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
             ]);

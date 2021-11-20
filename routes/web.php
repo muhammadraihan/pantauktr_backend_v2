@@ -12,7 +12,6 @@
 */
 
 Route::get('/', function () {
-    // check if user is auth then redirect to dashboard page
     if (Auth::check()) {
         return redirect()->route('backoffice.dashboard');
     }
@@ -22,11 +21,9 @@ Route::get('/', function () {
 Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function () {
-    // backoffice route
     Route::get('/', 'DashboardController@index');
     Route::get('dashboard', 'DashboardController@dashboard')->name('backoffice.dashboard');
     Route::get('logs', 'ActivityController@index')->name('logs');
-    // resource
     Route::resource('banner', 'BannerController');
     Route::resource('bentuk-pelanggaran', 'BentukPelanggaranController');
     Route::resource('chart', 'ChartController');
@@ -46,17 +43,13 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function () {
     Route::resource('tindak-lanjut', 'TindakLanjutController');
     Route::resource('users', 'UserController');
     Route::resource('website', 'WebsiteController');
-    // user Profile
     Route::get('profile', 'UserController@profile')->name('profile');
     Route::patch('profile/{user}/update', 'UserController@ProfileUpdate')->name('profile.update');
     Route::patch('profile/{user}/password', 'UserController@ChangePassword')->name('profile.password');
-    // filter
     Route::get('filter-chart', 'ChartController@filter')->name('get.filter-chart');
     Route::get('filter', 'LaporanController@filter')->name('get.filter');
-    // cetak
     Route::get('cetak-pdf-pelanggaran', 'LaporanController@cetakpelanggaran')->name('cetak.laporan_pelanggaran');
     Route::get('cetak-pdf-apresiasi', 'LaporanController@cetakapresiasi')->name('cetak.laporan_apresiasi');
-    // reference
     Route::get('get-bentuk-panggaran', 'BentukPelanggaranController@getBentukPelanggaranByJenis')->name('get.bentuk');
     Route::get('get-kawasan', 'KawasanController@getKawasan')->name('get.kawasan');
 });

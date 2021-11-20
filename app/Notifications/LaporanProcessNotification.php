@@ -19,34 +19,16 @@ class LaporanProcessNotification extends Notification implements ShouldQueue
 
     protected $details;
 
-    /**
-     * Create a new notification instance.
-     *
-     * @return void
-     */
     public function __construct($details)
     {
         $this->details = $details;
     }
 
-    /**
-     * Get the notification's delivery channels.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
     public function via($notifiable)
     {
         return [FcmChannel::class];
     }
 
-    /**
-     * Send notification message
-     * via FCM channel
-     *
-     * @param mixed $notifiable
-     * @return \NotificationChannels\Fcm\FcmMessage
-     */
     public function toFcm($notifiable)
     {
         return FcmMessage::create()
@@ -74,13 +56,7 @@ class LaporanProcessNotification extends Notification implements ShouldQueue
                     ])
             );
     }
-
-    /**
-     * Get the array representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return array
-     */
+    
     public function toArray($notifiable)
     {
         return [

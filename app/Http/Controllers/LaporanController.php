@@ -21,11 +21,7 @@ use Helper;
 class LaporanController extends Controller
 {
     use Authorizable;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+ 
     public function index(Request $request)
     {
         $user = Auth::user();

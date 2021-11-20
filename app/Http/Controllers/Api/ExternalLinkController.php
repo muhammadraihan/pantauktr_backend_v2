@@ -18,13 +18,6 @@ class ExternalLinkController extends Controller
         try {
             $blog = External_link::select('uuid', 'title', 'description', 'link')->orderByDesc('created_at')->get();
         } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get external link list', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -42,13 +35,6 @@ class ExternalLinkController extends Controller
         try {
             $blog = External_link::select('uuid', 'title', 'description', 'link')->where('uuid', $id)->first();
         } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get external link detail', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),

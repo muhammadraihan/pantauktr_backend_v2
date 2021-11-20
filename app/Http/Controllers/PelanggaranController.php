@@ -15,11 +15,7 @@ use URL;
 class PelanggaranController extends Controller
 {
     use Authorizable;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         if (request()->ajax()) {
@@ -54,22 +50,11 @@ class PelanggaranController extends Controller
         return view('pelanggaran.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('pelanggaran.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $rules = [
@@ -88,12 +73,10 @@ class PelanggaranController extends Controller
 
         $image = $request->file('image');
         $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-        // resizing image to upload
         $resizeImage = Image::make($image);
         $resizeImage->resize(800, 800, function ($constraint) {
             $constraint->aspectRatio();
         })->encode();
-        // upload resized image to gcs
         $googleContent = 'reference' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
@@ -112,36 +95,17 @@ class PelanggaranController extends Controller
         return redirect()->route('pelanggaran.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $pelanggaran = Pelanggaran::uuid($id);
         return view('pelanggaran.edit', compact('pelanggaran'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $rules = [
@@ -154,7 +118,6 @@ class PelanggaranController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-        // Saving data
         $pelanggaran = Pelanggaran::uuid($id);
         $pelanggaran->name = $request->name;
         $pelanggaran->keterangan = $request->keterangan;
@@ -171,12 +134,10 @@ class PelanggaranController extends Controller
             $this->validate($request, $rules, $messages);
             $image = $request->file('image');
             $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-            // resizing image to upload
             $resizeImage = Image::make($image);
             $resizeImage->resize(800, 800, function ($constraint) {
                 $constraint->aspectRatio();
             })->encode();
-            // upload resized image to gcs
             $googleContent = 'reference' . '/' . $filename;
             $disk = Storage::disk('gcs');
             $disk->put($googleContent, (string) $resizeImage);
@@ -190,12 +151,6 @@ class PelanggaranController extends Controller
         return redirect()->route('pelanggaran.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $pelanggaran = Pelanggaran::uuid($id);

@@ -10,11 +10,6 @@ use Auth;
 
 class Helper
 {
-  /**
-   * Helper for greeting message
-   * based on hour time
-   * @return string
-   */
   public static function greeting()
   {
     $carbon = Carbon::now('Asia/Jakarta');

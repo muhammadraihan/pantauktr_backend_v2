@@ -11,20 +11,10 @@ class Activity extends Model
     protected $table = 'activity_log';
     protected $fillable = ['*'];
 
-    /**
-     * Relation to User id
-     *
-     * @return void
-     */
     public function getUser(){
         return $this->belongsTo(User::class,'causer_id','id');
     }
-
-    /**
-     * Relation to subject id
-     *
-     * @return void
-     */
+    
     public function getSubject(){
         return $this->belongsTo(User::class,'subject_id','id');
     }

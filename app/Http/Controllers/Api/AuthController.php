@@ -26,13 +26,6 @@ use Validator;
 
 class AuthController extends Controller
 {
-
-  /**
-   * Register new pelapor
-   *
-   * @param Request $request
-   * @return json
-   */
   public function RegisterPelapor(Request $request)
   {
     $rules = [
@@ -54,21 +47,13 @@ class AuthController extends Controller
         'message' => $validator->messages()
       ]);
     }
-    // retrieve password
     $password = trim($request->password);
-    // retrive firstname from email username
     $extract_username = explode("@", $request->email);
     $firstname = $extract_username[0];
-    /**
-     * Setup auth provider instance
-     * This will treat "pelapors-api" guard as session
-     * To fix multiple auth guard for using passport.
-     */
     config(['auth.guards.pelapors-api.driver' => 'session']);
-    // begin transaction
+    
     DB::beginTransaction();
     try {
-      // saving pelapor
       $pelapor = new Pelapor;
       $pelapor->firstname = $firstname;
       $pelapor->email = $request->email;
@@ -78,9 +63,7 @@ class AuthController extends Controller
       $pelapor->last_login_ip = $request->getClientIp();
       $pelapor->last_login_at = Carbon::now()->toDateTimeString();
       $pelapor->save();
-      // logging in pelapor
       Auth::guard('pelapors-api')->login($pelapor);
-      // get oauth clients
       $client = DB::table('oauth_clients')->where('provider', 'pelapors')->first();
       $data = [
         'grant_type' => 'password',
@@ -89,36 +72,20 @@ class AuthController extends Controller
         'username' => $request->email,
         'password' => $request->password,
       ];
-      // requesting token
       $request_token = Request::create('/oauth/token', 'POST', $data);
       $content = json_decode(app()->handle($request_token)->getContent());
-      /**
-       * Decrypt refresh token to get expired time
-       * this step is important to pass refresh token expires time to app
-       * so data will be use to define app state
-       */
       $app_key = env('APP_KEY');
       $enc_key = base64_decode(substr($app_key, 7));
       $crypto = Crypto::decryptWithPassword($content->refresh_token, $enc_key);
       $decode = json_decode($crypto, true);
     } catch (Exception $e) {
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error register by email', [
-        'email' => $request->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
-      // rollback save data
       DB::rollback();
       return response()->json([
         'success' => false,
         'message' => $e->getMessage(),
       ]);
     }
-    // if no error commit data saving
     DB::commit();
-    // All good give 'em token
     return response()->json([
       'success' => true,
       'pelapor' => $pelapor,
@@ -134,9 +101,7 @@ class AuthController extends Controller
 
   public function LoginPelapor(Request $request)
   {
-    // Get credentials
     $credentials = $request->only('email', 'password');
-    // Validation rules
     $rules = [
       'email' => 'bail|required|email',
       'password' => 'required',
@@ -153,17 +118,11 @@ class AuthController extends Controller
         'message' => $validator->messages(),
       ]);
     }
-    /**
-     * Setup auth provider instance
-     * This will treat "pelapors-api" guard as session
-     * To fix multiple auth guard for using passport.
-     */
+
     config(['auth.guards.pelapors-api.driver' => 'session']);
     DB::beginTransaction();
     try {
-      // Check Email if exists
       if (Auth::guard('pelapors-api')->attempt($credentials)) {
-        // get oauth clients
         $client = DB::table('oauth_clients')->where('provider', 'pelapors')->first();
         $data = [
           'grant_type' => 'password',
@@ -172,19 +131,12 @@ class AuthController extends Controller
           'username' => $request->email,
           'password' => $request->password,
         ];
-        // requesting token
         $request_token = Request::create('/oauth/token', 'POST', $data);
         $content = json_decode(app()->handle($request_token)->getContent());
-        /**
-         * Decrypt refresh token to get expired time
-         * this step is important to pass refresh token expires time to app
-         * so data will be use to define app state
-         */
         $app_key = env('APP_KEY');
         $enc_key = base64_decode(substr($app_key, 7));
         $crypto = Crypto::decryptWithPassword($content->refresh_token, $enc_key);
         $decode = json_decode($crypto, true);
-        // get last login for tracking purpose
         $loggedInPelapor = Auth::guard('pelapors-api')->user();
         $pelapor = Pelapor::uuid($loggedInPelapor->uuid);
         $pelapor->device = $request->header('User-Agent');
@@ -198,14 +150,6 @@ class AuthController extends Controller
         ]);
       }
     } catch (Exception $e) {
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error login', [
-        'user' => $request->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
-      // rolback saving data
       DB::rollback();
       return response()->json([
         'success' => false,
@@ -213,7 +157,6 @@ class AuthController extends Controller
       ]);
     }
     DB::commit();
-    // All good give 'em token
     return response()->json([
       'success' => true,
       'token' => [
@@ -231,7 +174,6 @@ class AuthController extends Controller
     $service_token = $request->get('service-token');
     DB::beginTransaction();
     try {
-      // get oauth clients
       $client = DB::table('oauth_clients')->where('provider', 'pelapors')->first();
       $data = [
         'grant_type' => 'social',
@@ -240,20 +182,13 @@ class AuthController extends Controller
         'provider' => $provider,
         'access_token' => $service_token,
       ];
-      // requesting token
       $request_token = Request::create('/oauth/token', 'POST', $data);
       $content = json_decode(app()->handle($request_token)->getContent());
-      /**
-       * Decrypt refresh token to get expired time
-       * this step is important to pass refresh token expires token to app
-       * so data will use to define app state
-       */
       $app_key = env('APP_KEY');
       $enc_key = base64_decode(substr($app_key, 7));
       $crypto = Crypto::decryptWithPassword($content->refresh_token, $enc_key);
       $decode = json_decode($crypto, true);
 
-      // get last login for tracking purpose
       $loggedInPelapor = Auth::guard('pelapors-api')->user();
 
       $pelapor = Pelapor::uuid($loggedInPelapor->uuid);
@@ -262,23 +197,13 @@ class AuthController extends Controller
       $pelapor->last_login_ip = $request->getClientIp();
       $pelapor->save();
     } catch (Exception $e) {
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error generate token from social account', [
-        'user' => $pelapor->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
-      // begin transaction
       DB::rollback();
       return response()->json([
         'success' => false,
         'message' => $e->getMessage(),
       ]);
     }
-    // if no error commit data saving
     DB::commit();
-    // All good give 'em token
     return response()->json([
       'success' => true,
       'pelapor' => $pelapor,
@@ -305,45 +230,23 @@ class AuthController extends Controller
       ];
       $request_token = Request::create('/oauth/token', 'POST', $data);
       $content = json_decode(app()->handle($request_token)->getContent());
-      /**
-       * Decrypt refresh token to get expired time
-       * this step is important to pass refresh token expires token to app
-       * so data will use to define app state
-       */
       $app_key = env('APP_KEY');
       $enc_key = base64_decode(substr($app_key, 7));
       $crypto = Crypto::decryptWithPassword($request->refresh_token, $enc_key);
       $decode = json_decode($crypto, true);
-      // get pelapor
       $pelapor = Pelapor::where('id', $decode['user_id'])->first();
-      // throw error message if content contains error
       if (isset($content->error)) {
-        // log message to local an slack
-        Log::stack(['stack', 'slack'])->error('Error generate refresh token', [
-          'user' => $pelapor->email,
-          'agent' => $request->header('User-Agent'),
-          'origin' => env('APP_URL'),
-          'error' => $content->message,
-        ]);
         return response()->json([
           'success' => false,
           'message' => $content,
         ]);
       }
-      // saving user last login for tracking purpose
       $pelapor->device = $request->header('User-Agent');
       $pelapor->last_login_at = Carbon::now()->toDateTimeString();
       $pelapor->last_login_ip = $request->getClientIp();
       $pelapor->save();
     } catch (Exception $e) {
       DB::rollback();
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error generate refresh token', [
-        'user' => $pelapor->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
       return response()->json([
         'success' => false,
         'message' => $e->getMessage(),
@@ -362,23 +265,12 @@ class AuthController extends Controller
     ]);
   }
 
-  /**
-   * Get pelapor data
-   * @return json
-   */
   public function Pelapor(Request $request)
   {
     try {
       $pelapor = Helper::pelapor();
       $jumlah_laporan =  Laporan::where('created_by', $pelapor->uuid)->count();
     } catch (Exception $e) {
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error get detail pelapor', [
-        'user' => $pelapor->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
       return response()->json([
         'success' => false,
         'message' => $e->getMessage(),
@@ -402,13 +294,10 @@ class AuthController extends Controller
 
   public function ResetPasswordOTP(Request $request)
   {
-    // get email
     $credentials = $request->only('email');
-    // Validation rules
     $rules = [
       'email' => 'required|email',
     ];
-    // validation
     $validator = Validator::make($credentials, $rules);
     if ($validator->fails()) {
       return response()->json([
@@ -416,35 +305,22 @@ class AuthController extends Controller
         'message' => $validator->messages(),
       ], 400);
     }
-    // select pelapor
     $pelapor = Pelapor::where('email', $request->email)->first();
-    // if not found throw error
     if (!$pelapor) {
       return response()->json([
         "success" => false,
         "message" => 'Email tidak terdaftar di dalam sistem, harap masukkan email yang terdaftar',
       ]);
     }
-    // try to send OTP to email
     try {
-      // generate OTP
       $OTP =  Otp::generate($request->email);
-      // prepare email parameter
       $details = [
         'email' => $pelapor->email,
         'otp' => $OTP->token,
         'expiry' => env('OTP_VALIDITY_TIME')
       ];
-      // send email
       $pelapor->notify(new SendOTPNotification($details));
     } catch (Exception $e) {
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error request forget password otp', [
-        'user' => $pelapor->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
       return response()->json([
         "success" => false,
         "message" => $e->getMessage(),
@@ -473,8 +349,6 @@ class AuthController extends Controller
       '*.min' => 'Password minimal 8 karakter',
       '*.same' => 'Password tidak sama'
     ];
-
-    // validation
     $validator = Validator::make($request->all(), $rules, $messages);
     if ($validator->fails()) {
       return response()->json([
@@ -482,7 +356,6 @@ class AuthController extends Controller
         'message' => $validator->messages(),
       ]);
     }
-    // check if new password is match with confirmation password
     if (strcmp($request->get('new-password'), $request->get('confirm-password')) !== 0) {
       return response()->json([
         'success' => false,
@@ -491,7 +364,6 @@ class AuthController extends Controller
     }
     DB::beginTransaction();
     try {
-      // check OTP if exist
       $OtpModel = OtpModel::where('token', $request->otp)->first();
       if (!$OtpModel == null) {
         $pelapor = Pelapor::where('email', $OtpModel->identifier)->first();
@@ -513,13 +385,7 @@ class AuthController extends Controller
       }
     } catch (Exception $e) {
       DB::rollback();
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error change forget password pelapor', [
-        'user' => $pelapor->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
+      
       return response()->json([
         'success' => false,
         'message' => $e->getMessage(),
@@ -548,13 +414,6 @@ class AuthController extends Controller
       $update_pelapor->save();
     } catch (Exception $e) {
       DB::rollback();
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error update name pelapor', [
-        'user' => $pelapor->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
       return response()->json([
         'success' => false,
         'message' => $e->getMessage(),
@@ -587,21 +446,18 @@ class AuthController extends Controller
         'message' => $validator->messages(),
       ]);
     }
-    // check user current password if match
     if (!Hash::check($request->get('old-password'), $pelapor->password)) {
       return response()->json([
         'success' => false,
         'message' => 'Password lama anda tidak cocok',
       ]);
     }
-    // check if user using same fucking password for the new password
     if (strcmp($request->get('old-password'), $request->get('new-password')) == 0) {
       return response()->json([
         'success' => false,
         'message' => 'Password baru anda sama dengan password lama, harap gunakan password yang berbeda',
       ]);
     }
-    // check if new password is match with confirmation password
     if (strcmp($request->get('new-password'), $request->get('confirm-password')) !== 0) {
       return response()->json([
         'success' => false,
@@ -615,13 +471,6 @@ class AuthController extends Controller
       $update_pelapor->save();
     } catch (Exception $e) {
       DB::rollback();
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error change password password', [
-        'user' => $pelapor->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
       return response()->json([
         'success' => false,
         'message' => $e->getMessage(),
@@ -639,7 +488,6 @@ class AuthController extends Controller
     $tokenRepository = app(TokenRepository::class);
     $refreshTokenRepository = app(RefreshTokenRepository::class);
     try {
-      // Get pelapor token
       $pelapor = Helper::pelapor();
       if (is_null($pelapor)) {
         return response()->json([
@@ -647,21 +495,10 @@ class AuthController extends Controller
           'message' => 'Unauthenticated',
         ]);
       }
-      // Get token
       $accessToken = $pelapor->token();
-      // Revoke all of the token's refresh tokens...
       $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($accessToken->id);
-      // Revoke an access token...
       $tokenRepository->revokeAccessToken($accessToken->id);
     } catch (Exception $e) {
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error logout pelapor', [
-        'user' => $pelapor->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
-      // something went wrong whilst attempting to encode the token
       return response()->json([
         'success' => false,
         'message' => $e->getMessage(),
@@ -680,25 +517,13 @@ class AuthController extends Controller
 
     DB::beginTransaction();
     try {
-      // get pelapor details based on auth token
       $pelapor = Helper::pelapor();
-      // get access token
       $accessToken = $pelapor->token();
-      // Revoke all of the token's refresh tokens...
       $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($accessToken->id);
-      // Revoke an access token...
       $tokenRepository->revokeAccessToken($accessToken->id);
       $deletePelapor = Pelapor::uuid($pelapor->uuid);
-      // delete pelapor
       $deletePelapor->delete();
     } catch (Exception $e) {
-      // log message to local an slack
-      Log::stack(['stack', 'slack'])->error('Error delete pelapor account', [
-        'user' => $pelapor->email,
-        'agent' => $request->header('User-Agent'),
-        'origin' => env('APP_URL'),
-        'error' => $e->getMessage(),
-      ]);
       DB::rollback();
       return response()->json([
         'success' => false,

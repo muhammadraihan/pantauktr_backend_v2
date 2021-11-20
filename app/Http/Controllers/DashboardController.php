@@ -10,10 +10,6 @@ use Helper;
 
 class DashboardController extends Controller
 {
-  /**
-   * Redirect to dashboard
-   * @return [type] [description]
-   */
   public function index()
   {
     return redirect()->route('backoffice.dashboard');

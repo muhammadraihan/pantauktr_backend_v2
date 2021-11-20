@@ -15,11 +15,6 @@ class TindakLanjut extends Model
         'laporan_id', 'keterangan', 'status', 'updated_by'
     ];
 
-    /**
-     * Get the laporan that owns the TindakLanjut
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
     public function laporan()
     {
         return $this->belongsTo(Laporan::class, 'laporan_id', 'uuid');

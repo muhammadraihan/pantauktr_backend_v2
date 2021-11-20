@@ -29,7 +29,6 @@
             </div>
             <div class="panel-container show">
                 <div class="panel-content">
-                    <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
                         <thead>
                             <tr>

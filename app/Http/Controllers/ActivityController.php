@@ -20,11 +20,7 @@ use URL;
 class ActivityController extends Controller
 {
   use Authorizable;
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
+  
   public function index()
   {
     if (request()->ajax()) {

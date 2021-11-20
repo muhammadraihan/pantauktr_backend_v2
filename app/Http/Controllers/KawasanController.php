@@ -18,11 +18,7 @@ use URL;
 class KawasanController extends Controller
 {
     use Authorizable;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+ 
     public function index()
     {
         if (request()->ajax()) {
@@ -54,22 +50,11 @@ class KawasanController extends Controller
         return view('kawasan.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('kawasan.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $rules = [
@@ -88,12 +73,10 @@ class KawasanController extends Controller
 
         $image = $request->file('image');
         $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-        // resizing image to upload
         $resizeImage = Image::make($image);
         $resizeImage->resize(800, 800, function ($constraint) {
             $constraint->aspectRatio();
         })->encode();
-        // upload resized image to gcs
         $googleContent = 'reference' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
@@ -110,36 +93,17 @@ class KawasanController extends Controller
         return redirect()->route('kawasan.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Kawasan  $kawasan
-     * @return \Illuminate\Http\Response
-     */
     public function show($uuid)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Kawasan  $kawasan
-     * @return \Illuminate\Http\Response
-     */
     public function edit($uuid)
     {
         $kawasan = Kawasan::uuid($uuid);
         return view('kawasan.edit', compact('kawasan'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Kawasan  $kawasan
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $uuid)
     {
         $rules = [
@@ -152,7 +116,6 @@ class KawasanController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-        // Saving data
         $kawasan_table = Kawasan::uuid($uuid);
         $kawasan_table->kawasan = $request->kawasan;
         $kawasan_table->keterangan = $request->keterangan;
@@ -170,12 +133,10 @@ class KawasanController extends Controller
             $this->validate($request, $rules, $messages);
             $image = $request->file('image');
             $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-            // resizing image to upload
             $resizeImage = Image::make($image);
             $resizeImage->resize(800, 800, function ($constraint) {
                 $constraint->aspectRatio();
             })->encode();
-            // upload resized image to gcs
             $googleContent = 'reference' . '/' . $filename;
             $disk = Storage::disk('gcs');
             $disk->put($googleContent, (string) $resizeImage);
@@ -189,12 +150,6 @@ class KawasanController extends Controller
         return redirect()->route('kawasan.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Kawasan  $kawasan
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($uuid)
     {
         $kawasan = Kawasan::uuid($uuid);

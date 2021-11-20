@@ -75,7 +75,6 @@
                         <button type="button" name="resetFilter" id="resetFilter" class="btn btn-primary"
                             disabled="disabled">Reset</button>
                     </div>
-                    <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
                         <thead>
                             <tr>
@@ -116,7 +115,7 @@
 <script>
     $(document).ready(function(){
         var date = new Date();
-        // select
+        
         $('#pelanggaran').select2({
             placeholder: "Pilih Jenis Pelanggaran",
         });
@@ -134,7 +133,7 @@
             var uuid = $(this).val();
             var option = $(this).select2('data');
             var optionSelected = option[0].text;
-            // request bentuk pelanggaran
+            
             $.ajax({
                 url:"{{route('get.bentuk')}}",
                 type: 'GET',
@@ -174,7 +173,6 @@
             autoclose: true,
         });
 
-        // enable fitter button
         $('.form-control').change(function(e){
             $('#filter').attr('disabled',false);
             $('#resetFilter').attr('disabled',false);
@@ -250,7 +248,7 @@
             var tahun = $('#tahun').val();
             var bulan = $('#bulan').val();
             var kota =$('#city').val();
-            // load filtered datatable
+            
            $('#datatable').DataTable({
                "destroy": true,
                "processing": true,
@@ -323,19 +321,15 @@
             });
         });
         
-        // clear filter dataTables
         $('#resetFilter').click(function(e){
-            // clear filter fields
             $('#tahun').val('').datepicker("update");
             $('#bulan').val('').datepicker("update");
             $("#city").val(null).trigger('change');
             $("#pelanggaran").val(null).trigger('change');
             $("#bentuk").val(null).trigger('change');
             $("#kawasan").val(null).trigger('change');
-            // disable filter function
             $('#filter').attr('disabled',true);
             $('#resetFilter').attr('disabled',true);
-            // reload datatable
             $('#datatable').DataTable({
                 "destroy" : true,
                 "processing": true,

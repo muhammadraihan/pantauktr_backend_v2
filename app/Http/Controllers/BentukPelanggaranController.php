@@ -19,11 +19,7 @@ use Storage;
 class BentukPelanggaranController extends Controller
 {
     use Authorizable;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+ 
     public function index()
     {
         if (request()->ajax()) {
@@ -59,23 +55,12 @@ class BentukPelanggaranController extends Controller
         return view('bentuk_pelanggaran.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         $pelanggarans = Pelanggaran::all()->pluck('name', 'uuid');
         return view('bentuk_pelanggaran.create', compact('pelanggarans'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $rules = [
@@ -94,17 +79,14 @@ class BentukPelanggaranController extends Controller
         $this->validate($request, $rules, $messages);
         $image = $request->file('image');
         $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-        // resizing image to upload
         $resizeImage = Image::make($image);
         $resizeImage->resize(800, 800, function ($constraint) {
             $constraint->aspectRatio();
         })->encode();
-        // upload resized image to gcs
         $googleContent = 'reference' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
         $fileUrl = $disk->url($googleContent);
-        // saving
         $bentuk = new BentukPelanggaran();
         $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
         $bentuk->keterangan = $request->keterangan;
@@ -117,23 +99,11 @@ class BentukPelanggaranController extends Controller
         return redirect()->route('bentuk-pelanggaran.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\BentukPelanggaran  $bentuk_Pelanggaran
-     * @return \Illuminate\Http\Response
-     */
     public function show($uuid)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\BentukPelanggaran  $bentuk_Pelanggaran
-     * @return \Illuminate\Http\Response
-     */
     public function edit($uuid)
     {
         $pelanggarans = Pelanggaran::all()->pluck('name', 'uuid');
@@ -141,13 +111,6 @@ class BentukPelanggaranController extends Controller
         return view('bentuk_pelanggaran.edit', compact('bentuk_pelanggaran', 'pelanggarans'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\BentukPelanggaran  $bentuk_Pelanggaran
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $uuid)
     {
         $rules = [
@@ -161,7 +124,6 @@ class BentukPelanggaranController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-        // Saving data
         $bentuk = BentukPelanggaran::uuid($uuid);
         $bentuk->bentuk_pelanggaran = $request->bentuk_pelanggaran;
         $bentuk->keterangan = $request->keterangan;
@@ -179,12 +141,10 @@ class BentukPelanggaranController extends Controller
 
             $image = $request->file('image');
             $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-            // resizing image to upload
             $resizeImage = Image::make($image);
             $resizeImage->resize(800, 800, function ($constraint) {
                 $constraint->aspectRatio();
             })->encode();
-            // upload resized image to gcs
             $googleContent = 'reference' . '/' . $filename;
             $disk = Storage::disk('gcs');
             $disk->put($googleContent, (string) $resizeImage);
@@ -199,12 +159,6 @@ class BentukPelanggaranController extends Controller
         return redirect()->route('bentuk-pelanggaran.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\BentukPelanggaran  $bentuk_Pelanggaran
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($uuid)
     {
         $bentuk_Pelanggaran = BentukPelanggaran::uuid($uuid);

@@ -16,11 +16,6 @@ class Jenis_ApresiasiController extends Controller
 
     use Authorizable;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $jenis_apresiasi = Jenis_apresiasi::all();
@@ -53,22 +48,11 @@ class Jenis_ApresiasiController extends Controller
         return view('jenis_apresiasi.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('jenis_apresiasi.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $rules = [
@@ -93,36 +77,17 @@ class Jenis_ApresiasiController extends Controller
         return redirect()->route('jenis_apresiasi.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $jenis_apresiasi = Jenis_apresiasi::uuid($id);
         return view('jenis_apresiasi.edit', compact('jenis_apresiasi'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $rules = [
@@ -134,7 +99,6 @@ class Jenis_ApresiasiController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-        // Saving data
         $jenis_apresiasi = Jenis_apresiasi::uuid($id);
         $jenis_apresiasi->name = $request->name;
         $jenis_apresiasi->edited_by = Auth::user()->uuid;
@@ -145,12 +109,6 @@ class Jenis_ApresiasiController extends Controller
         return redirect()->route('jenis_apresiasi.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $jenis_apresiasi = Jenis_apresiasi::uuid($id);

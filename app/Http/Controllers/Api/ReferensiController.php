@@ -15,11 +15,6 @@ use Log;
 
 class ReferensiController extends Controller
 {
-    /**
-     * Method for v2 api routes
-     *
-     * @return json
-     */
     public function OldAPI()
     {
         return response()->json([
@@ -35,13 +30,6 @@ class ReferensiController extends Controller
         try {
             $jenisPelanggaran = Pelanggaran::select('uuid', 'name', 'keterangan', 'image')->get();
         } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get jenis pelanggaran', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -59,13 +47,6 @@ class ReferensiController extends Controller
         try {
             $jenisPelanggaran = Pelanggaran::select('uuid', 'name', 'keterangan', 'image')->where('uuid', $uuid)->first();
         } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get jenis pelanggaran', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -83,13 +64,6 @@ class ReferensiController extends Controller
         try {
             $bentuk_pelanggaran = BentukPelanggaran::select('uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->get();
         } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get bentuk pelanggaran', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -107,13 +81,6 @@ class ReferensiController extends Controller
         try {
             $bentuk_pelanggaran = BentukPelanggaran::select('uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->where('jenis_pelanggaran', $uuid)->get();
         } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get bentuk pelanggaran', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -131,13 +98,6 @@ class ReferensiController extends Controller
         try {
             $bentuk = BentukPelanggaran::select('uuid', 'bentuk_pelanggaran', 'keterangan', 'image')->where('uuid', $uuid)->first();
         } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get bentuk pelanggaran', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -155,13 +115,6 @@ class ReferensiController extends Controller
         try {
             $kawasan = Kawasan::select('uuid', 'kawasan', 'keterangan', 'image')->get();
         } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get kawasan', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),
@@ -179,13 +132,6 @@ class ReferensiController extends Controller
         try {
             $kawasan = Kawasan::select('uuid', 'kawasan', 'keterangan', 'image')->where('uuid', $uuid)->first();
         } catch (Exception $e) {
-            // log message to local an slack
-            Log::stack(['stack', 'slack'])->error('Error get kawasan', [
-                'user' => $pelapor->email,
-                'agent' => $request->header('User-Agent'),
-                'origin' => env('APP_URL'),
-                'error' => $e->getMessage(),
-            ]);
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage(),

@@ -14,11 +14,6 @@ class Jenis_LaporanController extends Controller
 {
     use Authorizable;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $jenis_laporan = Jenis_laporan::all();
@@ -51,22 +46,11 @@ class Jenis_LaporanController extends Controller
         return view('jenis_laporan.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('jenis_laporan.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $rules = [
@@ -90,36 +74,17 @@ class Jenis_LaporanController extends Controller
         return redirect()->route('jenis_laporan.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         $jenis_laporan = Jenis_laporan::uuid($id);
         return view('jenis_laporan.edit', compact('jenis_laporan'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $rules = [
@@ -131,7 +96,6 @@ class Jenis_LaporanController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-        // Saving data
         $jenis_laporan = Jenis_laporan::uuid($id);
         $jenis_laporan->name = $request->name;
         $jenis_laporan->edited_by = Auth::user()->uuid;
@@ -142,12 +106,6 @@ class Jenis_LaporanController extends Controller
         return redirect()->route('jenis_laporan.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $jenis_laporan = Jenis_laporan::uuid($id);
