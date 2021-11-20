@@ -42,17 +42,14 @@ Route::group(['prefix' => 'backoffice', 'middleware' => ['auth']], function () {
     Route::resource('permissions', 'PermissionController');
     Route::resource('province', 'ProvinceController');
     Route::resource('roles', 'RoleController');
-    Route::resource('users', 'UserController');
     Route::resource('static-page', 'StaticPageController');
+    Route::resource('tindak-lanjut', 'TindakLanjutController');
+    Route::resource('users', 'UserController');
     Route::resource('website', 'WebsiteController');
     // user Profile
     Route::get('profile', 'UserController@profile')->name('profile');
     Route::patch('profile/{user}/update', 'UserController@ProfileUpdate')->name('profile.update');
     Route::patch('profile/{user}/password', 'UserController@ChangePassword')->name('profile.password');
-    // tindak lanjut
-    Route::post('tindak-lanjut', 'LaporanController@storetindaklanjut')->name('tindaklanjut.store');
-    Route::get('tindak-lanjut/{id}', 'LaporanController@tindaklanjut')->name('tindaklanjut.index');
-    Route::get('tindak-lanjut-notification', 'LaporanController@sendNotifToAndroid')->name('tindaklanjut.notif');
     // filter
     Route::get('filter-chart', 'ChartController@filter')->name('get.filter-chart');
     Route::get('filter', 'LaporanController@filter')->name('get.filter');

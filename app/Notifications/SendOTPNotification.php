@@ -11,13 +11,13 @@ class SendOTPNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    protected $details;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-
-    protected $details;
     public function __construct($details)
     {
         $this->details = $details;

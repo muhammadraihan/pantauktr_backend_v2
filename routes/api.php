@@ -55,10 +55,9 @@ Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function
     });
     // report
     Route::group(['prefix' => 'report'], function () {
+        Route::post('send', 'Api\LaporController@lapor');
         Route::get('list', 'Api\LaporController@listLaporan');
         Route::get('detail/{id}', 'Api\LaporController@detailLaporan');
-        Route::get('notification/{id}', 'Api\LaporController@notifLaporan');
-        Route::post('send', 'Api\LaporController@lapor');
     });
     // content
     Route::group(['prefix' => 'content'], function () {
@@ -70,6 +69,10 @@ Route::group(['prefix' => 'v3', 'middleware' => ['auth:pelapors-api']], function
         Route::get('website-content', 'Api\ContentController@getWebsiteContent');
         Route::get('website-content/{id}', 'Api\ContentController@getWebsiteContentDetail');
     });
-    // other
-    Route::get('notif', 'Api\PushNotificationController@notification');
+
+    // notification
+    Route::group(['prefix' => 'notification'], function () {
+        Route::post('save-token', 'Api\PushNotificationController@SaveToken');
+        Route::post('revoke-token', 'Api\PushNotificationController@RevokeToken');
+    });
 });

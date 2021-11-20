@@ -82,8 +82,8 @@
 
         $('#year').datepicker({
             orientation: "bottom left",
-            format: "yyyy", 
-            viewMode: "years",
+            format: "yyyy",
+            startView: 'years',
             minViewMode: "years",
             todayHighlight:'TRUE',
             endDate: date.getFullYear().toString(),
