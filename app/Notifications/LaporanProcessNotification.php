@@ -64,6 +64,9 @@ class LaporanProcessNotification extends Notification implements ShouldQueue
                 ApnsConfig::create()
                     ->setFcmOptions(ApnsFcmOptions::create()
                         ->setAnalyticsLabel('analytics_ios'))
+                    ->setHeaders([
+                        'apns-priority' => 5
+                    ])
                     ->setPayload([
                         'aps' => [
                             'sound' => "default"
