@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.4.3](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.4.2...v2.4.3) (2021-11-21)
+
+
+### Features
+
+* Send notification when laporan is updated ([caa2196](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/caa219687815b0a0b4e3259c41b0cce43d512347))
+
+
+### Bug Fixes
+
+* Add priority notification ios ([f177a62](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/f177a6253242c0b14f398b9b1e3eef5f5f730c28))
+* Can't pick month more than current month ([a5e01f7](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/a5e01f706e63b66effa35494bdb183fd5ccefdb9))
+* Device token now selected when is not revoked ([7710f9f](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/7710f9ff39f99f441b4962c8eb17f97a7fa58b3f))
+* Fix no sound on push notification ([a254d34](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/a254d3471e935803ca629c5b7b422ab983688992))
+* Revoked registration token only when revoked status is 0 ([ec0275a](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/ec0275aa55bf0bfc8b1c5046d96dbb2b4d8ef089))
+* Tindak lajut status now have history before ([402232a](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/402232a20248bbe80d123613992e1e7dcb74803d))
+
 ### [2.4.2](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.4.1...v2.4.2) (2021-11-06)
 
 
