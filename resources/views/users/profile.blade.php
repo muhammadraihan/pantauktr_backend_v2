@@ -16,7 +16,6 @@
 </div>
 <div class="row">
     <div class="col-lg-6 col-xl-3 order-lg-1 order-xl-1">
-        <!-- profile summary -->
         <div class="card mb-g rounded-top">
             {!! Form::open(['route' => ['profile.update',$user],'method'=>'PATCH','class' =>
             'form-horizontal','enctype' => 'multipart/form-data']) !!}
@@ -74,7 +73,6 @@
         </div>
     </div>
     <div class="col-lg-6 col-xl-3 order-lg-2 order-xl-3">
-        <!-- change password -->
         <div class="card mb-2">
             <div class="p-3">
                 <h2 class="mb-0 fs-xl">

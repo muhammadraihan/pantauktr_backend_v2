@@ -35,7 +35,6 @@
             </div>
             <div class="panel-container show">
                 <div class="panel-content">
-                    <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
                         <thead>
                             <tr>
@@ -56,7 +55,6 @@
 </div>
 <form action="" method="POST" class="delete-form">
     {{ csrf_field() }}
-    <!-- Delete modal center -->
     <div class="modal fade" id="modal-delete" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -112,7 +110,6 @@
             ]
         });
         
-        // Delete Data
         $('#datatable').on('click', '.delete-btn[data-url]', function (e) {
             e.preventDefault();
             var id = $(this).attr('data-id');
@@ -124,7 +121,6 @@
             $('body').find('.delete-form').append('<input name="id" type="hidden" value="'+ id +'">');
         });
 
-        // Clear Data When Modal Close
         $('.remove-data-from-delete-form').on('click',function() {
             $('body').find('.delete-form').find("input").remove();
         });

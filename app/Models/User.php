@@ -18,67 +18,26 @@ class User extends Authenticatable implements CanResetPassword
     use Uuid;
     use LogsActivity;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'name', 'email', 'password', 'avatar', 'city_id', 'place_id', 'operator_id', 'last_login_at', 'last_login_ip',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * The attibutes for logging the event change
-     *
-     * @var array
-     */
     protected static $logAttributes = ['name', 'email', 'password', 'avatar'];
 
-    /**
-     * Logging name
-     *
-     * @var string
-     */
     protected static $logName = 'user';
 
-    /**
-     * Logging only the changed attributes
-     *
-     * @var boolean
-     */
     protected static $logOnlyDirty = true;
 
-    /**
-     * Prevent save logs items that have no changed attribute
-     *
-     * @var boolean
-     */
     protected static $submitEmptyLogs = false;
 
-    /**
-     * Custom logging description
-     *
-     * @param string $eventName
-     * @return string
-     */
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Data has been {$eventName}";

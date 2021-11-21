@@ -45,14 +45,14 @@ return [
              *
              */
             'credentials' => [
-                'file' => env('FCM_KEY'),
+                'file' => base_path(env('FCM_KEY')),
 
                 /**
                  * If you want to prevent the auto discovery of credentials, set the
                  * following parameter to false. If you disable it, you must
                  * provide a credentials file.
                  */
-                'auto_discovery' => true,
+                'auto_discovery' => false,
             ],
 
             /**

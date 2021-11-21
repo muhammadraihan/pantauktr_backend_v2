@@ -87,7 +87,6 @@
     $(document).ready(function(){
         $('.select2').select2();
         
-        // Generate a password string
         function randString(){
             var chars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNP123456789";
             var string_length = 8;
@@ -99,20 +98,18 @@
             return randomstring;
         }
         
-        // Create a new password
         $(".getNewPass").click(function(){
             var field = $('#password').closest('div').find('input[name="password"]');
             field.val(randString(field));
         });
 
-        //Enable input and button change password
         $('#enablePassChange').click(function() {
             if ($(this).is(':checked')) {
-                $('#passwordForm').attr('disabled',false); //enable input
-                $('#getNewPass').attr('disabled',false); //enable button
+                $('#passwordForm').attr('disabled',false);
+                $('#getNewPass').attr('disabled',false);
             } else {
-                    $('#passwordForm').attr('disabled', true); //disable input
-                    $('#getNewPass').attr('disabled', true); //disable button
+                    $('#passwordForm').attr('disabled', true);
+                    $('#getNewPass').attr('disabled', true);
             }
         });
     });

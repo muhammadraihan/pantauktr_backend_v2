@@ -75,11 +75,11 @@
                         <button type="button" name="resetFilter" id="resetFilter" class="btn btn-primary"
                             disabled="disabled">Reset</button>
                     </div>
-                    <!-- datatable start -->
                     <table id="datatable" class="table table-bordered table-hover table-striped w-100">
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>No. Laporan</th>
                                 <th>Jenis Pelanggaran</th>
                                 <th>Bentuk Pelanggaran</th>
                                 <th>Photo</th>
@@ -94,6 +94,7 @@
                                 <th>Negara</th>
                                 <th>Latitude</th>
                                 <th>Longitude</th>
+                                <th>Status</th>
                                 <th>Proses Laporan</th>
                             </tr>
                         </thead>
@@ -114,7 +115,7 @@
 <script>
     $(document).ready(function(){
         var date = new Date();
-        // select
+        
         $('#pelanggaran').select2({
             placeholder: "Pilih Jenis Pelanggaran",
         });
@@ -132,7 +133,7 @@
             var uuid = $(this).val();
             var option = $(this).select2('data');
             var optionSelected = option[0].text;
-            // request bentuk pelanggaran
+            
             $.ajax({
                 url:"{{route('get.bentuk')}}",
                 type: 'GET',
@@ -155,8 +156,8 @@
 
         $('#tahun').datepicker({
             orientation: "bottom left",
-            format: "yyyy", // Notice the Extra space at the beginning
-            viewMode: "years",
+            format: "yyyy",
+            startView: 'years',
             minViewMode: "years",
             todayHighlight:'TRUE',
             endDate: date.getFullYear().toString(),
@@ -165,15 +166,13 @@
 
         $('#bulan').datepicker({
             orientation: "bottom left",
-            format: "mm", // Notice the Extra space at the beginning
-            viewMode: "months",
+            format: "mm",
+            startView: 'months',
             minViewMode: "months",
             todayHighlight:'TRUE',
-            endDate: date.getFullYear().toString(),
             autoclose: true,
         });
 
-        // enable fitter button
         $('.form-control').change(function(e){
             $('#filter').attr('disabled',false);
             $('#resetFilter').attr('disabled',false);
@@ -205,7 +204,7 @@
                     titleAttr: 'Generate PDF',
                     className: 'btn-outline-danger btn-sm mr-1',
                     exportOptions: {
-                        columns:[0,1,2,4,5,6,7,10,11,12,13,14]
+                        columns:[0,1,2,3,5,6,7,8,11,12,16]
                     }
                 },
                 {
@@ -216,12 +215,13 @@
                     titleAttr: 'Print Table',
                     className: 'btn-outline-primary btn-sm',
                     exportOptions: {
-                        columns:[0,1,2,4,5,6,7,10,11,12,13,14]
+                        columns:[0,1,2,3,5,6,7,8,11,12,16]
                     }
                 }
             ],
             "columns": [
                 {data: 'rownum',searchable:false},
+                {data: 'nomor_laporan',searchable:false},
                 {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
                 {data: 'bentuk_pelanggaran', name: 'bentuk_pelanggaran'},
                 {data: 'photo', name: 'photo'},
@@ -236,6 +236,7 @@
                 {data: 'negara', name: 'negara'},
                 {data: 'lat', name: 'lat'},
                 {data: 'lng', name: 'lng'},
+                {data: 'status', searchable:false},
                 {data: 'action',width:'10%',searchable:false}    
             ]
         });
@@ -247,7 +248,7 @@
             var tahun = $('#tahun').val();
             var bulan = $('#bulan').val();
             var kota =$('#city').val();
-            // load filtered datatable
+            
            $('#datatable').DataTable({
                "destroy": true,
                "processing": true,
@@ -282,7 +283,7 @@
                         titleAttr: 'Generate PDF',
                         className: 'btn-outline-danger btn-sm mr-1',
                         exportOptions: {
-                            columns:[0,1,2,4,5,6,7,10,11,12,13,14]
+                            columns:[0,1,2,3,5,6,7,8,11,12,16]
                         }
                     },
                     {
@@ -293,12 +294,13 @@
                         titleAttr: 'Print Table',
                         className: 'btn-outline-primary btn-sm',
                         exportOptions: {
-                            columns:[0,1,2,4,5,6,7,10,11,12,13,14]
+                            columns:[0,1,2,3,5,6,7,8,11,12,16]
                         }
                     }
                 ],
                 "columns": [
                     {data: 'rownum',searchable:false},
+                    {data: 'nomor_laporan',searchable:false},
                     {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
                     {data: 'bentuk_pelanggaran', name: 'bentuk_pelanggaran'},
                     {data: 'photo', name: 'photo'},
@@ -313,24 +315,21 @@
                     {data: 'negara', name: 'negara'},
                     {data: 'lat', name: 'lat'},
                     {data: 'lng', name: 'lng'},
-                    {data: 'action',width:'10%',searchable:false}    
+                    {data: 'status', searchable:false},
+                    {data: 'action',width:'10%',searchable:false}
                 ]
             });
         });
         
-        // clear filter dataTables
         $('#resetFilter').click(function(e){
-            // clear filter fields
             $('#tahun').val('').datepicker("update");
             $('#bulan').val('').datepicker("update");
             $("#city").val(null).trigger('change');
             $("#pelanggaran").val(null).trigger('change');
             $("#bentuk").val(null).trigger('change');
             $("#kawasan").val(null).trigger('change');
-            // disable filter function
             $('#filter').attr('disabled',true);
             $('#resetFilter').attr('disabled',true);
-            // reload datatable
             $('#datatable').DataTable({
                 "destroy" : true,
                 "processing": true,
@@ -357,7 +356,7 @@
                         titleAttr: 'Generate PDF',
                         className: 'btn-outline-danger btn-sm mr-1',
                         exportOptions: {
-                            columns:[0,1,2,4,5,6,7,10,11,12,13,14]
+                            columns:[0,1,2,3,5,6,7,8,11,12,16]
                         }
                     },
                     {
@@ -368,12 +367,13 @@
                         titleAttr: 'Print Table',
                         className: 'btn-outline-primary btn-sm',
                         exportOptions: {
-                            columns:[0,1,2,4,5,6,7,10,11,12,13,14]
+                            columns:[0,1,2,3,5,6,7,8,11,12,16]
                         }
                     }
                 ],
                 "columns": [
                     {data: 'rownum',searchable:false},
+                    {data: 'nomor_laporan',searchable:false},
                     {data: 'jenis_pelanggaran', name: 'jenis_pelanggaran'},
                     {data: 'bentuk_pelanggaran', name: 'bentuk_pelanggaran'},
                     {data: 'photo', name: 'photo'},
@@ -388,6 +388,7 @@
                     {data: 'negara', name: 'negara'},
                     {data: 'lat', name: 'lat'},
                     {data: 'lng', name: 'lng'},
+                    {data: 'status', searchable:false},
                     {data: 'action',width:'10%',searchable:false}    
                 ]
             });

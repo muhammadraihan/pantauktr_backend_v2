@@ -15,11 +15,7 @@ use URL;
 class BentukApresiasiController extends Controller
 {
     use Authorizable;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
         if (request()->ajax()) {
@@ -45,22 +41,11 @@ class BentukApresiasiController extends Controller
         return view('bentuk_apresiasi.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('bentuk_apresiasi.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $rules = [
@@ -84,36 +69,17 @@ class BentukApresiasiController extends Controller
         return redirect()->route('bentuk_apresiasi.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Bentuk_Apresiasi  $bentuk_Apresiasi
-     * @return \Illuminate\Http\Response
-     */
     public function show($uuid)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Bentuk_Apresiasi  $bentuk_Apresiasi
-     * @return \Illuminate\Http\Response
-     */
     public function edit($uuid)
     {
         $bentuk_apresiasi = BentukApresiasi::uuid($uuid);
         return view('bentuk_apresiasi.edit',compact('bentuk_apresiasi'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Bentuk_Apresiasi  $bentuk_Apresiasi
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request,$uuid)
     {
         $rules = [
@@ -125,7 +91,6 @@ class BentukApresiasiController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-        // Saving data
         $bentuk_apresiasi = BentukApresiasi::uuid($uuid);
         $bentuk_apresiasi->bentuk_apresiasi = $request->name;
         $bentuk_apresiasi->edited_by = Auth::user()->uuid;
@@ -136,12 +101,6 @@ class BentukApresiasiController extends Controller
         return redirect()->route('bentuk_apresiasi.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Bentuk_Apresiasi  $bentuk_Apresiasi
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($uuid)
     {
         $bentuk_apresiasi = BentukApresiasi::uuid($uuid);

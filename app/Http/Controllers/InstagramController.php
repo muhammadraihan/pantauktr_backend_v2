@@ -17,11 +17,7 @@ use Storage;
 class InstagramController extends Controller
 {
     use Authorizable;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function index()
     {
         if (request()->ajax()) {
@@ -52,22 +48,11 @@ class InstagramController extends Controller
         return view('instagrams.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('instagrams.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $rules = [
@@ -82,12 +67,10 @@ class InstagramController extends Controller
         $this->validate($request, $rules, $messages);
         $image = $request->file('photo');
         $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-        // resizing image to upload
         $resizeImage = Image::make($image);
         $resizeImage->resize(800, 800, function ($constraint) {
             $constraint->aspectRatio();
         })->encode();
-        // upload resized image to gcs
         $googleContent = 'instagram' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
@@ -103,36 +86,17 @@ class InstagramController extends Controller
         return redirect()->route('instagram.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Instagram  $instagram
-     * @return \Illuminate\Http\Response
-     */
     public function show($uuid)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Instagram  $instagram
-     * @return \Illuminate\Http\Response
-     */
     public function edit($uuid)
     {
         $instagram = Instagram::uuid($uuid);
         return view('instagrams.edit', compact('instagram'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Instagram  $instagram
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $uuid)
     {
         $instagram = Instagram::uuid($uuid);
@@ -149,12 +113,10 @@ class InstagramController extends Controller
             $this->validate($request, $rules, $messages);
             $image = $request->file('photo');
             $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-            // resizing image to upload
             $resizeImage = Image::make($image);
             $resizeImage->resize(800, 800, function ($constraint) {
                 $constraint->aspectRatio();
             })->encode();
-            // upload resized image to gcs
             $googleContent = 'instagram' . '/' . $filename;
             $disk = Storage::disk('gcs');
             $disk->put($googleContent, (string) $resizeImage);
@@ -168,12 +130,6 @@ class InstagramController extends Controller
         return redirect()->route('instagram.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Instagram  $instagram
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($uuid)
     {
         $instagram = Instagram::uuid($uuid);

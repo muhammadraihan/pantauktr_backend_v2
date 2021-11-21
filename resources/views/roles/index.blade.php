@@ -33,7 +33,6 @@
     </div>
 </div>
 
-<!-- role add modal start -->
 <div class="modal fade" id="role-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -65,10 +64,8 @@
         </div>
     </div>
 </div>
-<!-- end modal -->
 
 @forelse ($roles as $role)
-<!-- editing form for roles permissions -->
 {{ Form::model($role, ['method' => 'PUT', 'route' => ['roles.update',  $role->id ], 'class' => 'm-b']) }}
 @if($role->name === 'superadmin')
 @include('roles._permission', [

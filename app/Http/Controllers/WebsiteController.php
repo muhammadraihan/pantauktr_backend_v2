@@ -17,11 +17,7 @@ use Storage;
 class WebsiteController extends Controller
 {
     use Authorizable;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+  
     public function index()
     {
         if (request()->ajax()) {
@@ -53,22 +49,10 @@ class WebsiteController extends Controller
         return view('websites.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
         return view('websites.create');
     }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
 
     public function store(Request $request)
     {
@@ -86,12 +70,12 @@ class WebsiteController extends Controller
         $this->validate($request, $rules, $messages);
         $image = $request->file('photo');
         $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-        // resizing image to upload
+        
         $resizeImage = Image::make($image);
         $resizeImage->resize(800, 600, function ($constraint) {
             $constraint->aspectRatio();
         })->encode();
-        // upload resized image to gcs
+        
         $googleContent = 'website' . '/' . $filename;
         $disk = Storage::disk('gcs');
         $disk->put($googleContent, (string) $resizeImage);
@@ -109,37 +93,18 @@ class WebsiteController extends Controller
         return redirect()->route('website.index');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Website  $website
-     * @return \Illuminate\Http\Response
-     */
     public function show($uuid)
     {
         $website = Website::uuid($uuid);
         return view('websites.show', compact('website'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Website  $website
-     * @return \Illuminate\Http\Response
-     */
     public function edit($uuid)
     {
         $website = Website::uuid($uuid);
         return view('websites.edit', compact('website'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Website  $website
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $uuid)
     {
         $website = Website::uuid($uuid);
@@ -158,12 +123,12 @@ class WebsiteController extends Controller
             $this->validate($request, $rules, $messages);
             $image = $request->file('photo');
             $filename = md5(uniqid(mt_rand(), true)) . '.' . $image->getClientOriginalExtension();
-            // resizing image to upload
+            
             $resizeImage = Image::make($image);
             $resizeImage->resize(800, 600, function ($constraint) {
                 $constraint->aspectRatio();
             })->encode();
-            // upload resized image to gcs
+            
             $googleContent = 'website' . '/' . $filename;
             $disk = Storage::disk('gcs');
             $disk->put($googleContent, (string) $resizeImage);
@@ -179,12 +144,6 @@ class WebsiteController extends Controller
         return redirect()->route('website.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Website  $website
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($uuid)
     {
         $website = Website::uuid($uuid);

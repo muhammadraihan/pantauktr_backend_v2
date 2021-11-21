@@ -10,25 +10,13 @@ use Auth;
 
 class LogoutListener
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
     public function __construct()
     {
         //
     }
 
-    /**
-     * Handle the event.
-     *
-     * @param  object  $event
-     * @return void
-     */
     public function handle($event)
     {
-        // Logging logout event
         $user = Auth::user();
         $updated_at = Carbon::now()->toDateTimeString();
         $properties = [

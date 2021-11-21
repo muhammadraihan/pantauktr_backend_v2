@@ -13,14 +13,7 @@ trait Authorizable
         'store' => 'add',
         'destroy' => 'delete'
     ];
-
-    /**
-     * Override of callAction to perform the authorization before
-     *
-     * @param $method
-     * @param $parameters
-     * @return mixed
-     */
+    
     public function callAction($method, $parameters)
     {
         if ($ability = $this->getAbility($method)) {

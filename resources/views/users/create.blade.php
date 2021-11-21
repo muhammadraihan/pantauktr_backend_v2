@@ -81,7 +81,6 @@
     $(document).ready(function(){
         $('.select2').select2();
         
-        // Generate a password string
         function randString(){
             var chars = "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNP123456789";
             var string_length = 8;
@@ -93,7 +92,6 @@
             return randomstring;
         }
         
-        // Create a new password
         $(".getNewPass").click(function(){
             var field = $('#password').closest('div').find('input[name="password"]');
             field.val(randString(field));

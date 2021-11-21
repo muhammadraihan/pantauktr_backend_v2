@@ -17,33 +17,12 @@ class Pelanggaran extends Model
 
     protected static $logAttributes = ['*'];
 
-    /**
-     * Logging name
-     *
-     * @var string
-     */
     protected static $logName = 'pelanggaran';
 
-    /**
-     * Logging only the changed attributes
-     *
-     * @var boolean
-     */
     protected static $logOnlyDirty = true;
 
-    /**
-     * Prevent save logs items that have no changed attribute
-     *
-     * @var boolean
-     */
     protected static $submitEmptyLogs = false;
 
-    /**
-     * Custom logging description
-     *
-     * @param string $eventName
-     * @return string
-     */
     public function getDescriptionForEvent(string $eventName): string
     {
         return "Data has been {$eventName}";

@@ -82,14 +82,14 @@
 
         $('#year').datepicker({
             orientation: "bottom left",
-            format: "yyyy", 
-            viewMode: "years",
+            format: "yyyy",
+            startView: 'years',
             minViewMode: "years",
             todayHighlight:'TRUE',
             endDate: date.getFullYear().toString(),
             autoclose: true,
         });
-        /* Enable filter button */
+
         $('#year').change(function (e) {
             $('#filter').attr('disabled',false);
             $('#resetFilter').attr('disabled',false);
@@ -99,14 +99,14 @@
             $('#filter').attr('disabled',false);
             $('#resetFilter').attr('disabled',false);
         })
-        /* Reset filter value and disable filter button */
+        
         $('#resetFilter').click(function(e) {
             $('#year').val('').datepicker("update");;
             $("#city").val(null).trigger('change');
             $('#filter').attr('disabled',true);
             $('#resetFilter').attr('disabled',true);
         });
-        /* chart pelanggaran */
+        
         var pelanggaranSeries = {!!json_encode($jenis_series)!!};
         var pelanggaranChart = Highcharts.chart('pelanggaran', {
                 chart: {
@@ -159,8 +159,7 @@
                 },
                 series: pelanggaranSeries,
             });
-        /* end chart pelanggaran */
-        /* chart bentuk */
+        
         var bentukSeries = {!!json_encode($bentuk_series)!!};
         var bentukDrillDown = {!!json_encode($bentuk_drilldown)!!};
         var bentukDrillDownSeries = [];
@@ -237,8 +236,7 @@
                     series : bentukDrillDownSeries
                 }
             });
-        /* end chart bentuk */
-        /* chart kawasan */
+        
         var kawasanSeries = {!!json_encode($kawasan_series)!!};
         var kawasanDrillDown = {!!json_encode($kawasan_drilldown)!!};
         var kawasanDrillDownSeries = [];
@@ -315,8 +313,7 @@
                     series : kawasanDrillDownSeries
                 }
             });
-        /* end chart kawasan */
-        /* filter chart */
+        
         $('#filter').click(function(e){
             var year = $('#year').val();
             var city = $('#city').val();
@@ -334,28 +331,24 @@
                     var resKawasan = res.kawasan_series;
                     var resKawasanDrill = res.kawasan_drilldown;
 
-                    /* update jenis pelanggaran chart */
                     const arrJenis = resJenis.map((itemJenis,keyJenis) => {
                         const containerJenis = {};
                         containerJenis[keyJenis] = itemJenis.data;
                         return containerJenis;
                     })
-                    // update subtitle
+                    
                     pelanggaranChart.setTitle({
                         text: 'Grafik Laporan Jenis Pelanggaran' +' '+ cityTitle +' '+ yearTitle
                     });
-                    // update series
+                    
                     for (let i = 0; i < pelanggaranChart.series.length; i++) {
                         pelanggaranChart.series[i].setData(arrJenis[i][i]);
                     }
-                    /* end update jenis pelanggaran chart */
 
-                    /* update bentuk pelanggaran chart */
-                    // update subtitle
                     bentukChart.setTitle({
                         text: 'Grafik Laporan Bentuk Pelanggaran' +' '+ cityTitle +' '+ yearTitle
                     });
-                    // update series
+                    
                     bentukChart.series[0].setData(resBentuk);
                     
                     var bentukDrillDownSeriesUpdated = [];
@@ -368,21 +361,18 @@
                             data : arrayBentukDrillData,
                         });
                     };
-                    // update drilldown series
+                    
                     bentukChart.update({
                         drilldown:{
                             series: bentukDrillDownSeriesUpdated
                         },
                     });
-                    /* end update bentuk pelanggaran chart */
 
-                    /* update bentuk pelanggaran chart */
-                    // update subtitle
                     kawasanChart.setTitle({
                         text: 'Grafik Kawasan Pelanggaran' +' '+ cityTitle +' '+ yearTitle
                     });
                     kawasanChart.series[0].setData(resKawasan);
-                    // update series
+                    
                     var kawasanDrillDownSeriesUpdated = [];
                     for(var [keyDrillKawasan,valueDrillKawasan] of Object.entries(resKawasanDrill)){
                         var arrayKawasanDrillData = Object.keys(valueDrillKawasan.data).map((k) => valueDrillKawasan.data[k]);
@@ -392,7 +382,7 @@
                             data : arrayKawasanDrillData,
                         });
                     };
-                    // update drilldown series
+                    
                     kawasanChart.update({
                         drilldown:{
                             series: kawasanDrillDownSeriesUpdated

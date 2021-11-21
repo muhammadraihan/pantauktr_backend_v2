@@ -14,4 +14,9 @@ class TindakLanjut extends Model
     protected $fillable = [
         'laporan_id', 'keterangan', 'status', 'updated_by'
     ];
+
+    public function laporan()
+    {
+        return $this->belongsTo(Laporan::class, 'laporan_id', 'uuid');
+    }
 }

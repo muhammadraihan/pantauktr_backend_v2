@@ -43,7 +43,6 @@ class ChartController extends Controller
         $kawasan_drilldown = [];
 
         foreach ($pelanggarans as $pelanggaran) {
-            // select laporan by jenis
             $laporan_jenis = Laporan::select('uuid', 'jenis_pelanggaran', 'created_at')
                 ->where('jenis_pelanggaran', $pelanggaran->uuid)
                 ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
@@ -58,21 +57,16 @@ class ChartController extends Controller
                     return (int)Carbon::parse($date->created_at)->format('m');
                 });
 
-            // iterate for 12 months
             for ($j = 1; $j <= 12; $j++) {
-                // match key with index
-                // if match return laporan array count
                 if (!empty($laporan_jenis[$j])) {
                     $jenis_count[$j]['count'] = count($laporan_jenis[$j]);
                 } else {
                     $jenis_count[$j]['count'] = 0;
                 }
             }
-            // collect array count and flatten
             $collection = collect($jenis_count);
             $flattened = $collection->flatten();
             $flattened->all();
-            // return result
             $jenis_series[] = array(
                 "name" => $pelanggaran->name,
                 "data" => $flattened,
@@ -112,10 +106,7 @@ class ChartController extends Controller
                 ->groupBy(function ($date) {
                     return (int)Carbon::parse($date->created_at)->format('m');
                 });
-            // iterate for 12 months
             for ($j = 1; $j <= 12; $j++) {
-                // match key with index
-                // if match return laporan array count
                 if (!empty($laporan_bentuk_monthly[$j])) {
                     $bentuk_count[$j] = array(
                         $month[$j - 1],
@@ -168,10 +159,7 @@ class ChartController extends Controller
                 ->groupBy(function ($date) {
                     return (int)Carbon::parse($date->created_at)->format('m');
                 });
-            // iterate for 12 months
             for ($j = 1; $j <= 12; $j++) {
-                // match key with index
-                // if match return laporan array count
                 if (!empty($laporan_kawasan_monthly[$j])) {
                     $kawasan_count[$j] = array(
                         $month[$j - 1],
@@ -214,7 +202,6 @@ class ChartController extends Controller
             $kawasans = Kawasan::select('uuid', 'kawasan')->get();
 
             foreach ($pelanggarans as $pelanggaran) {
-                // select laporan by jenis
                 $laporan_jenis = Laporan::select('uuid', 'jenis_pelanggaran', 'created_at')
                     ->where('jenis_pelanggaran', $pelanggaran->uuid)
                     ->when($roles[0] == "pemda", function ($query) use ($user, $user_city) {
@@ -241,20 +228,15 @@ class ChartController extends Controller
 
                 if (!empty($laporan_jenis)) {
                     for ($j = 1; $j <= 12; $j++) {
-                        // match key with index
-                        // if match return laporan array count
                         if (!empty($laporan_jenis[$j])) {
                             $jenis_count[$j]['count'] = count($laporan_jenis[$j]);
                         } else {
                             $jenis_count[$j]['count'] = 0;
                         }
                     }
-                    // dd($jenis_count);
-                    // collect array count and flatten
                     $collection = collect($jenis_count);
                     $flattened = $collection->flatten();
                     $flattened->all();
-                    // return result
                     $jenis_series[] = array(
                         "name" => $pelanggaran->name,
                         "data" => $flattened,
@@ -315,10 +297,7 @@ class ChartController extends Controller
                         ->groupBy(function ($date) {
                             return (int)Carbon::parse($date->created_at)->format('m');
                         });
-                    // iterate for 12 months
                     for ($j = 1; $j <= 12; $j++) {
-                        // match key with index
-                        // if match return laporan array count
                         if (!empty($laporan_bentuk_monthly[$j])) {
                             $bentuk_count[$j] = array(
                                 $month[$j - 1],
@@ -392,10 +371,7 @@ class ChartController extends Controller
                         ->groupBy(function ($date) {
                             return (int)Carbon::parse($date->created_at)->format('m');
                         });
-                    // iterate for 12 months
                     for ($j = 1; $j <= 12; $j++) {
-                        // match key with index
-                        // if match return laporan array count
                         if (!empty($laporan_kawasan_monthly[$j])) {
                             $kawasan_count[$j] = array(
                                 $month[$j - 1],
