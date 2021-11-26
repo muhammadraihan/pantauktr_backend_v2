@@ -7,21 +7,21 @@ printf "==========================================\n"
 printf "Entering Maintenance Mode... \n"
 php artisan down
 
-printf "Installing PHP Dependencies... \n"
-export COMPOSER_HOME="$HOME/.config/composer";
-php /usr/local/bin/composer install --no-interaction --no-dev --prefer-dist
-
 printf "Pulling Master Update From Repository... \n"
 git reset --hard
 git pull
+
+printf "Installing PHP Dependencies... \n"
+export COMPOSER_HOME="$HOME/.config/composer";
+php /usr/local/bin/composer install --no-interaction --no-dev --prefer-dist
 
 printf "Clearing Cache... \n"
 php artisan permission:cache-reset
 php artisan config:clear
 php artisan cache:clear
-php /usr/local/bin/composer dump-autoload
 php artisan view:clear
 php artisan route:clear
+php /usr/local/bin/composer dump-autoload
 
 printf "Migrating Database... \n"
 php artisan migrate --force

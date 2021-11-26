@@ -21,6 +21,10 @@ class EventServiceProvider extends ServiceProvider
         'Illuminate\Auth\Events\Logout' => [
             'App\Listeners\LogoutListener',
         ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            // ... other providers
+            \SocialiteProviders\Apple\AppleExtendSocialite::class . '@handle',
+        ],
     ];
 
     /**

@@ -51,7 +51,7 @@ class AuthController extends Controller
     $extract_username = explode("@", $request->email);
     $firstname = $extract_username[0];
     config(['auth.guards.pelapors-api.driver' => 'session']);
-    
+
     DB::beginTransaction();
     try {
       $pelapor = new Pelapor;
@@ -385,7 +385,7 @@ class AuthController extends Controller
       }
     } catch (Exception $e) {
       DB::rollback();
-      
+
       return response()->json([
         'success' => false,
         'message' => $e->getMessage(),
