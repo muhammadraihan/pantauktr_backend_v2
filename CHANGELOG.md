@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.4.4](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.4.3...v2.4.4) (2021-11-26)
+
+
+### Features
+
+* Adding apple login service api ([e5e31b5](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/e5e31b53a66dedbf3ad805c627cc7c23a6bf5db7))
+
+
+### Bug Fixes
+
+* Failed login using apple ([2d7fc68](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/2d7fc68b682b74abafc3dd2810ded01b933358f9))
+
 ### [2.4.3](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.4.2...v2.4.3) (2021-11-21)
 
 
