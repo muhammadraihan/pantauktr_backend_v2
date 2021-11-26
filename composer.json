@@ -26,6 +26,7 @@
         "laravel/ui": "^3.0",
         "laravelcollective/html": "^6.0",
         "seshac/otp-generator": "^0.0.6",
+        "socialiteproviders/apple": "^5.0",
         "spatie/laravel-activitylog": "^3.16",
         "spatie/laravel-permission": "^3.0",
         "superbalist/laravel-google-cloud-storage": "^2.2",

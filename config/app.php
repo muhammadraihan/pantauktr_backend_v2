@@ -171,6 +171,7 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Barryvdh\DomPDF\ServiceProvider::class,
         Geocoder\Laravel\Providers\GeocoderService::class,
+        SocialiteProviders\Manager\ServiceProvider::class,
         /*
          * Application Service Providers...
          */
