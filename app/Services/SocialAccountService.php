@@ -27,6 +27,7 @@ class SocialAccountService
                     $email = $providerUser->getEmail();
                     $extract_username = explode("@", $email);
                     $firstname = $extract_username[0];
+                    $lastname = " ";
                 } else {
                     $name = $providerUser->getName();
                     $parts = explode(" ", $name);
@@ -35,6 +36,7 @@ class SocialAccountService
                         $firstname = implode(" ", $parts);
                     } else {
                         $firstname = $name;
+                        $lastname = " ";
                     }
                 }
                 $pelapor = new Pelapor;

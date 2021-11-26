@@ -14,28 +14,13 @@ class SocialUserResolver implements SocialUserResolverInterface
 {
     public function resolveUserByProviderCredentials(string $provider, string $accessToken): ?Authenticatable
     {
-        // dd($provider, $accessToken);
         $providerUser = null;
         try {
             if ($provider == "apple") {
                 config()->set('services.apple.client_secret', $accessToken);
                 $providerUser = Socialite::driver($provider)->userFromToken($accessToken);
-                // dd($providerUser);
-                // $applePubKeySet = Http::get('https://appleid.apple.com/auth/keys');
-                // $keySet = $applePubKeySet->json();
-                // $validateToken = JWT::decode($accessToken, JWK::parseKeySet($keySet), ['RS256']);
-                // $user = [
-                //     'id' => $validateToken->sub,
-                //     'email' => $validateToken->email,
-                //     'name' => '',
-                //     'avatar' => '',
-                // ];
-                // $encodeUser = json_encode($user);
-                // $providerUser =  json_decode($encodeUser);
-                // dd($validateToken, $providerUser);
             } else {
                 $providerUser = Socialite::driver($provider)->userFromToken($accessToken);
-                // dd($providerUser);
             }
         } catch (Exception $e) {
             return response()->json([
@@ -43,7 +28,6 @@ class SocialUserResolver implements SocialUserResolverInterface
                 'message' => $e->getMessage(),
             ]);
         }
-        // dd($providerUser);
         if ($providerUser) {
             return (new SocialAccountService())->findOrCreate($providerUser, $provider);
         }
