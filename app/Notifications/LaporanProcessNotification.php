@@ -9,6 +9,7 @@ use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 use NotificationChannels\Fcm\Resources\AndroidConfig;
 use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
+use NotificationChannels\Fcm\Resources\AndroidNotification;
 use NotificationChannels\Fcm\Resources\ApnsConfig;
 use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 use NotificationChannels\Fcm\Resources\Notification as ResourcesNotification;
@@ -41,6 +42,7 @@ class LaporanProcessNotification extends Notification implements ShouldQueue
                 AndroidConfig::create()
                     ->setFcmOptions(AndroidFcmOptions::create()
                         ->setAnalyticsLabel('analytics'))
+                    ->setNotification(AndroidNotification::create()->setClickAction('FLUTTER_NOTIFICATION_CLICK'))
             )
             ->setApns(
                 ApnsConfig::create()
@@ -56,7 +58,7 @@ class LaporanProcessNotification extends Notification implements ShouldQueue
                     ])
             );
     }
-    
+
     public function toArray($notifiable)
     {
         return [
