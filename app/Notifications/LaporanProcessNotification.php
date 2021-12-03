@@ -49,7 +49,7 @@ class LaporanProcessNotification extends Notification implements ShouldQueue
                     ->setFcmOptions(ApnsFcmOptions::create()
                         ->setAnalyticsLabel('analytics_ios'))
                     ->setHeaders([
-                        'apns-priority' => 5
+                        'apns-priority' => "5"
                     ])
                     ->setPayload([
                         'aps' => [
