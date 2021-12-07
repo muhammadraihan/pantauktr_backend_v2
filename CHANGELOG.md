@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [2.4.5](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.4.4...v2.4.5) (2021-12-07)
+
+
+### Features
+
+* Adding notification on android platform ([6bebf9e](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/6bebf9e54e459759036b72e4aafac483c72d26ba))
+
+
+### Bug Fixes
+
+* Fixng apns error on notification send ([080bd79](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/commit/080bd7974c71b7c956f30e6feef5f5c94d5ab8a1))
+
 ### [2.4.4](https://git.wbaindonesia.com/wbaindonesia/pantauktr_backend_v2/compare/v2.4.3...v2.4.4) (2021-11-26)
 
 
